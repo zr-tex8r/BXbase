@@ -1,0 +1,31 @@
+.:
+total 37
+-rw-r--r--    1 tyato    Administ     1012 Mar 10  2008 00README
+-rw-r--r--    1 tyato    Administ     1207 Jul  5  2009 LICENSE
+-rw-r--r--    1 tyato    Administ    22375 Jun 15  2010 README
+-rw-r--r--    1 tyato    Administ    28017 Jul 11  2010 bxbase.def
+-rw-r--r--    1 tyato    Administ     1720 Jun 15  2010 bxbase.sty
+-rw-r--r--    1 tyato    Administ     3705 Mar 29  2008 bxucs.sty
+-rw-r--r--    1 tyato    Administ     5922 Jun 15  2010 bxutf8.def
+-rw-r--r--    1 tyato    Administ     2589 Apr  6  2008 bxutf8x.def
+-rw-r--r--    1 tyato    Administ        0 Apr 29 00:35 ls-lR
+drwxr-xr-x    2 tyato    Administ        0 Sep 16  2010 ref
+drwxr-xr-x    2 tyato    Administ        0 Sep 16  2010 work
+-rw-r--r--    1 tyato    Administ     5138 Nov 16  2009 zxbase.sty
+
+./ref:
+total 64
+-rw-r--r--    1 tyato    Administ    13678 Aug 21  2007 bxulgr.sty
+-rw-r--r--    1 tyato    Administ     4310 Apr 29  2006 inputenc.sty
+-rw-r--r--    1 tyato    Administ   109921 Mar  8  2008 utf8ienc.pdf
+
+./work:
+total 23
+-rwxr-xr-x    1 tyato    Administ      596 Apr 27  2007 charisttf.bat
+-rw-r--r--    1 tyato    Administ    17443 Aug 27  2007 sample1.pdf
+-rw-r--r--    1 tyato    Administ      535 Aug 27  2007 sample1.tex
+-rw-r--r--    1 tyato    Administ    18791 Aug 27  2007 sample2.pdf
+-rw-r--r--    1 tyato    Administ      621 Aug 27  2007 sample2.tex
+-rw-r--r--    1 tyato    Administ     2491 Apr  6  2008 testproc.pl
+-rw-r--r--    1 tyato    Administ      203 Mar 10  2008 testtxt.tex
+-rw-r--r--    1 tyato    Administ     1641 Apr  6  2008 trojka.tex
