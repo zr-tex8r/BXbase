@@ -1,0 +1,555 @@
+%
+% bxtoolbox-ext.def
+%
+
+%% File declaration
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{bxtoolbox-ext.def}[2013/04/29 v0.9c BX base library]
+% avoid multiple loading
+\csname bxtoolboxext@def@loaded\endcsname
+
+%% Error messages
+\def\bxtb@pkgname{BXtoolbox} % bundle name
+\def\bxtb@error{\PackageError\bxtb@pkgname}
+\def\bxtb@warn{\PackageWarningNoLine\bxtb@pkgname}
+\def\bxtb@err@oorng{\bxtb@error{Number out of range}\@eha}
+
+%% General preparations
+\providecommand*\bxRequireDefinition[1]{%
+  \def\bx@@def{def}\@onefilewithoptions{#1}[][]\bx@@def}
+\bxRequireDefinition{bxtoolbox}
+\bxIfcsundefX{ifbxOk}
+{\newbool{bxOk}}{}    % all-purpsoe switch
+\bxIfcsundefX{bxResDim}
+{\newdimen\bxResDim}{}
+
+%% common stuffs
+\let\bxHex\relax      % result of \bxToHex...
+\let\bxRes\relax      % result of \bxToLower
+
+%% code guards
+\edef\bxtb@x@restore@cc{% < ! " ' + ^ >
+  \catcode33=\the\catcode33\relax %<!>
+  \catcode34=\the\catcode34\relax %<">
+  \catcode39=\the\catcode39\relax %<'>
+  \catcode43=\the\catcode43\relax %<+>
+  \catcode94=\the\catcode94\relax %<^>
+}
+\catcode33=12
+\catcode34=12
+\catcode39=12
+\catcode43=12
+\catcode94=6
+\AtEndOfPackage{%
+  \bxtb@x@restore@cc
+  \undef\bxtb@x@restore@cc}
+\def\bxtoolboxext@def@loaded{\endinput}
+
+%%------ Programming tools
+
+%%<+> \bxDebug{<text>}
+% Prints a debug message. By default, it is no-op.
+\providecommand*\bxDebug{\@gobble}
+
+%%<+> \bxShowbool{<name>}
+\newcommand*{\bxShowbool}[1]{\ifbool{#1}{true}{false}}
+
+%%<+> \bxShowtoggle{<name>}
+\newcommand*{\bxShowtoggle}[1]{\iftoggle{#1}{true}{false}}
+
+%%<+> \bxRequireDefinition
+% Same as \RequirePackage except that it loads '.def' files.
+% [Definition appears near the top of this file]
+%%<+D> \bxInputDefFile
+% Old name for \bxRequireDefinition
+\bxPreamble\newcommand*{\bxInputDefFile}{\bxRequireDefinition}
+
+%%<+> \bxNullify\CS
+% Make \CS void and unoverridable by \providecommand.
+\def\bxNullify#1{\global\let#1\bx@nullified}
+\def\bx@nullified{\@gobble\bx@@nullified}
+
+%%<+> \bxForEachIn<arg>,...\do{<repl_text>}
+%%<+> \bxForEachTokenIn<arg>,...\do{<repl_text>}
+\newcommand*\bxForEachIn{\bxtb@forei@a\@for}
+\newcommand*\bxForEachTokenIn{\bxtb@forei@a\@tfor}
+\def\bxtb@forei@a#1#2\do#{%
+  \def\bxtb@forei@b{#1\bxtb@forei@x:=#2\do
+   {\expandafter\bxtb@forei@do\expandafter{\bxtb@forei@x}}}%
+  \afterassignment\bxtb@forei@b \def\bxtb@forei@do##1}
+
+%%<+> \bxWithArgExpd{<arg1>}\do{<repl-text>}
+%%<+> \bxWithArgFullExpd{<arg1>}\do{<repl-text>}
+\newcommand*\bxWithArgExpd{}
+\def\bxWithArgExpd#1\do#{%
+  \expandafter\bxtb@with@arg@expd@a#1\@nil}
+\def\bxtb@with@arg@expd@a#1\@nil{%
+  \def\bxtb@with@args@expd@do{\bxtb@do{#1}}%
+  \afterassignment\bxtb@with@args@expd@do
+  \def\bxtb@do##1}
+\newcommand*\bxWithArgFullExpd{}
+\def\bxWithArgFullExpd#1\do#{%
+  \edef\bxtb@args{{#1}}%
+  \def\bxtb@with@args@expd@do{\expandafter\bxtb@do\bxtb@args}%
+  \afterassignment\bxtb@with@args@expd@do
+  \def\bxtb@do##1}
+
+%%<+> \bxWithArgsExpd{<arg1>}...\do{<repl-text>}
+%%<+> \bxWithArgsFullExpd{<arg1>}...\do{<repl-text>}
+\newcommand*\bxWithArgsExpd{%
+  \begingroup
+    \count@=\z@ \let\do\bxtb@uniq
+    \let\bxtb@l@tmpa\@empty
+    \bxtb@with@args@expd@gth@a}
+\def\bxtb@with@args@expd@gth@a{%
+  \futurelet\bxtb@tok\bxtb@with@args@expd@gth@b}
+\def\bxtb@with@args@expd@gth@b{%
+  \bxIfx{\bxtb@tok\bxtb@uniq}%
+    {\bxtb@with@args@expd@pst@a}%
+    {\bxtb@with@args@expd@gth@c}}
+\def\bxtb@with@args@expd@gth@c#1{%
+  \expandafter\bxtb@with@args@expd@gth@d#1\@nil}
+\def\bxtb@with@args@expd@gth@d#1\@nil{%
+  \ifnum\count@<9
+    \appto\bxtb@l@tmpa{{#1}}%
+    \advance\count@\@ne
+  \fi
+  \bxtb@with@args@expd@gth@a}
+\def\bxtb@with@args@expd@pst@a#1{%
+  \@whilenum\count@<9 \do{%
+    \appto\bxtb@l@tmpa{{}}\advance\count@\@ne}%
+  \expandafter\def\expandafter\bxtb@l@tmpa\expandafter{%
+    \expandafter{\bxtb@l@tmpa}}%
+  \xpreto\bxtb@l@tmpa{\noexpand\bxtb@with@args@expd@ppst@a}%
+  \expandafter\endgroup\bxtb@l@tmpa}
+\newcommand*\bxWithArgsFullExpd{%
+  \bxtb@with@args@fexpd@a\@nil}
+\def\bxtb@with@args@fexpd@a\@nil#1\do{%
+  \bxtb@with@args@fexpd@b#1{}{}{}{}{}{}{}{}{}\do}
+\def\bxtb@with@args@fexpd@b#1#2#3#4#5#6#7#8#9{%
+  \edef\bxtb@with@args@fexpd@d{%
+    \noexpand\bxtb@with@args@expd@ppst@a
+    {{#1}{#2}{#3}{#4}{#5}{#6}{#7}{#8}{#9}}}%
+  \bxtb@with@args@fexpd@c}
+\def\bxtb@with@args@fexpd@c#1\do#{%
+  \bxtb@with@args@fexpd@d}
+\def\bxtb@with@args@expd@ppst@a#1{%
+  \def\bxtb@with@args@expd@do{\bxtb@do#1}%
+  \afterassignment\bxtb@with@args@expd@do
+  \def\bxtb@do##1##2##3##4##5##6##7##8##9}
+
+%%<+> \bxAssign <assignment>\relax
+% Do an assignment and checks if the assignment statement is
+% free of garbage and returns the result to \ifbxOk.
+\newcommand*\bxAssign{%
+  \bxOkfalse\afterassignment\bx@b@assign@a}
+\def\bx@b@assign@a#1\relax{%
+  \def\bx@tmpa{#1}\ifx\bx@tmpa\@empty\bxOktrue\fi}
+
+%%<+> \bxChompComma\CS
+\newcommand*\bxChompComma[1]{%
+  \expandafter\bxtb@chomp@comma@a#1\bxtb@chomp@comma@end#1}
+\def\bxtb@chomp@comma@a{%
+  \futurelet\bxtb@tmpa\bxtb@chomp@comma@b}
+\def\bxtb@chomp@comma@b{%
+  \bxIfx{,\bxtb@tmpa}{\bxtb@chomp@comma@c}%
+   {\bxtb@chomp@comma@skip}}
+\def\bxtb@chomp@comma@c#1\bxtb@chomp@comma@end#2{%
+  \expandafter\def\expandafter#2\expandafter{\@gobble#1}}
+\def\bxtb@chomp@comma@skip#1\bxtb@chomp@comma@end#2{}
+
+%% \bxProcessOptions[*]
+\newcommand*\bxProcessOptions{%
+  \@ifstar{\@tempswatrue\bxtb@process@options}%
+    {\@tempswafalse\bxtb@process@options}}
+\def\bxtb@process@options{%
+  \let\bxtb@org@@removeelement\@removeelement
+  \let\@removeelement\bxtb@@removeelement
+  \if@tempswa \ProcessOptions*%
+  \else \ProcessOptions\relax \fi
+  \let\@removeelement\bxtb@org@@removeelement}
+\def\bxtb@@removeelement#1#2#3{%
+  \bxtb@rem@elt@check#1\relax{}\bxtb@rem@elt@end
+  \if@tempswa \bxtb@org@@removeelement{#1}{#2}#3\fi}
+\def\bxtb@rem@elt@check#1#{\bxtb@rem@elt@check@a}
+\def\bxtb@rem@elt@check@a#1#2\bxtb@rem@elt@end{%
+  \ifstrempty{#2}{\@tempswatrue}{\@tempswafalse}}
+
+%% \bxtb@uniq
+% Unique token for general purpose.
+\def\bxtb@uniq{\bxtb@uniq@}
+
+%%------ character tokens
+
+%%<+> \ifbxHasUcsChar
+\newbool{bxHasUcsChar}
+\ifbxinOmega \bxHasUcsChartrue \fi
+\ifbxinXeTeX \bxHasUcsChartrue \fi
+\ifbxinLuaTeX \bxHasUcsChartrue \fi
+\ifbxinupTeX \bxHasUcsChartrue \fi
+\csletcs{ifbx@hx@bigchar}{ifbxHasUcsChar}
+
+%%<+> \ifbxHasAlUcsChar
+\newbool{bxHasAlUcsChar}
+\ifbxinOmega \bxHasAlUcsChartrue \fi
+\ifbxinXeTeX \bxHasAlUcsChartrue \fi
+\ifbxinLuaTeX \bxHasAlUcsChartrue \fi
+
+%%<+> \bxToChar{<num>}
+% Makes \bxRes expand to a single character token with character
+% code <num>. Note that in (u)pTeX this is valid only for 'alphabet'
+% characters.
+\newcommand*\bxToChar[1]{%
+  \bgroup \lccode`!=#1\relax
+    \lowercase{\xdef\bx@tch@g@temp{!}}%
+  \egroup \let\bxRes\bx@tch@g@temp}
+
+%%<+> \bxToJaChar{<num>}
+% Makes \bxRes expand to a single CJK character token with
+% character code <num> (in internal CJK encoding).
+\ifbxinpTeX
+  \newcommand*\bxToJaChar[1]{%
+    \bgroup \bxtb@forcecjktoken
+      \kansujichar\@ne=#1\relax
+      \xdef\bx@tch@g@temp{\kansuji\@ne}%
+    \egroup \let\bxRes\bx@tch@g@temp}
+  \ifdef{\forcecjktoken}%
+   {\let\bxtb@forcecjktoken\forcecjktoken}%
+   {\let\bxtb@forcecjktoken\relax}%
+\fi
+
+%%<+> \bxToUcsChar{<num>}
+% Makes \bxRes expand to a single character token with
+% character code <num> (in Unicode); valid for Unicode-aware
+% engines plus upTeX.
+\ifbxinupTeX
+\let\bxToUcsChar\bxToJaChar
+\else\ifbxHasAlUcsChar
+\let\bxToUcsChar\bxToChar
+\fi\fi
+
+%%<+> \bxToUcsCharDual{<num1>}{<num2>}
+% Makes \bxRes expand to a single character token with
+% character code <num> (in Unicode); valid for Unicode-aware
+% engines plus upTeX.
+\ifdef{\bxToUcsChar}
+ {\newcommand*\bxToUcsCharDual[2]{\bxToUcsChar{#2}}}%
+ {\newcommand*\bxToUcsCharDual[2]{\bxToJaChar{\jis#1}}}
+
+%%<+> \bxToUcsCharSeq{<num1>}{<num2>}
+\newcommand*\bxToUcsCharSeq[1]{%
+  \let\bx@tch@temp\@empty
+  \bxForEachIn#1\do{\bxtb@toucs@charseq@a##1\bxtb@end}%
+  \let\bxRes\bx@tch@temp}
+\def\bxtb@toucs@charseq@a#1:#2\bxtb@end{%
+  \bxToUcsCharDual{"#1}{"#2}%
+  \eappto\bx@tch@temp{\bxRes}}
+
+%%------ 'Number-to-hex-string' functions
+% All public commands put their result in \bxHex.
+
+%%<+> \bxToHexTiny
+% For one-to-two-digit hex strings.
+\newcommand*\bxToHexTiny[1]{%
+  \chardef\bxHex=#1\relax
+  \expandafter\bx@hx@tohextiny@a\meaning\bxHex\@nil}
+\def\bx@hx@tohextiny@a#1"#2\@nil{\def\bxHex{#2}}
+
+%%<+> \bxToHexSmall
+% For one-to-three-digit hex strings.
+\newcommand*\bxToHexSmall[1]{%
+  \mathchardef\bxHex=#1\relax
+  \expandafter\bx@hx@tohexsmall@a\meaning\bxHex\@nil}
+\def\bx@hx@tohexsmall@a#1"#2\@nil{\def\bxHex{#2}}
+
+%%<+> \bxToHexTwo
+% For zero-padded two-digit hex strings.
+\newcommand*\bxToHexTwo[1]{%
+  \chardef\bxHex=#1\relax
+  \expandafter\bx@hx@tohextwo@a\meaning\bxHex"0\@nil}
+\def\bx@hx@tohextwo@a#1"#2#3#4#5\@nil{\bx@hx@tohextwo@b#2#3#4\@nil}
+\def\bx@hx@tohextwo@b#1"#2\@nil{\def\bxHex{#2#1}}
+
+%%<+> \bxToHexThree
+% For zero-padded three-digit hex strings.
+\newcommand*\bxToHexThree[1]{%
+  \mathchardef\bxHex=#1\relax
+  \expandafter\bx@hx@tohexthree@a\meaning\bxHex"00\@nil}
+\def\bx@hx@tohexthree@a#1"#2#3#4#5#6\@nil{\bx@hx@tohexthree@b#2#3#4#5\@nil}
+\def\bx@hx@tohexthree@b#1"#2\@nil{\def\bxHex{#2#1}}
+
+%%<+> \bxToHexFour
+% For zero-padded four-digit hex strings.
+\ifbx@hx@bigchar    %----<*bigchar>
+\newcommand*\bxToHexFour[1]{%
+  \chardef\bxHex=#1\relax
+  \expandafter\bx@hx@tohexfour@a\meaning\bxHex"000\@nil}
+\def\bx@hx@tohexfour@a#1"#2#3#4#5#6#7\@nil{\bx@hx@tohexfour@b#2#3#4#5#6\@nil}
+\def\bx@hx@tohexfour@b#1"#2\@nil{\def\bxHex{#2#1}}
+\else               %----<*!bigchar>
+\mathchardef\bx@hx@fzzz="4000
+\newcommand*\bxToHexFour[1]{\bgroup
+  \@tempcnta=#1\relax\@tempcntb\@tempcnta\divide\@tempcntb\bx@hx@fzzz
+  \ifcase\@tempcntb \advance\@tempcnta\bx@hx@fzzz \or \or
+   \advance\@tempcnta-\bx@hx@fzzz \or \advance\@tempcnta-"8000 \or
+   \@tempcnta\z@ \fi
+  \mathchardef\bx@hx@tmp\@tempcnta
+  \expandafter\bx@hx@tohexfour@a\meaning\bx@hx@tmp\@nil
+  \egroup \let\bxHex\bx@hx@gtmp}
+\def\bx@hx@tohexfour@a#1"#2#3\@nil{%
+  \expandafter\let\expandafter\bx@hx@tmp
+   \csname bxhx@X/\the\@tempcntb#2\endcsname
+  \ifx\bx@hx@tmp\relax \bxtb@err@oorng \global\let\bx@hx@gtmp\@empty
+  \else \xdef\bx@hx@gtmp{\bx@hx@tmp#3}\fi}
+\def\bx@hx@nxt#1#2#3{\bgroup\catcode`#3=12
+  \global\expandafter\def\csname bxhx@X/#1#2\endcsname{#3}\egroup}
+\@for\bx@hx@tmp:={040,051,062,073,144,155,166,177,248,259,26A,27B,%
+  34C,35D,36E,37F}\do{\expandafter\bx@hx@nxt\bx@hx@tmp}
+\fi                 %----</bigchar>
+
+%%<+> \bxToHexFive
+%%<+> \bxToHexFiveX
+% For zero-padded five-digit hex strings.
+\newcommand*\bxToHexFive{\bx@tohexfive@aa\relax}
+\newcommand*\bxToHexFiveX{\bx@tohexfive@aa
+  {\ifnum\@tempcnta>\bx@hx@vdmax \@tempcnta=\bx@hx@vdmax\fi}}
+\ifbx@hx@bigchar    %----<*bigchar>
+\chardef\bx@hx@vdmax="FFFFF
+\def\bx@tohexfive@aa#1#2{%
+  {\@tempcnta=#2\relax#1\global\chardef\bx@hx@gtmp=\@tempcnta}%
+  \expandafter\bx@hx@tohexfivex@a\meaning\bx@hx@gtmp"0000\@nil}
+\def\bx@hx@tohexfivex@a#1"#2#3#4#5#6#7#8\@nil{%
+  \bx@hx@tohexfivex@b#2#3#4#5#6#7\@nil}
+\def\bx@hx@tohexfivex@b#1"#2\@nil{\edef\bxHex{#2#1}}
+\else               %----<*!bigchar>
+\edef\bx@hx@vdmax{"FFFFF\space}
+\def\bx@tohexfive@aa#1#2{%
+  \bgroup \@tempcnta=#2\relax#1%
+    \@tempcntb=\@tempcnta \divide\@tempcnta\bx@hx@m\relax
+    \bxToHexTwo\@tempcnta \let\bx@hx@tmp\bxHex
+    \multiply\@tempcnta-\bx@hx@m\advance\@tempcnta\@tempcntb\relax
+    \bxToHexThree\@tempcnta \xdef\bx@hx@gtmp{\bx@hx@tmp\bxHex}%
+  \egroup \let\bxHex\bx@hx@gtmp}
+\fi                 %----</bigchar>
+
+%%<+> \bxToHexEight
+% For zero-padded eight-digit hex strings.
+\newcommand*\bxToHexEight[1]{%
+  \bgroup \@tempcnta=#1\relax
+    \@tempcntb=\@tempcnta\divide\@tempcnta\p@\relax
+    \bxToHexFour\@tempcnta \let\bx@hx@tmp\bxHex
+    \multiply\@tempcnta-\p@\advance\@tempcnta\@tempcntb\relax
+    \bxToHexFour\@tempcnta \xdef\bx@hx@gtmp{\bx@hx@tmp\bxHex}%
+  \egroup \let\bxHex\bx@hx@gtmp}
+
+%%<+> \bxToHexUC
+% For zero-padded four-to-six-digit hex strings.
+\ifbx@hx@bigchar    %----<*bigchar>
+\newcommand*\bxToHexUC[1]{%
+  \chardef\bxHex=#1\relax
+  \expandafter\bx@hx@tohexuc@a\meaning\bxHex"\@empty\@empty000\@nil}
+\def\bx@hx@tohexuc@a#1"#2#3#4#5#6#7#8#9\@nil{%
+  \bx@hx@tohexuc@b#2#3#4#5#6#7#8\@nil}
+\def\bx@hx@tohexuc@b#1"#2\@nil{\edef\bxHex{#2#1}}
+\else               %----<*!bigchar>
+\mathchardef\bx@hx@m="1000
+\newcommand*\bxToHexUC[1]{%
+  \bgroup \@tempcnta=#1\relax
+    \@tempcntb=\@tempcnta \divide\@tempcnta\bx@hx@m\relax
+    \bxToHexSmall\@tempcnta \let\bx@hx@tmp\bxHex
+    \multiply\@tempcnta-\bx@hx@m\advance\@tempcnta\@tempcntb\relax
+    \bxToHexThree\@tempcnta \xdef\bx@hx@gtmp{\bx@hx@tmp\bxHex}%
+  \egroup \let\bxHex\bx@hx@gtmp}
+\fi                 %----</bigchar>
+
+%%<+> \bxToDecFour
+\newcommand*\bxToDecFour[1]{%
+  \expandafter\bx@hx@todecfour@a\number#1"000\@nil}
+\def\bx@hx@todecfour@a#1#2#3#4#5#6\@nil{\bx@hx@todecfour@b#1#2#3#4#5\@nil}
+\def\bx@hx@todecfour@b#1"#2\@nil{\def\bxHex{#2#1}}
+
+%%<+> \bxToDecFive
+\newcommand*\bxToDecFive[1]{%
+  \expandafter\bx@hx@todecfive@a\number#1"0000\@nil}
+\def\bx@hx@todecfive@a#1#2#3#4#5#6#7\@nil{\bx@hx@todecfive@b#1#2#3#4#5#6\@nil}
+\def\bx@hx@todecfive@b#1"#2\@nil{\def\bxHex{#2#1}}
+
+%%------ Case conversion
+
+%%<+> \bxToLower{<string>}
+% Sets to \bxRes <string> converted to lowercase.
+\newcommand*\bxToLower[1]{%
+  \edef\bxRes{\lowercase{\def\noexpand\bxRes{#1}}}\bxRes}
+
+%%<+> \bxToUpper{<string>}
+\newcommand*\bxToUpper[1]{%
+  \edef\bxRes{\uppercase{\def\noexpand\bxRes{#1}}}\bxRes}
+
+%%------ Document-level specials
+% Such specials must come before any typeset commands in DVI.
+
+%%<+> \bxDocumentSpecial{<text>}
+% Appends \special{<text>} to the list of 'document-level specials'.
+% A simple use of \AtBeginDvi will do in this case.
+\bxPreamble\newcommand*\bxDocumentSpecial[1]{%
+  \bxAtBeginDviX{\special{#1}}}
+
+%%%% \bxDocumentSpecialUrgent{<text>}
+% Similar to the above, but it demands that the given special be
+% placed as early as possible.
+\bxPreamble\newcommand*\bxDocumentSpecialUrgent[1]{%
+  \bx@docspec@urgent@init
+  \bx@prepend@box\bx@dsu@box{\special{#1}}}
+\def\bx@prepend@box#1#2{%
+  \global\setbox#1\vbox{\bxToYokoDir#2\unvbox#1}}
+\bxPreamble\def\bx@docspec@urgent@init{%
+  \newbox\bx@dsu@box
+  \AtBeginDocument{%
+    \ifx\AtBeginShipoutFirst\@undefined
+      \bx@prepend@box\@begindvibox{\unvbox\bx@dsu@box}%
+    \else % 'atbegshi' package is in use
+      {\toks@{\unvbox\bx@dsu@box}%
+       \toks\tw@\expandafter{\AtBegShi@HookFirst}%
+       \xdef\AtBegShi@HookFirst{\the\toks@\the\toks\tw@}}
+    \fi}%
+  \bxNullify\bx@docspec@urgent@init}
+
+%%------ "shadow map" module
+
+%%<+> \bxUseShadowMap\CS{<map_tfm>}
+\bxPreamble\newcommand*\bxUseShadowMap[2]{%
+  \global\font#1=#2\relax}
+
+%%<+> \bxMap\CS
+\mathchardef\bx@m@cc=256
+\bxPreamble\newcommand*\bxMap[1]{%
+  \begingroup\count@\bxUcv\divide\count@\bx@m@cc
+  \chardef\bx@m@hb\count@ \multiply\count@\bx@m@cc
+  \advance\bxUcv-\count@ \setbox\z@\hbox{#1\bx@m@hb\char\bxUcv}%
+  \global\bxUcv\wd\z@ \endgroup}
+
+%%------ module name
+
+%%<+> \bxSetModuleName{<name>}
+\newcommand*\bxSetModuleName[1]{%
+  \csxdef{bx@modname/\@currname.\@currext}{#1}}
+\let\bxtb@modname@default\bx@pkgname % name of this bundle
+
+%%<+> \bxModuleName
+\@ifpackageloaded{ifptex}{\undef\bxModuleName}{}
+\newcommand*\bxModuleName{%
+  \bxIfcsundefX{bx@modname/\@currname.\@currext}%
+   {\bxIfx{\@currname\@empty}{\bxtb@modname@default}%
+     {\@currname}}%
+   {\@nameuse{bx@modname/\@currname.\@currext}}}
+
+%%<+> \bxCurrentError / \bxCurrentWarning
+%%<+> \bxCurrentWarningNoLine / \bxCurrentInfo
+\newcommand*\bxCurrentError{\PackageError\bxModuleName}
+\newcommand*\bxCurrentWarning{\PackageWarning\bxModuleName}
+\newcommand*\bxCurrentWarningNoLine{%
+  \PackageWarningNoLine\bxModuleName}
+\newcommand*\bxCurrentInfo{\PackageInfo\bxModuleName}
+
+%%------ keyval extension
+
+%%<+> \bxPrepareSetKeysSafe
+\bxPreamble\newcommand*\bxPrepareSetKeysSafe{%
+  \IfFileExists{xkeyval.sty}{\@tempswatrue}{\@tempswafalse}%
+  \if@tempswa
+    \RequirePackage{xkeyval}%
+    \def\bxtb@setkeys@safe##1##2{%
+      \setkeys*{##1}{##2}%
+%     \bxDebug{\XKV@rm}%
+      \bxForEachIn\XKV@rm\do{\bxtb@setkeys@safe@a####1=\@nil}}%
+    \def\bxtb@setkeys@safe@a##1=##2\@nil{%
+      \bxtb@setkeys@safe@b{##1}}%
+  \else
+    \RequirePackage{keyval}%
+    \def\bxtb@setkeys@safe##1##2{%
+      \let\bxtb@KV@errx\KV@errx
+      \let\KV@errx\bxtb@setkeys@safe@a
+      \setkeys{##1}{##2}%
+      \let\KV@errx\bxtb@KV@errx}%
+    \def\bxtb@setkeys@safe@a##1{%
+      \expandafter\bxtb@setkeys@safe@b\expandafter{\@tempa}}%
+  \fi
+  \let\bxPrepareSetKeysSafe\relax}
+
+%%<+> \bxSetKeysSafe
+\newcommand*\bxSetKeysSafe[2]{%
+  \let\bxRestKeys\@empty
+  \bxtb@setkeys@safe{#1}{#2}%
+  \edef\bxRestKeys{\expandafter\@gobble\bxRestKeys\@empty}}
+\def\bxtb@setkeys@safe@b#1{%
+  \edef\bxRestKeys{\bxRestKeys,#1}}
+\def\bxtb@setkeys@safe#1#2{\bxCurrentError
+  {\string\bxSetKeysSafe\space not enabled}\@ehc}
+
+%%------ driver handling
+
+%%<+> \bxDriverList
+\providecommand*\bxDriverList{dvips,dvipdfmx,dviout}
+
+%%<+> \bxDriverInherent
+\newcommand*\bxDriverInherent{}
+\bxIfinXeTeX{\def\bxDriverInherent{xetex}}{}
+\bxIfPdfOutput{\def\bxDriverInherent{pdftex}}{}
+
+%%<+> \bxDriver
+\newcommand*\bxDriver{%
+  \bxIfx{\bxDriverInherent\@empty}%
+   {\bxIfcsundefX{bx@driver/\@currname.\@currext}{default}%
+    {\@nameuse{bx@driver/\@currname.\@currext}}}%
+   {\bxDriverInherent}}
+
+%%<+> \bxSetDriver[<file>]{<driver>}
+\newcommand*\bxSetDriver{%
+  \@ifnextchar[%
+  {\bxtb@set@driver@a}{\bxtb@set@driver@a[\@currname.\@currext]}}
+\def\bxtb@set@driver@a[#1]#2{%
+  \bxIfx{\bxDriverInherent\@empty}{}{\bx@warn@ivdrv{#2}}%
+% \bxDebug{set driver for #1 to #2}%
+  \csxdef{bx@driver/#1}{#2}}
+\def\bx@warn@ivdrv#1{\bxCurrentWarningNoLine
+  {Driver specification '#1' ignored;\MessageBreak
+  driver is inherently set to '\bxDriverInherent'}}
+
+%%<+> \bxDriverSpecifiedFor{<file>}
+\newcommand*\bxDriverSpecifiedFor[1]{%
+  \bxCsuseX{bx@driver/#1}}
+
+%%<+> \bxDefineDDProcess{<name>}{<driver>}{<text>}
+%%<+> \bxDefineDDProcessDefault{<name>}{<text>}
+\newcommand*\bxDefineDDProcess[2]{%
+  \csdef{#1@@#2}}
+\newcommand*\bxDefineDDProcessDefault[1]{%
+  \csdef{#1@@default}}
+
+%%<+> \bxDoDDProcess{<name>}
+\bxNewrobustcmd*\bxDoDDProcess[1]{%
+  \edef\bxtb@drv{\bxDriver}%
+  \def\bxtb@do@ddproc@try{\bxtb@do@ddproc@try@a{#1}}%
+  \bxtb@do@ddproc@try\bxtb@drv
+  \bxCsuse{bxtb@do@ddproc@fb@@\bxtb@drv}%
+  \bxtb@do@ddproc@try{default}%
+  \bxtb@do@ddproc@try@end}
+\def\bxtb@do@ddproc@try@a#1#2{%
+% \bxDebug{try #1@@#2}%
+  \bxIfcsundefX{#1@@#2}{}%
+   {\csname#1@@#2\endcsname
+    \bxtb@do@ddproc@skip}}
+\def\bxtb@do@ddproc@skip#1\bxtb@do@ddproc@try@end{}
+\let\bxtb@do@ddproc@try@end\@empty
+\def\do{\noexpand\bxtb@do@ddproc@try}
+% fallback setup
+\edef\bxtb@do@ddproc@fb@@xetex{\do{dvipdfmx}}
+
+%%<+> \bxDeclareDriverOptions
+\newcommand*\bxDeclareDriverOptions{%
+  \bxForEachIn\bxDriverList\do{%
+    \DeclareOption{##1}{\bxSetDriver{##1}}}}
+
+%%------ all done
+\endinput
+%% EOF

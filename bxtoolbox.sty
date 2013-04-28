@@ -1,0 +1,24 @@
+%
+% bxtoolbox.sty
+%
+
+%% File declaration
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{bxtoolbox}[2013/04/29 v0.9c BX developers' toolbox]
+
+%% Error messages
+\def\bxtb@pkgname{BXtoolbox} % bundle name
+\def\bxtb@error{\PackageError\bxtb@pkgname}
+\def\bxtb@warn{\PackageWarningNoLine\bxtb@pkgname}
+
+%--------------------------------------- Load submodules
+
+\providecommand*\bxRequireDefinition[1]{%
+  \def\bx@@def{def}\@onefilewithoptions{#1}[][]\bx@@def}
+\bxRequireDefinition{bxtoolbox}
+\bxRequireDefinition{bxtoolbox-ext}
+\bxRequireDefinition{bxtoolbox-ja}
+
+%--------------------------------------- All done
+\endinput
+%% EOF

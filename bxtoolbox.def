@@ -1,0 +1,1062 @@
+%
+% bxtoolbox.def
+%
+
+%% File declaration
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{bxtoolbox.def}[2011/03/01 v0.9 BX developers' toolbox]
+% avoid multiple loading
+\csname bxtoolbox@def@loaded\endcsname
+
+%% Error messages
+\def\bxtb@pkgname{BXtoolbox} % bundle name
+\def\bxtb@error{\PackageError\bxtb@pkgname}
+\def\bxtb@warn{\PackageWarningNoLine\bxtb@pkgname}
+
+%% General preparations
+\newif\ifbxOk       % general-purpose switch
+\let\bxRes\relax    % result container
+
+%% Catcode settings
+\edef\bxtb@restore@cc{%
+  \catcode33=\the\catcode33\relax %<">
+  \catcode38=\the\catcode38\relax %<&>
+  \catcode62=\the\catcode62\relax %<>>
+  \catcode64=\the\catcode64\relax %<@>
+  \catcode96=\the\catcode96\relax %<`>
+}
+\catcode33=12
+\catcode38=6
+\catcode62=12
+\catcode64=11
+\catcode96=12
+\AtEndOfPackage{%
+  \bxtb@restore@cc
+  \let\bxtb@restore@cc\@undefined}
+\def\bxtoolbox@def@loaded{\endinput}
+
+%----------------------- 1. Engine-independent stuffs
+
+%% \bxtb@uniq
+% A unique token for general purpose.
+\def\bxtb@uniq{\bxtb@uniq@}
+
+%% \bxtb@@bs
+\let\bxtb@@bs\@backslashchar
+
+%%<+> \bxIfcsundefX{<csname>}{<T>}{<F>}
+\newcommand*\bxIfcsundefX{}
+\let\bxIfcsundefX\@ifundefined
+
+%%<+> \bxCsuseX{<csname>}
+\newcommand*\bxCsuseX[1]{%
+  \@ifundefined{#1}{}{\csname#1\endcsname}}
+
+%% \bxtb@listmake@do
+\def\bxtb@listmake@do{\let\do\bxtb@lm@do}
+\def\bxtb@lm@do{\noexpand\do\noexpand}
+\def\bxtb@csdo#1{\expandafter\do\csname#1\endcsname}
+
+%% \bxtb@letcs\CSA{<csnameB>}
+%% \bxtb@cslet{<csnameA>}\CSB
+%% \bxtb@csletcs{<csnameA>}{<csnameB>}
+% Same as \letcs, \cslet, \csletcs in etoolbox.
+% They are defined here since subsequent stuffs use them.
+\def\bxtb@letcs#1#2{%
+  \expandafter\let\expandafter#1\csname #2\endcsname}
+\def\bxtb@cslet#1#2{%
+  \expandafter\let\csname #1\endcsname#2}
+\def\bxtb@csletcs#1#2{%
+  \expandafter\let\csname #1\expandafter\endcsname\csname #2\endcsname}
+
+%% \bxtb@ifprimitive\CS{<T>}{<F>}
+% Core of \bxIfPrimitive.
+\def\bxtb@ifprimitive#1{%
+  \edef\bxtb@tmpa{\string#1}\edef\bxtb@tmpb{\meaning#1}%
+  \ifx\bxtb@tmpa\bxtb@tmpb \expandafter\@firstoftwo
+  \else \expandafter\@secondoftwo \fi}
+
+%% \bxtb@ifstrempty{<str>}{<T>}{<F>}
+% Core of \ifstrempty.
+\def\bxtb@ifstrempty#1{%
+  \ifx\bxtb@empty@uniq#1\bxtb@empty@uniq
+    \expandafter\@firstoftwo
+  \else \expandafter\@secondoftwo \fi}
+\def\bxtb@empty@uniq{\bxtb@empty@uniq@}
+
+%%<+> \ifbxineTeX (if-token)
+%%<+> \bxIfineTeX{<T>}{<F>}
+%%<+> \ifbxinpdfTeX / \ifbxinLuaTeX / \ifbxinOmega / \ifbxinAleph
+%%<+> \ifbxinXeTeX / \ifbxinpTeX / \ifbxinupTeX / \ifbxinjTeX
+%%<+> \bxIfinpdfTeX / \bxIfinLuaTeX / \bxIfinOmega / \bxIfinAleph
+%%<+> \bxIfinXeTeX / \bxIfinpTeX / \bxIfinupTeX / \bxIfinjTeX
+%% Engine check.
+\def\bxtb@do#1#2{%
+  \bxtb@ifprimitive#2%
+  {\let\bxtb@tmpa\@firstoftwo}{\let\bxtb@tmpa\@secondoftwo}%
+  \bxtb@cslet{bxIfin#1}\bxtb@tmpa
+  \bxtb@csletcs{ifbxin#1}{if\bxtb@tmpa{true}{false}}}
+\bxtb@do{eTeX}{\eTeXversion}
+\bxtb@do{pdfTeX}{\pdftexversion}
+\bxtb@do{LuaTeX}{\luatexversion}
+\bxtb@do{Omega}{\OmegaVersion}
+\bxtb@do{Aleph}{\AlephVersion}
+\bxtb@do{XeTeX}{\XeTeXversion}
+\bxtb@do{pTeX}{\kanjiskip}
+\bxtb@do{upTeX}{\enablecjktoken}
+\bxtb@do{jTeX}{\jintercharskip}
+
+%%<+> \bxPreamble\CSX[*]\CSY
+% Prefix used for preamble-only commands.
+% \CSX can be \def, \newcommand, \DeclareRobustCommand, etc.
+\@onlypreamble\bxPreamble
+\newcommand*\bxPreamble[2]{%
+  \ifx *#2\def\bxtb@args{{#1*}}%
+  \else \def\bxtb@args{#1#2}%
+  \fi \expandafter\bxtb@preamble@a\bxtb@args}
+\@onlypreamble\bxtb@preamble@a
+\def\bxtb@preamble@a#1#2{%
+  \@onlypreamble#2#1#2}
+
+%%<+> \bxConstBool
+\newcommand*\bxConstIfToken[2]{%
+  \bxtb@cslet{if#1}{if#2}}
+
+%% \bxtb@skip@new@cmd...{<text>}
+% Gobbles a following whole macro definition sentence.
+\def\bxtb@skip@new@cmd#1#{\@gobble}
+
+%% \bxtb@name@cs\CS
+\def\bxtb@name@cs{%
+  \expandafter\bxtb@name@cs@a\string\$\@gobble\@empty\@nil}
+\def\bxtb@name@cs@a#1#2#3#4\@nil#5{%
+  \expandafter#3\string#5}
+
+%% \bxtb@let@name\CSX\CSY
+\def\bxtb@let@name#1#2{%
+  \edef#1{\bxtb@name@cs#2}}
+
+%%<+> \bxIf{<test>}{<T>}{<F>}
+%%<+> \bxIfcat{<test>}{<T>}{<F>}
+%%<+> \bxIfx{<test>}{<T>}{<F>}
+%%<+> \bxIfdim{<test>}{<T>}{<F>}
+%%<+> \bxIfnum{<test>}{<T>}{<F>}
+% Primitive if-tests rendered in LaTeX format.
+\let\bxtb@bumper\noindent % primitive other than \relax
+\bxPreamble\def\bxtb@defifmacro@noarg#1#2#3{%
+  \@gobble{\if}% if-match hack
+  \def#1{#2\expandafter\@firstoftwo
+    \else\expandafter\@secondoftwo\fi}}
+\bxPreamble\def\bxtb@defifmacro#1#2#3{%
+  \@gobble{\if}% if-match hack
+  \def#1##1{#2##1\expandafter\@firstoftwo
+    \else\expandafter\@secondoftwo\fi}}
+\bxPreamble\def\bxtb@defifmacro@val#1#2#3{%
+  \@gobble{\if}% if-match hack
+  \def#1##1{\expandafter\@gobble
+    #2##1\bxtb@bumper\expandafter\@firstoftwo
+    \else \bxtb@bumper\expandafter\@secondoftwo \fi}}
+\bxtb@defifmacro\bxIf\if\fi
+\bxtb@defifmacro\bxIfcat\ifcat\fi
+\bxtb@defifmacro\bxIfx\ifx\fi
+\bxtb@defifmacro@val\bxIfdim\ifdim\fi
+\bxtb@defifmacro@val\bxIfnum\ifnum\fi
+
+%%<+> \bxIfInMovingArg{<T>}{<F>}
+% Moving argument check. Note that it actually expands to <T> or
+% <F> prepended with some unexpandable garbles with no effect.
+% For that reason, this macro is not suitable for switching
+% implementation. Instead it is intended for error check for
+% use in moving arguments.
+\long\def\bxIfInMovingArg#1#2{%
+  \let\bxtb@ifinmovarg@a\bxtb@ifinmovarg@a\bxtb@ifinmovarg@c{#1}%
+  #2\bxtb@ifinmovarg@end}
+\def\bxtb@ifinmovarg@a#1{%
+  \bxtb@ifinmovarg@dummy\relax \bxtb@ifinmovarg@b}
+\def\bxtb@ifinmovarg@b#1#2#3\bxtb@ifinmovarg@end{#2}
+\def\bxtb@ifinmovarg@c#1#2\bxtb@ifinmovarg@end{#2}
+\let\bxtb@ifinmovarg@end\@empty
+\let\bxtb@ifinmovarg@dummy\relax
+
+%%<+> \bxMessageToken{<str>}{<text>}
+% Executes <text> where #1 is replaced by control sequence \<str>.
+% The meaning of \<str> is unchanged.
+% (In <text> # must be doubled.)
+\def\bxMessageToken#1{%
+  \begingroup
+    \xdef\bxtb@g@tmpa{\noexpand\bxtb@tmpa
+      \expandafter\noexpand\csname #1\endcsname}%
+  \endgroup
+  \afterassignment\bxtb@g@tmpa \long\def\bxtb@tmpa##1}
+
+%%<+> \bxCheckForMovingArg{<text>}
+% When in moving arguments, it raises an error in the form of
+% undefined conrol sequence; otherwise expands to <text>.
+%%<+> \bxCheckForMovingArgForTest{\SOMETEST{<arg>}}{<T>}{<F>}
+% When in moving arguments, it raises an error in the form of
+% undefined conrol sequence and expands to <F>; otherwise
+% it expands to \SOMETEST{<arg>}{<T>}{<F>}.
+\bxMessageToken{ ERROR: Use in wrong place!}{%
+  \def\bxCheckForMovingArg{\bxIfInMovingArg{#1}}%
+  \def\bxCheckForMovingArgForTest{%
+    \bxIfInMovingArg{#1\@secondoftwo}}%
+}
+
+%% \bxtb@ifnewdefok\CS{<T>}{<F>}
+%% \bxtb@ifrenewdefok\CS{<T>}{<F>}
+%% \bxtb@ifprovidedefok\CS{<T>}{<F>}
+\def\bxtb@ifnewdefok#1{%
+  \newcommand#1{\bxtb@uniq}\bxtb@ifnewdefok@a#1}
+\def\bxtb@ifrenewdefok#1{% <F> is never executed
+  \renewcommand#1{\bxtb@uniq}\let#1\@undefined \@firstoftwo}
+\def\bxtb@ifprovidedefok#1{%
+  \providecommand#1{\bxtb@uniq}\bxtb@ifnewdefok@a#1}
+\def\bxtb@ifnewdefok@a#1{%
+  \ifx#1\bxtb@ifdefok@probe
+    \let#1\@undefined \expandafter\@firstoftwo
+  \else \expandafter\@secondoftwo
+  \fi}
+\long\def\bxtb@ifdefok@probe{\bxtb@uniq}
+
+%% \bxtb@detokenize{<text>}
+% Resource consuming version of \detokenize ;)
+%% \bxtb@stringify{<text>}
+% Expands <text> and then detokenizes the result.
+\def\bxtb@detokenize{%
+  \romannumeral-`a\bxtb@detok@pre@a\bxtb@detok@lop@a}
+\def\bxtb@stringify{%
+  \romannumeral-`a\bxtb@detok@pre@a\bxtb@edetok@lop@a}
+\def\bxtb@detok@pre@a#1#2{%
+  \expandafter\bxtb@detok@ppst@a
+  \csname\bxtb@nonce@pfx"#1#2\bxtb@detok@enda
+  {} \bxtb@detok@endb\endcsname}
+\def\bxtb@detok@enda{\bxtb@detok@enda@}
+\def\bxtb@detok@endb{\bxtb@detok@endb@}
+\begingroup
+  \catcode`\(=12 \lccode`\(=`\{ \catcode`\)=12 \lccode`\)=`\}
+  \lowercase{\gdef\bxtb@detok@brc@a#1#2{(#1#2)}}
+\endgroup
+\def\bxtb@detok@lop@a#1 #2\bxtb@detok@endb{%
+  \bxtb@ifstrempty{#1}%
+  { \bxtb@detok@lop@a}{\bxtb@detok@lop@b#1 }%
+  #2\bxtb@detok@endb}
+\def\bxtb@detok@lop@b#1#{%
+  \bxtb@ifstrempty{#1}%
+  {\bxtb@detok@brc@a\bxtb@detok@lop@a}{\bxtb@detok@lop@c#1}}
+\def\bxtb@detok@lop@c#1{%
+  \bxIfx{#1\bxtb@detok@enda}{\bxtb@detok@pst@a}{%
+    \bxIfcat{\noexpand#1\relax}{\bxtb@format@cs#1}{\string#1}%
+    \bxtb@detok@lop@a}}
+\def\bxtb@edetok@lop@a#1 #2\bxtb@detok@endb{%
+  \bxtb@ifstrempty{#1}%
+  { \bxtb@edetok@lop@a}{\bxtb@edetok@lop@b#1 }%
+  #2\bxtb@detok@endb}
+\def\bxtb@edetok@lop@b#1#{%
+  \bxtb@ifstrempty{#1}%
+  {\bxtb@detok@brc@a\bxtb@edetok@lop@a}{\bxtb@edetok@lop@c#1}}
+\def\bxtb@edetok@lop@c#1{%
+  \bxIfx{#1\bxtb@detok@enda}{\bxtb@detok@pst@a}%
+    {\bxtb@edetok@lop@d#1}}
+\def\bxtb@edetok@lop@d#1{%
+  \bxtb@ifdefmacro#1{\expandafter\bxtb@edetok@lop@a#1}%
+    {\expandafter\bxtb@edetok@lop@e\romannumeral-`\a#1}}
+\def\bxtb@edetok@lop@e#1{%
+  \bxIfcat{\noexpand#1\relax}{\bxtb@format@cs#1}{\string#1}%
+    \bxtb@edetok@lop@a}
+\def\bxtb@detok@pst@a#1\bxtb@detok@endb{}
+\def\bxtb@detok@ppst@a#1{%
+  \expandafter\bxtb@detok@ppst@b\string#1\@nil}
+\def\bxtb@detok@ppst@b#1#2"#3\@nil{\space#3}
+
+%% \bxtb@format@cs\CS
+% Detokenizes control sequence \CS with an optional space
+% appended just in \write.
+\def\bxtb@format@cs{%
+  \expandafter\bxtb@format@cs@a\string\$%
+  \bxtb@format@cs@c\bxtb@format@cs@b\@nil}
+\def\bxtb@format@cs@a#1#2#3#4\@nil#5{%
+  \expandafter#3\string#5\@nil}
+\def\bxtb@format@cs@b{\bxtb@format@cs@c\@empty}
+\def\bxtb@format@cs@c#1#2#3\@nil{%
+  #1#2#3\ifcat_#3_\ifnum\catcode`#2=11 \space \fi\else\space\fi}
+
+%% \bxtb@return@true
+\def\bxtb@return@true#1\bxtb@esac{%
+  \fi\@firstoftwo}
+\def\bxtb@return@false#1\bxtb@esac{%
+  \fi\@secondoftwo}
+
+
+%----------------------- 2. Dummy if-token definitions.
+
+%% \bxtb@make@dummy@if@setter
+\bxPreamble\def\bxtb@make@dummy@if@setter#1#2{%
+  \begingroup
+    \def\bxtb@bval{#1}%
+    \@for\bxtb@bname:=#2\do{\bxtb@make@dummy@if@setter@a}%
+  \endgroup}
+\bxPreamble\def\bxtb@make@dummy@if@setter@a{%
+  \expandafter\ifx\csname if\bxtb@bname\endcsname\relax
+    \bxtb@make@dummy@if@setter@appto\bxtb@set@dummy@ifs{%
+      \let \expandafter\noexpand\csname if\bxtb@bname\endcsname
+      \expandafter\noexpand\csname if\bxtb@bval\endcsname}%
+    \bxtb@make@dummy@if@setter@appto\bxtb@unset@dummy@ifs{%
+      \let \expandafter\noexpand\csname if\bxtb@bname\endcsname
+      \noexpand\@undefined}%
+  \fi}
+\bxPreamble\def\bxtb@make@dummy@if@setter@appto#1#2{%
+  \edef\bxtb@tmpx{#2}%
+  \expandafter\g@addto@macro\expandafter#1%
+   \expandafter{\bxtb@tmpx}}
+\let\bxtb@set@dummy@ifs\@empty
+\let\bxtb@unset@dummy@ifs\@empty
+\bxtb@make@dummy@if@setter{false}{%
+  % e-TeX if-tokens
+  fontchar,defined,csname,incsname,%
+  % pdfTeX if-tokens
+  pdfprimitive,pdfabsdim,pdfabsnum,%
+  % LuaTeX if-tokens
+  absdim,absnum,primitive,%
+  % pTeX if-tokens
+  tdir}
+\bxtb@make@dummy@if@setter{true}{%
+  % pTeX if-tokens
+  ydir}
+
+%%<+> \bxSetDummyIfs
+%%<+> \bxUnsetDummyIfs
+\newcommand*\bxSetDummyIfs{}
+\let\bxSetDummyIfs\bxtb@set@dummy@ifs
+\newcommand*\bxUnsetDummyIfs{}
+\let\bxUnsetDummyIfs\bxtb@unset@dummy@ifs
+
+%% dummy-ifs are enabled in this file
+\bxSetDummyIfs
+
+\bxPreamble\def\bxtb@defifmacro@engdep#1{%
+  \expandafter\bxtb@defifmacro@engdep@a
+   \csname bxIf#1\expandafter\endcsname
+   \csname if#1\expandafter\endcsname
+   \csname iftrue\expandafter\endcsname\csname iffalse\endcsname}
+\bxPreamble\def\bxtb@defifmacro@engdep@a#1#2#3#4{%
+  % be careful that #2,#3,#4 are \if-tokens
+  \bxtb@defifmacro@noarg#1#2\relax \chardef\bxtb@tmpa\z@
+  \ifx#2#3\chardef\bxtb@tmpa\@ne \fi
+  \ifx#2#4\chardef\bxtb@tmpa\tw@ \fi
+  \ifcase\bxtb@tmpa\relax
+  \or \let#1\@firstoftwo
+  \or \let#1\@secondoftwo
+  \fi}
+\bxPreamble\def\bxtb@make@engdep@test#1{%
+  \@for\bxtb@bname:=#1\do{%
+    \bxtb@defifmacro@engdep\bxtb@bname}}
+% this must be done in \bxSetDummyIfs effective
+\bxtb@make@engdep@test{%
+  ydir,tdir%
+}
+
+%----------------------- 3. Macrodef prefix operations
+
+%% \bxtb@all@prefix
+\def\bxtb@all@prefix{\do{protected}\do{long}\do{outer}}
+
+%% \bxtb@set@prefix{<name>}
+%% \bxtb@unset@prefix{<name>}
+%% \bxtb@unset@all@prefix{<name>}
+\def\bxtb@set@prefix#1{\bxtb@cslet{bxtb@PFX/#1}{T}}
+\def\bxtb@unset@prefix#1{\bxtb@cslet{bxtb@PFX/#1}{F}}
+\def\do{\noexpand\bxtb@unset@prefix}
+\edef\bxtb@unset@all@prefix{\bxtb@all@prefix}
+
+%% \bxtb@clear@prefix
+\def\bxtb@clear@prefix{%
+  \def\bxtb@savepfx@dummy{}\let\bxtb@savepfx@dummy\relax}
+
+%% \bxtb@render@prefix
+\def\do{\noexpand\bxtb@render@prefix@a}
+\edef\bxtb@render@prefix{\bxtb@all@prefix}
+\def\bxtb@render@prefix@a#1{%
+  \bxIf{\csname bxtb@PFX/#1\endcsname T}{\csname #1\endcsname}{}}
+
+%% \bxtb@save@prefix
+\def\bxtb@save@prefix{%
+  \def\bxtb@savepfx@dummy{}% prefixes applied to this definition
+  \bxtb@unset@all@prefix
+  \begingroup \escapechar`\\
+  \expandafter\bxtb@savepfx@prs@a\meaning\bxtb@savepfx@dummy\@nil
+  %\endgroup already done
+}
+
+%% some internal stuffs
+\begingroup \escapechar\m@ne
+\xdef\bxtb@g@args{{\string\macro:}{\space}{\string\\}}
+\endgroup
+\def\bxtb@do#1#2#3{%
+  \def\bxtb@savepfx@prs@a##1#1##2\@nil{%
+    \endgroup
+    \let\bxtb@savepfx@dummy\relax
+    \bxIfcat{_##1_}{}{\bxtb@savepfx@prs@b##1\@nil}}
+  \def\bxtb@savepfx@prs@b##1##2#2##3\@nil{%
+    \bxtb@savepfx@prs@c##2#3#3}
+  \def\bxtb@savepfx@prs@c##1#3{%
+    \bxIfcat{_##1_}{}%
+    {\bxtb@set@prefix{##1}\bxtb@savepfx@prs@c}}
+  \def\bxtb@ifdefmacro##1{%
+    \expandafter\bxtb@ifdefmacro@a\meaning##1#1\@nil}
+  \def\bxtb@ifdefmacro@a##1#1##2\@nil##3##4{%
+    \bxIfcat{_##2_}{##4}{##3}}
+}
+\expandafter\bxtb@do\bxtb@g@args
+
+%------------------- 4. pdfTeX primitives
+
+%%<+> \ifbxPrimitive
+% The primitive equivalent to pdfTeX's \ifpdfprimitive; if the
+% primitive is not available, this is \let'd to \iffalse.
+%%<+> \bxIfHasIfPrimitive{<T>}{<F>}
+% Whether \ifbxPrimitive has a valid definition.
+\bxtb@cslet{ifbxPrimitive}\@undefined
+\expandafter\bxtb@ifprimitive\csname ifpdfprimitive\endcsname{%then
+  \let\bxIfHasIfPrimitive\@firstoftwo
+  \bxtb@csletcs{ifbxPrimitive}{ifpdfprimitive}%
+}{%else
+  \expandafter\bxtb@ifprimitive\csname ifprimitive\endcsname{%then
+    \let\bxIfHasIfPrimitive\@firstoftwo
+    \bxtb@csletcs{ifbxPrimitive}{ifprimitive}%
+  }{%else
+    \let\bxIfHasIfPrimitive\@secondoftwo
+    \bxtb@csletcs{ifbxPrimitive}{iffalse}%
+}}
+
+%%<+> \bxPrimitive
+% The primitive equivalent to pdfTeX's \pdfprimitive; if the
+% primitive is not available, this is defined to be empty.
+\bxtb@ifprimitive\pdfprimitive{%then
+  \let\bxPrimitive\pdfprimitive
+}{%else
+  \bxtb@ifprimitive\primitive{%then
+    \let\bxPrimitive\primitive
+  }{%else
+    \let\bxPrimitive\@empty
+}}
+
+%%<+> \bxStrcmp
+% The primitive equivalent to pdfTeX's \pdfstrcmp; if the
+% primitive is not available, this is left undefined.
+\let\bxStrcmp\@undefined
+\bxtb@ifprimitive\pdfstrcmp{%then
+  \let\bxStrcmp\pdfstrcmp
+}{%else
+  \bxtb@ifprimitive\strcmp{%then
+    \let\bxStrcmp\strcmp
+  }{%else
+}}
+\ifbxinLuaTeX       %----<*LuaTeX>
+  \ifdefined\luatexluaescapestring
+    \unless\ifdefined\bxStrcmp
+      \directlua0{%
+        function bxtoolbox_strcmp(A, B)
+          if A == B then    tex.write("0")
+          elseif A < B then tex.write("-1")
+          else              tex.write("1")
+          end
+        end
+      }
+      \long\def\bxStrcmp#1#2{\directlua0{%
+        bxtoolbox_strcmp("\luatexluaescapestring{#1}",
+          "\luatexluaescapestring{#2}")
+      }}
+    \fi
+  \fi
+\fi                 %----</LuaTeX>
+
+%------------------- 5. non etoolbox stuffs
+
+%%<+> \bxRobustdef\CS
+%%<+> \bxRobustgdef\CS
+%%<+> \bxRobustedef\CS
+%%<+> \bxRobustxdef\CS
+\ifbxineTeX         %<*etex>
+\def\bxRobustdef{\protected\def}
+\def\bxRobustgdef{\protected\gdef}
+\def\bxRobustedef{\protected\edef}
+\def\bxRobustxdef{\protected\xdef}
+\else               %<*!etex>
+\def\bxRobustdef{\bxtb@robustdef\def}
+\def\bxRobustgdef{\bxtb@robustdef\gdef}
+\def\bxRobustedef{\bxtb@robustdef\edef}
+\def\bxRobustxdef{\bxtb@robustdef\xdef}
+\def\bxtb@robustdef#1#2{%
+  \bxtb@save@prefix
+  \let#2\@undefined \DeclareRobustCommand*#2{}%
+  \bxtb@let@name\bxtb@tmpb#2%
+  \bxtb@render@prefix
+  \expandafter#1\csname \bxtb@tmpb\space \endcsname}
+\fi                 %</etex>
+
+%% \bxtb@robustlet\CSA\CSB
+\ifbxineTeX         %<*etex>
+\def\bxtb@robustlet#1#2{%
+  \protected\def#1{#2}}
+\else               %<*!etex>
+\def\bxtb@robustlet#1{%
+  \expandafter\bxtb@robustlet@a
+   \csname\bxtb@name@cs#1\space\endcsname#1}
+\def\bxtb@robustlet@a#1#2#3{%
+  \DeclareRobustCommand*#2{}\let#1#3}
+\fi
+
+%%<+> \bxIfPdfOutput{<T>}{<F>}
+%%<+> \bxIfPdfOutputNow{<T>}{<F>}
+\newcommand*\bxIfPdfOutputNow{%
+  \ifx\pdfoutput\@undefined \bxtb@return@false \fi
+  \ifx\pdfoutput\relax \bxtb@return@false \fi
+  \ifnum\pdfoutput>\z@ \bxtb@return@true
+  \else \bxtb@return@false \fi
+  \bxtb@esac}
+\newcommand*\bxIfPdfOutput{}
+\bxIfPdfOutputNow
+{\let\bxIfPdfOutput\@firstoftwo
+ \bxtb@letcs\ifbxPdfOutput{iftrue}}%
+{\let\bxIfPdfOutput\@secondoftwo
+ \bxtb@letcs\ifbxPdfOutput{iffalse}}%
+
+%%<+> \bxIfPrimitive\CS
+%%<+> \bxCSIfPrimitive{<csname>}
+\newcommand*\bxIfPrimitive{}
+\bxtb@robustlet\bxIfPrimitive\bxtb@ifprimitive
+\def\bxtb@ifcsprimitive@a#1{%
+  \expandafter\bxIfPrimitive\csname #1\endcsname}
+\ifbxineTeX          %<*etex>
+\def\bxIfCsPrimitive#1{%
+  \unless\ifcsname#1\endcsname \let\bxtb@tmpx\@secondoftwo
+  \else \def\bxtb@tmpx{\bxtb@ifcsprimitive@a{#1}}%
+  \fi \bxtb@tmpx}
+\else               %<*!etex>
+\def\bxIfCsPrimitive#1{%
+  \begingroup\expandafter\endgroup
+  \expandafter\ifx\csname #1\endcsname\@undefined
+    \let\bxtb@tmpx\@secondoftwo
+  \else \def\bxtb@tmpx{\bxtb@ifcsprimitive@a{#1}}%
+  \fi \bxtb@tmpx}
+\fi                 %</etex>
+% use \ifbxPrimitive if available
+\bxIfHasIfPrimitive{%
+\bxtb@defifmacro\bxIfPrimitive\ifbxPrimitive\fi
+}{}
+
+%%<+> \bxIfPrimitiveX\CS
+%% TODO: for e-TeX, TeX
+% use \ifpdfprimitive if available
+\bxIfHasIfPrimitive\@tempswatrue\@tempswafalse
+\if@tempswa         %----
+\let\bxIfPrimitiveX\bxIfPrimitive
+\else               %----
+\def\bxIfPrimitiveX#1{%
+  \bxIfcat{\noexpand#1\relax}%
+    {\bxtb@ifdefmacro#1{\@secondoftwo}{\bxtb@ifprimitive@x@a#1}}%
+    {\@secondoftwo}}
+\def\bxtb@ifprimitive@x@a#1{%
+  \expandafter\bxtb@ifprimitive@x@b\meaning#1\bxtb@cmp@endb#1}
+\def\bxtb@ifprimitive@x@b#1\bxtb@cmp@endb#2{%
+  \expandafter\bxtb@ifprimitive@x@c\string#1\@bxtb@cmp@enda
+    #2\bxtb@cmp@endb}
+\def\bxtb@do#1{%
+  \def\bxtb@ifprimitive@x@b##1\bxtb@cmp@endb##2{%
+    \expandafter\bxtb@ifprimitive@x@c\string##1\@bxtb@cmp@enda
+      ##2\bxtb@cmp@endb#1\@nil}}
+\def\bxtb@ifprimitive@x@c#1 #2\@nil{%
+  \bxtb@ifstrempty{#2}{\bxtb@ifeq@pstr#1}%
+    {\@secondoftwo}}
+\fi                 %----
+
+%%<+> \bxIfExpToEqual{<text1>}{<text2>}{<T>}{<F>}
+\newcommand*\bxIfExpToEqual{}
+\bxRobustdef\bxIfExpToEqual#1#2{%
+  \bxCheckForMovingArgForTest{%
+    \bxtb@edef@detokenized\bxtb@tmpx{#1}%
+    \bxtb@edef@detokenized\bxtb@tmpy{#2}%
+    \bxIfx{\bxtb@tmpx\bxtb@tmpy}}}
+% use \bxStrcmp if available
+\ifx\bxStrcmp\@undefined\else
+\def\bxIfExpToEqual#1#2{%
+  \bxIfnum{\bxStrcmp{#1}{#2}=\z@}}
+\fi
+
+%%<+> \bxIfExpToEqualX{<text1>}{<text2>}{<T>}{<F>}
+\def\bxIfExpToEqualX#1#2{%
+  \bxtb@ifeq@text#1\bxtb@cmp@enda#2\bxtb@cmp@endb}
+% use \bxStrcmp if available
+\ifx\bxStrcmp\@undefined\else
+\let\bxIfExpToEqualX\bxIfExpToEqual
+\fi
+
+%% \bxtb@ifstrequal@pdftex{<str1>}{<str2>}{<T>}{<F>}
+% a version of \ifstrequal using \bxStrcmp
+\ifx\bxStrcmp\@undefined\else
+\def\bxtb@ifstrequal@pdftex#1#2{%
+  \bxIfnum{\bxStrcmp{\detokenize{#1}}{\detokenize{#2}}=\z@}}
+\AtEndOfPackage{% override the definition in etoolbox
+  \let\bxIfstrequal\bxtb@ifstrequal@pdftex}
+\fi
+
+%% \bxIfstrequalX{<str1>}{<str2>}{<T>}{<F>}
+\newcommand*\bxIfstrequalX{}
+\def\bxIfstrequalX#1#2{%
+  \bxtb@ifeq@str#1\bxtb@cmp@enda#2\bxtb@cmp@endb}
+% use \bxStrcmp if available
+\ifx\bxStrcmp\@undefined\else
+\let\bxIfstrequalX\bxtb@ifstrequal@pdftex
+\fi
+
+%% \bxtb@nonce@pfx
+\def\bxtb@nonce@pfx{bxtb@?@\string\$}
+
+%%<+> \bxDetokenize{<text>}
+\bxIfineTeX
+{\let\bxDetokenize\detokenize}
+{\let\bxDetokenize\bxtb@detokenize}
+%%<+> \bxStringify{<text>}
+\let\bxStringify\bxtb@stringify
+
+%% \bxtb@def@detokenized\CS{<text>}
+%% \bxtb@edef@detokenized\CS{<text>}
+\ifbxineTeX         %<*etex>
+\def\bxtb@def@detokenized#1#2{%
+  \edef#1{\detokenize{#2}}}
+\def\bxtb@edef@detokenized#1#2{%
+  \edef\bxtb@args{\noexpand#1{#2}}%
+  \expandafter\bxtb@def@detokenized\bxtb@args}
+\else               %<*!etex>
+\def\bxtb@def@detokenized{\bxtb@defdetok@a\def}
+\def\bxtb@edef@detokenized{\bxtb@defdetok@a\edef}
+\def\bxtb@defdetok@a#1#2#3{%
+  #1\bxtb@tmpa{#3}%
+  \expandafter\bxtb@defdetok@b\meaning\bxtb@tmpa\@nil#2}
+\def\bxtb@defdetok@b#1>#2\@nil#3{\def#3{#2}}
+\fi                 %</etex>
+
+%% \bxtb@ifeq@text
+\def\bxtb@ifeq@text#1\bxtb@cmp@enda#2\bxtb@cmp@endb{%
+  \expandafter\expandafter\expandafter\bxtb@ifeqtx@a
+    \bxtb@stringify@ss{#2}\bxtb@cmp@endb#1\bxtb@cmp@enda}
+\def\bxtb@ifeqtx@a#1\bxtb@cmp@endb#2\bxtb@cmp@enda{%
+  \expandafter\expandafter\expandafter\bxtb@ifeq@pstr
+    \bxtb@stringify@ss{#2}\bxtb@cmp@enda#1\bxtb@cmp@endb}
+
+%% \bxtb@ifeq@str#1#2
+\def\bxtb@ifeq@str#1\bxtb@cmp@enda#2\bxtb@cmp@endb{%
+  \expandafter\expandafter\expandafter\bxtb@ifeqstr@a
+    \bxtb@detokenize@ss{#2}\bxtb@cmp@endb#1\bxtb@cmp@enda}
+\def\bxtb@ifeqstr@a#1\bxtb@cmp@endb#2\bxtb@cmp@enda{%
+  \expandafter\expandafter\expandafter\bxtb@ifeq@pstr
+    \bxtb@detokenize@ss{#2}\bxtb@cmp@enda#1\bxtb@cmp@endb}
+
+%% \bxtb@ifeq@pstr
+\def\bxtb@ifeq@pstr#1\bxtb@cmp@enda#2\bxtb@cmp@endb{%
+  \bxtb@ifstrempty{#1}%
+    {\bxtb@ifstrempty{#2}}%
+    {\bxtb@ifstrempty{#2}{\@secondoftwo}%
+      {\bxtb@ifeqps@a#1\bxtb@cmp@enda#2\bxtb@cmp@endb}}}
+\def\bxtb@ifeqps@a#1#2\bxtb@cmp@enda#3#4\bxtb@cmp@endb{%
+  \bxIfx{#1#3}%
+    {\bxtb@ifeq@pstr#2\bxtb@cmp@enda#4\bxtb@cmp@endb}%
+    {\@secondoftwo}}
+\def\bxtb@cmp@enda{\bxtb@cmp@enda@}
+\def\bxtb@cmp@endb{\bxtb@cmp@endb@}
+
+%% \bxtb@space@subst
+\def\bxtb@space@subst#1 #2\bxtb@ss@endb{%
+  \bxtb@ifstrempty{#2}{\bxtb@spcsub@a#1\bxtb@ss@endb}%
+    {\bxtb@space@subst#1\space#2\bxtb@ss@endb}}
+\def\bxtb@spcsub@a#1\bxtb@ss@enda#2\bxtb@ss@endb{\space#1}
+\def\bxtb@ss@enda{\bxtb@ss@enda@}
+\def\bxtb@ss@endb{\bxtb@ss@endb@}
+
+%% \bxtb@combine@ss
+\def\bxtb@combine@ss#1#2{%
+  \expandafter\expandafter\expandafter\bxtb@space@subst
+    #1{#2}\bxtb@ss@enda{} \bxtb@ss@endb}
+\def\bxtb@detokenize@ss{%
+  \romannumeral-`\a\bxtb@combine@ss\bxDetokenize}
+\def\bxtb@stringify@ss{%
+  \romannumeral-`\a\bxtb@combine@ss\bxStringify}
+
+%%<+> \bxCsNoexpand{<csname>}
+\newcommand*\bxCsNoexpand[1]{%
+  \expandafter\noexpand\csname#1\endcsname}
+
+%------------------- 6. Import from etoolbox
+
+%% \bxtb@import{\CSA \CSB ...}
+% [e-TeX] Aliases each of macros to a new name with 'bx' prefixed.
+% [non-e-TeX] Adds the prefixed name to the function check list.
+\bxPreamble\def\bxtb@import#1{%
+  \bxtb@listmake@do
+  \@tfor\bxtb@tmpa:=#1\do{\expandafter\bxtb@importcmd\bxtb@tmpa}}
+\bxPreamble\def\bxtb@importcmd#1{%
+  \begingroup
+    \expandafter\bxtb@importcmd@a\string#1\@nil
+  \endgroup}
+\bxPreamble\def\bxtb@importcmd@a#1#2#3\@nil{%
+  \@tempcnta`#2 \@tempcntb\@tempcnta
+  \ifnum 96<\@tempcntb \ifnum 123>\@tempcntb
+    \advance\@tempcntb-32 \fi\fi
+  \uccode\@tempcnta\@tempcntb
+  \uppercase{\edef\bxtb@tmpa{#2}}%
+  \expandafter\bxtb@importcmd@b\csname bx\bxtb@tmpa#3%
+    \expandafter\endcsname\csname #2#3\endcsname}
+
+%% \bxtb@provide{\CSA \CSB ...}
+% [e-TeX] Does nothing.
+% [non-e-TeX] Adds the name to the function check list.
+\bxPreamble\def\bxtb@provide#1{%
+  \bxtb@listmake@do
+  \@tfor\bxtb@tmpa:=#1\do{\expandafter\bxtb@providecmd\bxtb@tmpa}}
+
+\ifbxineTeX         %<*etex>
+%% Load etoolbox.
+\RequirePackage{etoolbox}\relax
+%%
+\bxPreamble\def\bxtb@importcmd@b#1#2{\global\let#1#2}
+\bxPreamble\def\bxtb@providecmd#1{}
+
+\else               %<*!etex>
+%%
+\bxPreamble\let\bxtb@provided\@empty
+\bxPreamble\def\bxtb@importcmd@b#1#2{%
+  \xdef\bxtb@provided{\bxtb@provided\do#1}}
+\bxPreamble\def\bxtb@providecmd#1{%
+  \xdef\bxtb@provided{\bxtb@provided\do#1}}
+
+\fi                 %</etex>
+
+\bxtb@import{%
+%%==== Here is a list of commands imported to bx* namespace.
+%% For such commands, bxtoolbox provides compatible but not equivalent
+%% commands when e-TeX extension is not available, under the same
+%% 'bx'-prefixed name.
+  \newrobustcmd \renewrobustcmd \providerobustcmd         %2.1
+  \robustify                                              %2.2
+  \csuse \csshow                                          %3.1.1
+  \ifcsdef \ifcsundef                                     %3.6.1
+}
+\bxtb@provide{%
+%% For the following commands, bxtoolbox provides equivalent commands
+%% for non-e-TeX environment under the same name as in etoolbox.
+  \AfterPreamble \AtEndPreamble \AfterEndPreamble         %2.5
+  \AfterEndDocument
+  \csdef \csgdef \csedef \csxdef                          %3.1.1
+  \cslet \letcs \csletcs \undef \csundef
+  \appto \gappto \eappto \xappto                          %3.3.1
+  \csappto \csgappto \cseappto \csxappto
+  \preto \gpreto \epreto \xpreto                          %3.3.2
+  \cspreto \csgpreto \csepreto \csxpreto
+  \newbool \providebool \booltrue \boolfalse              %3.5.1
+  \setbool \ifbool \notbool
+  \newtoggle \providetoggle \toggletrue \togglefalse      %3.5.2
+  \settoggle \iftoggle \nottoggle
+  \ifdef \ifundef                                         %3.6.1
+  \ifstrequal \ifstrempty                                 %3.6.2
+}
+
+\ifbxineTeX         %<*etex>
+%% When the engine is eTeX, stop reading here.
+\bxUnsetDummyIfs
+\expandafter\endinput
+\fi                 %</etex>
+%------------------- 7. etoolbox compatible functions
+
+%% error messages
+\def\bxtb@err@ukbool#1{\bxtb@error
+  {\bxtb@@bs if#1 undefined}\@eha}
+\def\bxtb@err@ukbval#1{\bxtb@error
+  {Invalid boolean value '#1'}\@eha}
+\def\bxtb@err@aetgl#1{\bxtb@error
+  {Toggle '#1' already defined}\@eha}
+\def\bxtb@err@uktgl#1{\bxtb@error
+  {Toggle '#1' undefined}\@eha}
+\def\bxtb@err@nomcr#1{\bxtb@error
+  {\string#1 is not a macro}\@eha}
+
+%%<+> \cslet
+%%<+> \letcs
+%%<+> \csletcs
+\bxtb@robustlet\cslet\bxtb@cslet
+\bxtb@robustlet\letcs\bxtb@letcs
+\bxtb@robustlet\csletcs\bxtb@csletcs
+
+%%<+> \bxNewrobustcmd
+%%<+> \bxRenewrobustcmd
+%%<+> \bxProviderobustcmd
+\newcommand\bxNewrobustcmd{}
+\DeclareRobustCommand*\bxNewrobustcmd{%
+  \bxtb@dclrobustcmd@a\bxtb@ifnewdefok}
+\def\bxtb@dclrobustcmd@a#1{%
+  \@ifstar{\bxtb@dclrobustcmd@b#1{*}}{\bxtb@dclrobustcmd@b#1{}}}
+\def\bxtb@dclrobustcmd@b#1#2#3{%
+  #1#3{\DeclareRobustCommand#2#3}{\bxtb@skip@new@cmd}}
+\bxNewrobustcmd*\bxRenewrobustcmd{%
+  \bxtb@dclrobustcmd@a\bxtb@ifrenewdefok}
+\bxNewrobustcmd*\bxProviderobustcmd{%
+  \bxtb@dclrobustcmd@a\bxtb@ifprovidedefok}
+
+%%<+> \bxRobustify
+\bxNewrobustcmd*\bxRobustify[1]{%
+  \ifundef{#1}{\bxtb@err@nomcr#1}
+   {\bxtb@ifdefmacro{#1}%
+     {\begingroup
+      \expandafter\bxtb@robustify@a
+       \csname\bxtb@name@cs#1\space\endcsname#1}%
+     {\bxtb@err@nomcr#1}}}
+\def\bxtb@robustify@a#1#2{%
+  \global\let\bxtb@rbf@do\@empty
+  \let\bxtb@tmpa#2\let#2\@undefined
+  \let\bxtb@tmpb#1\let#1\@undefined
+  \DeclareRobustCommand*#2{}%
+  \ifx#2\bxtb@tmpa
+    \bxtb@warn{\string#2 is already robust}%
+  \else\ifx\bxtb@tmpb\relax
+    \global\let\bxtb@rbf@tmpa#2%
+    \gdef\bxtb@rbf@do{\let#1#2\let#2\bxtb@rbf@tmpa}%
+  \else \bxtb@error{Failed to robustify \string#1}\@ehc
+  \fi\fi
+  \endgroup \bxtb@rbf@do}
+
+%%<+> \csdef
+%%<+> \csedef
+%%<+> \csgdef
+%%<+> \csxdef
+\bxNewrobustcmd*\csdef[1]{\expandafter\def\csname #1\endcsname}
+\bxNewrobustcmd*\csedef[1]{\expandafter\edef\csname #1\endcsname}
+\bxNewrobustcmd*\csgdef[1]{\expandafter\gdef\csname #1\endcsname}
+\bxNewrobustcmd*\csxdef[1]{\expandafter\xdef\csname #1\endcsname}
+
+%%<+> \undef
+%%<+> \csundef
+\bxNewrobustcmd*\undef[1]{\let#1\@undefined}
+\bxNewrobustcmd*\csundef[1]{%
+ \expandafter\let\csname #1\endcsname\@undefined}
+
+%%<+> \ifdef\CS{<T>}{<F>}
+%%<+> \ifundef\CS{<T>}{<F>}
+%%<+> \bxIfcsdef{<csname>}{<T>}{<F>}
+%%<+> \bxIfcsundef{<csname>}{<T>}{<F>}
+\newcommand*\ifdef[1]{%
+  \ifx#1\@undefined \expandafter\@secondoftwo
+  \else \expandafter\@firstoftwo
+  \fi}
+\newcommand*\ifundef[1]{%
+  \ifx#1\@undefined \expandafter\@firstoftwo
+  \else \expandafter\bxtb@ifundef@a\expandafter#1%
+  \fi}
+\def\bxtb@ifundef@a#1{%
+  \ifx#1\relax \expandafter\@firstoftwo
+  \else \expandafter\@secondoftwo
+  \fi}
+\newcommand*\bxIfcsdef[1]{%
+  \bxCheckForMovingArgForTest{%
+    \begingroup\expandafter\endgroup
+    \expandafter\ifx\csname #1\endcsname\@undefined
+      \expandafter\@secondoftwo
+    \else \expandafter\@firstoftwo
+    \fi}}
+\newcommand*\bxIfcsundef[1]{%
+  \bxCheckForMovingArgForTest{%
+    \begingroup\expandafter\expandafter\expandafter\endgroup
+    \expandafter\ifx\csname #1\endcsname\relax
+      \expandafter\@firstoftwo
+    \else \expandafter\@secondoftwo
+    \fi}}
+
+%%<+> \bxCsuse
+\bxNewrobustcmd*\bxCsuse[1]{%
+  \bxIfcsdef{#1}{\csname #1\endcsname}{}}
+
+%%<+> \bxCsshow
+\bxNewrobustcmd*\bxCsshow[1]{%
+  \bxIfcsdef{#1}{\expandafter\show\csname #1\endcsname}{}}
+
+%%<+> \appto
+%%<+> \gappto
+%%<+> \eappto
+%%<+> \xappto
+\bxNewrobustcmd*\appto{\bxtb@appto\@empty}
+\bxNewrobustcmd*\gappto{\bxtb@appto\global}
+\bxNewrobustcmd*\eappto{\bxtb@eappto\@empty}
+\bxNewrobustcmd*\xappto{\bxtb@eappto\global}
+\bxNewrobustcmd*\csappto[1]{\expandafter\appto\csname#1\endcsname}
+\bxNewrobustcmd*\csgappto[1]{\expandafter\gappto\csname#1\endcsname}
+\bxNewrobustcmd*\cseappto[1]{\expandafter\eappto\csname#1\endcsname}
+\bxNewrobustcmd*\csxappto[1]{\expandafter\xappto\csname#1\endcsname}
+\def\bxtb@eappto#1#2#3{%
+  \edef\bxtb@args{\noexpand#1\noexpand#2{#3}}%
+  \expandafter\bxtb@appto\bxtb@args}
+\def\bxtb@appto#1#2#3{%
+  \begingroup
+    \ifx#2\@undefined \let#2\@empty \fi
+    \toks@\expandafter{#2#3}\xdef\bxtb@g@tmpa{\the\toks@}%
+  \endgroup #1\let#2\bxtb@g@tmpa}
+
+%%<+> \preto
+%%<+> \gpreto
+%%<+> \epreto
+%%<+> \xpreto
+\bxNewrobustcmd*\preto{\bxtb@preto\@empty}
+\bxNewrobustcmd*\gpreto{\bxtb@preto\global}
+\bxNewrobustcmd*\epreto{\bxtb@epreto\@empty}
+\bxNewrobustcmd*\xpreto{\bxtb@epreto\global}
+\bxNewrobustcmd*\cspreto[1]{\expandafter\preto\csname#1\endcsname}
+\bxNewrobustcmd*\csgpreto[1]{\expandafter\gpreto\csname#1\endcsname}
+\bxNewrobustcmd*\csepreto[1]{\expandafter\epreto\csname#1\endcsname}
+\bxNewrobustcmd*\csxpreto[1]{\expandafter\xpreto\csname#1\endcsname}
+\toksdef\bxtb@toksa=2
+\def\bxtb@epreto#1#2#3{%
+  \edef\bxtb@args{\noexpand#1\noexpand#2{#3}}%
+  \expandafter\bxtb@preto\bxtb@args}
+\def\bxtb@preto#1#2#3{%
+  \begingroup
+    \ifx#2\@undefined \let#2\@empty \fi
+    \toks@\expandafter{#2}\bxtb@toksa{#3}%
+    \xdef\bxtb@g@tmpa{\the\bxtb@toksa\the\toks@}%
+  \endgroup #1\let#2\bxtb@g@tmpa}
+
+%%<+> \newbool
+%%<+> \providebool
+\bxNewrobustcmd*\newbool[1]{%
+  \expandafter\bxtb@newbool@a\csname if#1\endcsname}
+\def\bxtb@newbool@a#1{\@ifdefinable#1{\newif#1}}
+\bxNewrobustcmd*\providebool[1]{%
+  \@ifundefined{if#1}%
+  {\expandafter\newif\csname if#1\endcsname}{}}
+
+%%<+> \booltrue
+%%<+> \boolfalse
+%%<+> \setbool
+% NB: Here \bxIfcsundef cannot be used because otherwise the use
+% with \global would fail.
+\bxNewrobustcmd*\booltrue[1]{%
+  \bxIfcsundefX{if#1}{\bxtb@clear@prefix\bxtb@err@ukbool{#1}}%
+   {\csname #1true\endcsname}}
+\bxNewrobustcmd*\boolfalse[1]{%
+  \bxIfcsundefX{if#1}{\bxtb@clear@prefix\bxtb@err@ukbool{#1}}%
+   {\csname #1false\endcsname}}
+\bxNewrobustcmd*\setbool[2]{%
+  \bxIfcsundefX{if#1}{\bxtb@clear@prefix\bxtb@err@ukbool{#1}}%
+   {\bxIfcsundefX{#1#2}{\bxtb@clear@prefix\bxtb@err@ukbval{#2}}%
+    {\csname #1#2\endcsname}}}
+
+%%<+> \ifbool
+%%<+> \notbool
+\@gobble{\if\if}% if-match hack
+\newcommand*\ifbool[1]{%
+  \bxIfcsundefX{if#1}{\bxtb@err@ukbool{#1}\@gobbletwo}%
+   {\csname if#1\endcsname\expandafter\@firstoftwo
+    \else \expandafter\@secondoftwo
+    \fi}}
+\newcommand*\notbool[1]{%
+  \bxIfcsundefX{if#1}{\bxtb@err@ukbool{#1}\@gobbletwo}%
+   {\csname if#1\endcsname\expandafter\@secondoftwo
+    \else \expandafter\@firstoftwo
+    \fi}}
+
+%%<+> \newtoggle
+%%<+> \providetoggle
+\bxNewrobustcmd*\newtoggle[1]{%
+  \bxIfcsdef{bxtb@TG/#1}{\bxtb@err@aetgl{#1}}%
+    {\cslet{bxtb@TG/#1}\bxtb@tgl@@false}}
+\bxNewrobustcmd*\providetoggle[1]{%
+  \bxIfcsdef{bxtb@TG/#1}{}{\cslet{bxtb@TG/#1}\bxtb@tgl@@false}}
+\let\bxtb@tgl@@true\@firstoftwo
+\let\bxtb@tgl@@false\@secondoftwo
+
+%%<+> \toggletrue
+%%<+> \togglefalse
+%%<+> \settoggle
+% NB: Here \bxIfcsdef cannot be used because otherwise the use
+% with \global would fail.
+\bxNewrobustcmd*\toggletrue[1]{%
+  \bxIfcsundefX{bxtb@TG/#1}{\bxtb@clear@prefix\bxtb@err@uktgl{#1}}%
+    {\cslet{bxtb@TG/#1}\bxtb@tgl@@true}}
+\bxNewrobustcmd*\togglefalse[1]{%
+  \bxIfcsundefX{bxtb@TG/#1}{\bxtb@clear@prefix\bxtb@err@uktgl{#1}}%
+    {\cslet{bxtb@TG/#1}\bxtb@tgl@@false}}
+\bxNewrobustcmd*\settoggle[2]{%
+  \bxIfcsundefX{bxtb@TG/#1}{\bxtb@clear@prefix\bxtb@err@uktgl{#1}}%
+   {\bxIfcsundefX{bxtb@tgl@@#2}{\bxtb@clear@prefix\bxtb@err@ukbval{#2}}%
+     {\csletcs{bxtb@TG/#1}{bxtb@tgl@@#2}}}}
+
+%%<+> \iftoggle
+%%<+> \nottoggle
+\newcommand*\iftoggle[1]{%
+  \bxIfcsundefX{bxtb@TG/#1}{\bxtb@err@uktgl{#1}\@gobbletwo}%
+   {\csname bxtb@TG/#1\endcsname}}
+\newcommand*\nottoggle[1]{%
+  \bxIfcsundefX{bxtb@TG/#1}{\bxtb@err@uktgl{#1}\@gobbletwo}%
+   {\csname bxtb@TG/#1\endcsname\@secondoftwo\@firstoftwo}}
+
+%%<+> \ifstrequal{<str1>}{<str2>}{<T>}{<F>}
+\newcommand*\ifstrequal{}
+\bxRobustdef\ifstrequal#1#2{%
+  \bxCheckForMovingArgForTest{%
+    \bxtb@def@detokenized\bxtb@tmpx{#1}%
+    \bxtb@def@detokenized\bxtb@tmpy{#2}%
+    \bxIfx{\bxtb@tmpx\bxtb@tmpy}}}
+
+%%<+> \ifstrempty{<str>}{<T>}{<F>}
+\newcommand*\ifstrempty{}
+\let\ifstrempty\bxtb@ifstrempty
+
+%% internal stuffs needed for hook commands
+\bxPreamble\def\bxtb@prepare@bdhook#1#2{%
+  \bxNewrobustcmd*#1{\gappto#2}%
+  \newcommand*#2{}}
+\def\bxtb@dispatch@bdhook#1#2{%
+  \let#1\@firstofone #2%
+  \bxRobustdef#1{\@notprerr\@gobble}\undef#2}
+
+%%<+> \AtEndPreamble
+%%<+> \AfterPreamble
+%%<+> \AfterEndPreamble
+%%<+> \AfterEndDocument
+\bxtb@prepare@bdhook\AtEndPreamble\@endpreamblehook
+\bxtb@prepare@bdhook\AfterEndPreamble\@afterendpreamblehook
+\bxtb@prepare@bdhook\AfterEndDocument\@afterenddocumenthook
+\bxNewrobustcmd*\AfterPreamble{\AtBeginDocument}
+\AtEndPreamble{\let\AfterPreamble\@firstofone}
+\AfterEndPreamble{\undef\bxtb@dispatch@bdhook}
+%
+\preto\document{\endgroup
+  \bxtb@dispatch@bdhook\AtEndPreamble\@endpreamblehook
+  \begingroup}
+\appto\document{%
+  \bxtb@dispatch@bdhook\AfterEndPreamble\@afterendpreamblehook
+  \ignorespaces}
+% patch to \enddocument
+\bxPreamble\def\bxtb@patch@enddocument{%
+  \expandafter\bxtb@patch@ed@a\enddocument\deadcycles\bxtb@end}
+\bxPreamble\def\bxtb@patch@ed@a#1\deadcycles#2\bxtb@end{%
+  \bxtb@ifstrempty{#2}{\bxtb@patch@ed@fail}%
+   {\def\bxtb@tmpa{#1}\bxtb@patch@ed@b#2\bxtb@end}}
+\bxPreamble\def\bxtb@patch@ed@b#1\deadcycles#2\bxtb@end{%
+  \bxtb@ifstrempty{#2}{\bxtb@patch@ed@c{#1}}%
+   {\bxtb@patch@ed@fail}}
+\bxPreamble\def\bxtb@patch@ed@c#1{%
+  \appto\bxtb@tmpa{\let\AfterEndDocument\@firstofone
+    \@afterenddocumenthook
+    \deadcycles#1}%
+  \let\bxtb@org@enddocument\enddocument
+  \let\enddocument\bxtb@tmpa}
+\bxPreamble\def\bxtb@patch@ed@fail{%
+  \bxtb@warn{\string\AfterEndDocument\space is set disabled}%
+  \bxRobustdef\AfterEndDocument##1{\bxtb@error
+    {\string\AfterEndDocument\space is now disabled}\@eha}}
+\bxtb@patch@enddocument
+
+%--------------------------------------- All done
+\def\do#1{%
+  \ifx#1\@undefined \bxtb@warn{\string#1 not yet implemented}\fi}
+\bxtb@provided
+\bxUnsetDummyIfs
+\endinput
+%% EOF

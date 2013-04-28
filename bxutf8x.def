@@ -1,40 +1,48 @@
 %
 % bxutf8x.def
 %
-%%%% package declarations
-\ProvidesFile{bxutf8x.def}[2008/04/06 v0.3
-  BX UTF-8 input encoding (ucs ver.)]
+%% file declaration
+\ProvidesFile{bxutf8x.def}[2011/03/01 v0.9 BX extended utf8x input]
 %
 % Note: All definitions in this file should be local.
+% This file should not spill any spaces or \par.
 %
-%%%% preparation
+%% preparation
 \catcode32=10\relax
-\expandafter\edef\csname bx@b@resetcatcodes\endcsname{%  " . : @
-  \catcode34=\the\catcode34\catcode46=\the\catcode46%
-  \catcode58=\the\catcode39\catcode64=\the\catcode64\relax}%
-\catcode34=12 \catcode46=12 \catcode58=12 \catcode64=11 %
+\expandafter\edef\csname bxus@i@restore@cc\endcsname{%
+  \catcode34=\the\catcode34% <">
+  \catcode46=\the\catcode46% <.>
+  \catcode58=\the\catcode58% <:>
+  \catcode64=\the\catcode64% <@>
+\relax}%
+\catcode34=12 %
+\catcode46=12 %
+\catcode58=12 %
+\catcode64=11 %
 \def\bxus@i@error{\PackageError{inputenc}}%
 \ifx\@nodocument\relax
   \ifx\bxus@bxutfx@loaded\@undefined
-    \bxus@i@error{cannot load `bxutf8x' after \string\begin{document}}%
-     \@eha \bx@b@resetcatcodes\endinput\fi\fi
+    \bxus@i@error
+     {cannot load `bxutf8x' after \string\begin{document}}\@eha
+    \bxus@i@restore@cc\endinput\fi\fi
 %
 %%%% load 'utf8x' encoding
 \InputIfFileExists{utf8x.def}{}%
   {\PackageError{inputenc}{input encoding `utf8x' unavailable}%
    {You must install `unicode' package to use it.}%
-   \bx@b@resetcatcodes\endinput}%
+   \bxus@i@restore@cc\endinput}%
 %\@inpenc@test  % This is done in utf8.def
 %
 % When this file is reloaded, the 'static' part will be skipped.
 \ifx\bxus@bxutfx@loaded\@undefined\else
-  \bx@b@resetcatcodes \endinput \fi
+  \bxus@i@restore@cc \endinput \fi
 \let\bxus@bxutfx@loaded=t%
 %
-%%---------- Beginning of static part
+%%------------------ Static part
 %
-%%%% error messages
-\def\bxus@err@nodrv{\bxus@i@error{Unicode driver not found}\@ehb}%
+%% error messages
+\def\bxus@err@nodrv{\bxus@i@error
+  {Unicode driver not found}\@ehb}%
 %
 %%%% \bxus@uc@char@notloaded
 % Hooked version of \uc@char@notloaded
@@ -58,23 +66,25 @@
 \def\bxus@uc@notloaderr#1#2#3{%
   \bxUInt{#1}}%   \bxUInt should be robust
 %
-%%%% attach the hook
+%% attach the hook
 % Note that ucs.sty could be loaded after utf8x.def.
 \AtBeginDocument{%
   \let\uc@notloaderr\bxus@uc@notloaderr
   \let\uc@char@notloaded\bxus@uc@char@notloaded}%
 %
-%%%% force ucs 'fasterrors' option switched on
+%% force ucs 'fasterrors' option switched on
 % Heavy 'uninames' decoding process is of no use in presence of the hook,
 % and it causes unexpected result in use of pTeX.
 \AtBeginDocument{%
   \let\UnicodeOptionfasterrorsfalse\UnicodeOptionfasterrorstrue
   \UnicodeOptionfasterrorstrue}%
 %
-%%%% default (useless) Unicode driver
-\providecommand*\bxUInt[1]{?\protect\bxus@err@nodrv}%
+%% default (useless) Unicode driver
+% Note: this \bxUHex definition is used for check.
+\providecommand*\bxUInt{\bxUIntDummyBxutfx}%
+\newcommand*\bxUIntDummyBxutfx[1]{?\protect\bxus@err@nodrv}%
 %
-%%%% all done
-\bx@b@resetcatcodes
+%%------------------ all done
+\bxus@i@restore@cc
 \endinput
 %% EOF

@@ -2,44 +2,41 @@
 % bxbase.sty
 %
 
-%%%% package declaration
+%% Package declaration
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{bxbase}[2010/06/15 v0.5 BX base library]
+\ProvidesPackage{bxbase}[2012/08/19 v0.9b BX base library]
 
-%%%% include 'bxbase.def'
-\input{bxbase.def}
+%% include 'bxbase.def'
+\providecommand*\bxRequireDefinition[1]{%
+  \def\bxbz@ext{def}\@onefilewithoptions{#1}[][]\bxbz@ext}
+\bxRequireDefinition{bxbase}
 \bxBDHookBabel
 \bxBDHookUnicode
+\bxBDHookJisInput
 \bxBDHookSafeCaret
+\bxBDHookUcsFastErrors
 
-%%%% error messages
-\def\bx@pkgname{bxbase}
-\def\bx@error{\PackageError\bx@pkgname}
-\def\bx@alert{\PackageWarningNoLine\bx@pkgname}
-\def\bx@warn{\PackageInfo\bx@pkgname}
-\def\bx@warn@aecs#1{\px@warn{Command \string#1 already exists}}
+%% load packages
+\RequirePackage{ifptex}[2012/08/19]
+
+%% error messages
+\def\bxbz@pkgname{bxbase}
+%\def\bxbz@error{\PackageError\bxbz@pkgname}
+%\def\bxbz@warn{\PackageWarningNoLine\bxbz@pkgname}
+\def\bxbz@info{\PackageInfo\bxbz@pkgname}
+\def\bxbz@inf@aecsq#1{\bxbz@info{Command \string#1 already exists}}
 
 %%------
 
-%%<*> \Ux, \UI, \AJ
-\ifx\Ux\@undefined \def\Ux{\bxUx}%
-\else \px@warn@aecs\Ux \fi
-\ifx\UI\@undefined \def\UI{\bxUI}%
-\else \px@warn@aecs\UI \fi
-\ifx\AJ\@undefined \def\AJ{\bxAJ}%
-\else \px@warn@aecs\AJ \fi
-
-%%<*> \JI, \KI
-\ifx\JI\@undefined \def\JI{\bxJI}%
-\else \px@warn@aecs\JI \fi
-\ifx\KI\@undefined \def\KI{\bxKI}%
-\else \px@warn@aecs\KI \fi
-
-%%%% withnohyph environment
-\expandafter\ifx\csname l@nohyphenation\endcsname\relax
-  \newlanguage\l@nohyphenation \fi
-\def\withnohyph{\language\l@nohyphenation}
-\let\endwithnohyph\relax
+%%<*> \Ux / \UI / \AJ / \JI / \KI
+% define commands unless their name is already used
+\bxPreamble\def\bxbz@charcmd#1#2{%
+  \ifundef#1{\def#1{#2}}{\bxbz@inf@aecsq#1}}
+\bxbz@charcmd\Ux\bxUx
+\bxbz@charcmd\UI\bxUI
+\bxbz@charcmd\AJ\bxAJ
+\bxbz@charcmd\JI\bxJI
+\bxbz@charcmd\KI\bxKI
 
 %%------ all done
 \endinput

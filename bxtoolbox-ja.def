@@ -1,0 +1,163 @@
+%
+% bxtoolbox-ja.def
+%
+
+%% File declaration
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{bxtoolbox-ja.def}[2012/08/19 v0.9b BX base library]
+% avoid multiple loading
+\csname bxtoolboxja@def@loaded\endcsname
+
+%% General preparations
+\providecommand*\bxRequireDefinition[1]{%
+  \def\bx@@def{def}\@onefilewithoptions{#1}[][]\bx@@def}
+\bxRequireDefinition{bxtoolbox-ext}
+
+%% code guards
+\edef\bxtb@x@restore@cc{% < ! " ' + ^ >
+  \catcode33=\the\catcode33\relax %<!>
+  \catcode34=\the\catcode34\relax %<">
+  \catcode39=\the\catcode39\relax %<'>
+  \catcode43=\the\catcode43\relax %<+>
+  \catcode94=\the\catcode94\relax %<^>
+}
+\catcode33=12
+\catcode34=12
+\catcode39=12
+\catcode43=12
+\catcode94=6
+\AtEndOfPackage{%
+  \bxtb@x@restore@cc
+  \undef\bxtb@x@restore@cc}
+\def\bxtoolboxja@def@loaded{\endinput}
+
+%%------ related to pTeX
+
+%%<+> \bxToYokoDir
+% Switches to horizontal(yoko) writing direction
+% when using pTeX.
+\ifbxinpTeX         %----<*pTeX>
+\newcommand*\bxToYokoDir{%
+  \bxIftdir{\yoko}{}}
+\else               %----<*!pTeX>
+\newcommand*\bxToYokoDir{}
+\fi                 %----</pTeX>
+
+%%<+> \bxAtBeginDviX
+% \AtBeginDvi that is safe to use in pTeX.
+\newcommand\bxAtBeginDviX[1]{%
+  \global\setbox\@begindvibox\vbox{%
+    \bxToYokoDir\unvbox\@begindvibox#1}}
+
+%%------ Japanese language
+
+%%<+> \bxGetZenkakuWidth
+% Assigns 1zw to \bxResDim
+\ifbxinpTeX
+  \bxNewrobustcmd*\bxGetZenkakuWidth{%
+    \bxResDim=1zw\relax}
+\else\ifbxHasAlUcsChar
+  \bxToUcsChar{"4E00}\let\bx@jan@onekanji\bxRes
+  \bxNewrobustcmd*\bxGetZenkakuWidth{%
+    \begingroup \setbox\z@\hbox{\bx@jan@onekanji}%
+      \xdef\bx@jan@g@next{\bxResDim=\the\wd\z@\relax}%
+    \endgroup \bx@jan@g@next}
+  \AtBeginDocument{%
+    \ifdef\jsZw{%
+      \bxRenewrobustcmd*\bxGetZenkakuWidth{%
+        \bxResDim=1\jsZw}}{}%
+    \ifdef\zw{%
+      \bxRenewrobustcmd*\bxGetZenkakuWidth{%
+        \bxResDim=1\zw}}{}%
+  }
+\fi\fi
+
+%%<+> \bxIfCharToken{<token>}{<yes>}{<no>}
+% Tests if the token is a character token with catcode 11 or 12.
+\newcommand*\bxIfCharToken[1]{%
+  \bxIfcat{\relax\noexpand#1}{\@secondoftwo}%
+    {\expandafter\bxtb@ifchartok@a\meaning#1\bxtb@end}}
+\def\bxtb@ifchartok@a#1{%
+  \bxIfcsundefX{bxtb@ICTF/#1}{\bxtb@ifchartok@false}%
+    {\bxtb@ifchartok@b#1}}
+\def\bxtb@ifchartok@b#1#2#3#4#5#6{%
+  \bxIfcsundefX{bxtb@ICT/#1#2#3#4#5#6}{\bxtb@ifchartok@false}%
+    {\bxtb@ifchartok@true}}
+\def\bxtb@ifchartok@true#1\bxtb@end#2#3{#2}
+\def\bxtb@ifchartok@false#1\bxtb@end#2#3{#3}
+\def\do#1#2:{\cslet{bxtb@ICTF/#1}{t}\cslet{bxtb@ICT/#1#2}{t}}
+\do thelet:% 11
+\do thecha:% 12
+\do kanjic:% 16-19(upTeX)
+
+%%------ 
+
+%%<+> \bxInternalJaEncoding
+\let\bxInternalJaEncoding=?
+\ifbxinpTeX
+  \ifnum\jis"2121="8140 \let\bxInternalJaEncoding=s\else
+  \ifnum\jis"2121="A1A1 \let\bxInternalJaEncoding=e\else
+  \ifnum\jis"2121="3000 \let\bxInternalJaEncoding=u\fi\fi\fi
+\fi
+%%<+D> \pxInternalJEnc
+\let\pxInternalJEnc\bxInternalJaEncoding
+
+%%<+> \bxInputJaEncoding
+\let\bxInputJaEncoding=?
+\ifbxinpTeX
+  \@@input pxbsjc.def\relax
+  \def\bxtb@tmpb#1#2\@nil{%
+    \ifnum `#1=\jis"723F \let\bxInputJaEncoding=s\else
+    \ifnum `#1=\jis"693D \let\bxInputJaEncoding=e\else
+    \ifnum `#1=\jis"7379 \let\bxInputJaEncoding=u\fi\fi\fi}
+  \expandafter\bxtb@tmpb\bxtb@tmpa\@nil
+  \ifx e\bxInputJaEncoding
+    \@@input pxbsjc1.def\relax
+    \def\bxtb@tmpb#1#2\@nil{%
+      \ifnum `#1=\jis"723F \let\bxInputJaEncoding=a\fi}
+    \expandafter\bxtb@tmpb\bxtb@tmpa\@nil
+  \fi
+\fi
+%%<+D> \pxSourceJEnc
+\let\pxSourceJEnc\bxInputJaEncoding
+
+%%<+> \bxOutputJaEncoding
+\let\bxOutputJaEncoding=?
+\ifbxinpTeX
+  \let\bxOutputJaEncoding=\bxInputJaEncoding
+\fi
+
+%% \bxtb@jaencname
+\def\bxtb@jaencname#1#2{%
+  \ifx u#1#2\else
+  \ifx s#1sjis\else
+  \ifx e#1euc\else
+  \ifx a#1auto\else
+  (unknown)\fi\fi\fi\fi}
+
+%%<*> \internaljaencodingname
+\newcommand*\internaljaencodingname{}
+\edef\internaljaencodingname{%
+  \bxtb@jaencname\bxInternalJaEncoding{unicode}}
+
+%%<*> \inputjaencodingname
+\newcommand*\inputjaencodingname{}
+\edef\inputjaencodingname{%
+  \bxtb@jaencname\bxInputJaEncoding{utf8}}
+
+%%<*> \outputjaencodingname
+\newcommand*\outputjaencodingname{}
+\edef\outputjaencodingname{%
+  \bxtb@jaencname\bxOutputJaEncoding{utf8}}
+
+%%<*> \infojenc
+\def\bxtb@tmpa{%
+  Kanji encoding:
+  input=\inputjaencodingname;
+  output=\outputjaencodingname;
+  internal=\internaljaencodingname}
+\edef\infojenc{\noexpand\typeout{\bxtb@tmpa}}
+
+%%------ all done
+\endinput
+%% EOF
