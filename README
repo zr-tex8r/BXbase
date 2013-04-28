@@ -1,472 +1,472 @@
 ==================================================
-== BXbase $B%P%s%I%k(B v0.5  <2010/06/15>           ==
-==           by$B!V(BZR$B!W!JH,EP(B $B?rG7(B/Takayuki YATO$B!K(B==
+== BXbase バンドル v0.5  <2010/06/15>           ==
+==           by「ZR」（八登 崇之/Takayuki YATO）==
 ==                      <zrbabbler@yahoo.co.jp> ==
 ==================================================
 (This file is encoded in UTF-8,)
 
-$B2$J8(B LaTeX2e $B$K$*$1$kB?8@8lJ8=q$*$h$S$=$l$K4X$o$k%^%/%m%Q%C%1!<%8$N:n@.(B
-$B$r;Y1g$9$k4pK\E*$J5!G=$rDs6!$9$k!#(B
+欧文 LaTeX2e における多言語文書およびそれに関わるマクロパッケージの作成
+を支援する基本的な機能を提供する。
 
-  - bxutf8 $BF~NO%(%s%3!<%G%#%s%0(B: UTF-8 $BF~NO(B
-  - bxutf8x $BF~NO%(%s%3!<%G%#%s%0(B: UTF-8 $BF~NO(B
-  - bxbase $B%Q%C%1!<%8(B: $B4pAC%i%$%V%i%j(B
-  - bxucs $B%Q%C%1!<%8(B: $B2$J8(B Unicode $BJ8;z=PNO(B
+  - bxutf8 入力エンコーディング: UTF-8 入力
+  - bxutf8x 入力エンコーディング: UTF-8 入力
+  - bxbase パッケージ: 基礎ライブラリ
+  - bxucs パッケージ: 欧文 Unicode 文字出力
 
-$B"((B $BBP1~4D6-$O3F!9$N%Q%C%1!<%8$N2r@b$r;2>H!#(B
+※ 対応環境は各々のパッケージの解説を参照。
 
-$B"#(B $BK\%=%U%H%&%'%"$N0l<!G[I[%5%$%H(B($B:n<T$N%5%$%H(B)
+■ 本ソフトウェアの一次配布サイト(作者のサイト)
 
-    En toi Pythmeni tes TeXnopoleos $B!AEEG>@$3&$N1|Dl$K$F!A(B
+    En toi Pythmeni tes TeXnopoleos 〜電脳世界の奥底にて〜
     http://zrbabbler.hp.infoseek.co.jp/
 
-    $B"((B $B0J2<$N%Z!<%8$K0lIt5!G=$N;HMQNc$r>R2p$7$?!#(B
-    $B!V(BUnicode $B$K$h$kJ8;zF~NO!W(B
+    ※ 以下のページに一部機能の使用例を紹介した。
+    「Unicode による文字入力」
     http://zrbabbler.hp.infoseek.co.jp/unichar.html
-    $B!V(BBXbase $B%Q%C%1!<%8!W(B
+    「BXbase パッケージ」
     http://zrbabbler.hp.infoseek.co.jp/bxbase.html
 
-$B"#(B $B%$%s%9%H!<%k(B
+■ インストール
 
-    TDS 1.1 $B$K=>$C$?%7%9%F%`$G$O!"3F%U%!%$%k$r<!$N>l=j$K0\F0$9$k!#(B
-    $B!&(B*.sty, *.def $B"*(B $TEXMF/tex/latex/BXbase/
-    ($B;D$j$N%U%!%$%k$OITMW(B)
+    TDS 1.1 に従ったシステムでは、各ファイルを次の場所に移動する。
+    ・*.sty, *.def → $TEXMF/tex/latex/BXbase/
+    (残りのファイルは不要)
 
-    W32TeX $B$r(B C:\usr\local $B$K%$%s%9%H!<%k$7$?>l9g$NNc!#(B
-    $B!&(B*.sty, *.def $B"*(B C:\usr\local\share\texmf-local\tex\latex\BXbase
+    W32TeX を C:\usr\local にインストールした場合の例。
+    ・*.sty, *.def → C:\usr\local\share\texmf-local\tex\latex\BXbase
 
 --------------------------------------------------
- bxutf8 $BF~NO%(%s%3!<%G%#%s%0(B (v0.5) -- UTF-8 $BF~NO(B 
+ bxutf8 入力エンコーディング (v0.5) -- UTF-8 入力 
 --------------------------------------------------
 
-LaTeX2e $BI8=`$N(B utf8 $BF~NO%(%s%3!<%G%#%s%0$r3HD%$7$F!"(Butf8 $B$G=hM}$G$-$J$$(B
-$BJ8;z$K$D$$$FId9fCM$r4^$`Cf4V7A<0$KJQ49$9$k!#$3$NCf4V7A<0$OB>$N%Q%C%1!<%8(B
-$B$,=hM}$9$k$3$H$,A[Dj$5$l$F$$$k!#(B
+LaTeX2e 標準の utf8 入力エンコーディングを拡張して、utf8 で処理できない
+文字について符号値を含む中間形式に変換する。この中間形式は他のパッケージ
+が処理することが想定されている。
 
-$B"#(B $BBP1~4D6-(B
+■ 対応環境
 
-    $B2$J8(B LaTeX2e / pLaTeX2e / upLaTeX2e
+    欧文 LaTeX2e / pLaTeX2e / upLaTeX2e
 
-$B"#(B $BFI9~(B
+■ 読込
 
-    inputenc $B$N%*%W%7%g%s$H$7$F;XDj$9$k!#(B
+    inputenc のオプションとして指定する。
       \usepackage[bxutf8]{inputenc}
 
-    inputenc $B$,FI$_9~$_:Q$N>l9g$O(B \inputencoding $B$r;H$&!#(B
+    inputenc が読み込み済の場合は \inputencoding を使う。
       \inputencoding{bxutf8}
 
-    $BK\J8Cf$GB>$NF~NO%(%s%3!<%G%#%s%0$H$N4V$G@Z$jBX$($k$3$H$b2DG=$G$"$k$,!"(B
-    $B$=$N>l9g$O!"0lEY%W%l%"%s%V%k$N$I$3$+$GF~NO%(%s%3!<%G%#%s%0$r(B bxutf8
-    $B$K@Z$jBX$($J$1$l$P$J$i$J$$(B(bxutf8.def $B$,FbIt$GFI$_9~$`(B utf8.def $B$N(B
-    $B;EMM$K$h$k(B)$B!#K\J8$G$N@Z$jBX$($O$"$^$j%F%9%H$5$l$F$$$J$$$N$G!"%P%0$,(B
-    $B$"$k2DG=@-$,9b$$(B ;-)
+    本文中で他の入力エンコーディングとの間で切り替えることも可能であるが、
+    その場合は、一度プレアンブルのどこかで入力エンコーディングを bxutf8
+    に切り替えなければならない(bxutf8.def が内部で読み込む utf8.def の
+    仕様による)。本文での切り替えはあまりテストされていないので、バグが
+    ある可能性が高い ;-)
 
-$B"#(B $B5!G=(B
+■ 機能
 
-    bxutf8 $B$O(B utf8 $B$N3HD%$G$"$k!#(Butf8 $B$O(B UTF-8 $B$G=q$+$l$?J8;z$r<!$N$h$&(B
-    $B$K=hM}$9$k!#$=$NJ8;z$,=PNOJ}K!$rCN$C$F$$$k!=$D$^$jFI9~:Q$N%U%)%s%H(B
-    $B%(%s%3!<%G%#%s%0$K4^$^$l$k!=J8;z$N>l9g!"$=$l$r(B LaTeX $B$NI8=`E*$JFbIt(B
-    $B7A<0(B(\"a $B$d(B \OE $BEy(B)$B$KJQ49$7$F8e$r%U%)%s%H%(%s%3!<%G%#%s%0(B(fontenc)
-    $B$N=hM}$KG$$;$k!#$7$+$7!"CN$i$J$$J8;z$N>l9g$O%(%i!<$K$J$k!#(B
+    bxutf8 は utf8 の拡張である。utf8 は UTF-8 で書かれた文字を次のよう
+    に処理する。その文字が出力方法を知っている—つまり読込済のフォント
+    エンコーディングに含まれる—文字の場合、それを LaTeX の標準的な内部
+    形式(\"a や \OE 等)に変換して後をフォントエンコーディング(fontenc)
+    の処理に任せる。しかし、知らない文字の場合はエラーになる。
 
-    bxutf8 $B$O!VCN$i$J$$J8;z!W$N>l9g$N=hM}$rJQ99$7!"$3$l$r(B \bxUHex{XXXX}
-    $B$N7A<0$KJQ49$9$k!#$3$3$G(B XXXX $B$O3:Ev$NJ8;z$N%3!<%ICM$N(B 16 $B?JI=8=$G(B
-    $B$"$k!#(B\bxUHex $B$O3:Ev$NJ8;z$r=PNO$9$k$3$H$,A[Dj$5$l$F$$$k$,!"$3$l$N(B
-    $BDj5A(B($B!V%I%i%$%P!W$H8F$V$3$H$K$9$k(B)$B$OB>$N%Q%C%1!<%8$GM?$($i$l$k!#(B
-    bxutf8 $B<+?H$N%I%i%$%P$NDj5A$OC1$K%(%i!<$r=P$9$@$1$G$"$k!#(B
+    bxutf8 は「知らない文字」の場合の処理を変更し、これを \bxUHex{XXXX}
+    の形式に変換する。ここで XXXX は該当の文字のコード値の 16 進表現で
+    ある。\bxUHex は該当の文字を出力することが想定されているが、これの
+    定義(「ドライバ」と呼ぶことにする)は他のパッケージで与えられる。
+    bxutf8 自身のドライバの定義は単にエラーを出すだけである。
 
-$B"#(B $BCm0U;v9`(B
+■ 注意事項
 
-    - UTF-8 $B$N%P%$%HNs$+$i(B \bxUHex $B$N7A<0$^$G$O40A4E83+2DG=$K$J$C$F$$$k!#(B
-      $B$^$?!"(B\bxUHex $B$NDj5A$O(B robust $B$G$J$1$l$P$J$i$J$$!#$3$l$OB>$NF~NO(B
-      $B%(%s%3!<%G%#%s%0$H6&DL$N@-<A$G$"$k!#(B
-    - 0.5 $BHG$N2~D{$G!"(BBMP $B30(B(U+10000 $B0J>e(B)$B$NId9fCM$KBP1~$7$?!#(B
-    - pLaTeX/upLaTeX $B$N>l9g!"F~NO4A;z%3!<%I$O(B UTF-8 (-kanji=utf8) $B$G$"$k(B
-      $BI,MW$,$"$k!#$3$N>l9g!"=hM}7O$K$h$jOBJ8%H!<%/%s$H2r<a$5$l$kJ8;z0J30(B
-      $B$,(B bxutf8 $B$N=hM}$K2s$k!#(B
-    - utf8 $B$,07$($kJ8;z$K$D$$$F$OK0$/$^$G$b(B utf8 $B$HA4$/F1$8$h$&$K=hM}(B
-      $B$5$l$k$3$H$KCm0U!#Nc$($P!"%U%)%s%H%(%s%3!<%G%#%s%0$K(B OT1 $B$H(B T2A $B$,(B
-      $BFI$_9~$^$l$F$$$k>uBV$G!V'%!W$,F~NO$5$l$k$H!"(Butf8 $B$O$3$l$r(B \CYRD $B$K(B
-      $BJQ49$9$k$,!"$3$l$O8=:_$N%U%)%s%H%(%s%3!<%G%#%s%0$,(B OT1 $B$G$"$k;~$O(B
-      $B%(%i!<$K$J$k(B($B$?$H$((B \bxUHex $B$,%U%)%s%H%(%s%3!<%G%#%s%0$K4X$o$i$:(B
-      $BF0:n$9$k$H$7$F$b(B)$B!#(B
+    - UTF-8 のバイト列から \bxUHex の形式までは完全展開可能になっている。
+      また、\bxUHex の定義は robust でなければならない。これは他の入力
+      エンコーディングと共通の性質である。
+    - 0.5 版の改訂で、BMP 外(U+10000 以上)の符号値に対応した。
+    - pLaTeX/upLaTeX の場合、入力漢字コードは UTF-8 (-kanji=utf8) である
+      必要がある。この場合、処理系により和文トークンと解釈される文字以外
+      が bxutf8 の処理に回る。
+    - utf8 が扱える文字については飽くまでも utf8 と全く同じように処理
+      されることに注意。例えば、フォントエンコーディングに OT1 と T2A が
+      読み込まれている状態で「Д」が入力されると、utf8 はこれを \CYRD に
+      変換するが、これは現在のフォントエンコーディングが OT1 である時は
+      エラーになる(たとえ \bxUHex がフォントエンコーディングに関わらず
+      動作するとしても)。
 
 
 ---------------------------------------------------
- bxutf8x $BF~NO%(%s%3!<%G%#%s%0(B (v0.3) -- UTF-8 $BF~NO(B 
+ bxutf8x 入力エンコーディング (v0.3) -- UTF-8 入力 
 ---------------------------------------------------
 
-Unicode $B%Q%C%1!<%8(B(ucs $B%Q%C%1!<%8(B)$B$,;HMQ$9$k(B utf8x $BF~NO%(%s%3!<%G%#%s%0(B
-$B$r3HD%$7$F!"(Bbxutf8 $B$HF1MM$N5!G=$r<B8=$7$?$b$N$G$"$k!#(B
+Unicode パッケージ(ucs パッケージ)が使用する utf8x 入力エンコーディング
+を拡張して、bxutf8 と同様の機能を実現したものである。
 
-$B"#(B $BBP1~4D6-(B
+■ 対応環境
 
-    $B2$J8(B LaTeX2e / pLaTeX2e / upLaTeX2e
+    欧文 LaTeX2e / pLaTeX2e / upLaTeX2e
 
-$B"#(B $BFI9~(B
+■ 読込
 
-    inputenc $B$N%*%W%7%g%s$H$7$F;XDj$9$k!#(B
+    inputenc のオプションとして指定する。
       \usepackage[bxutf8]{inputenc}
 
-    inputenc $B$,FI$_9~$_:Q$N>l9g$O(B \inputencoding $B$r;H$&!#(B
+    inputenc が読み込み済の場合は \inputencoding を使う。
       \inputencoding{bxutf8}
 
-    $B8e<T$N;HMQ$K$D$$$F$O!"(Bbxutf8 $B$HF1$8@)8B$NB>$K!"(Butf8x $B$KFCM-$N@)8B(B
-    $B$,$"$k!#(B
+    後者の使用については、bxutf8 と同じ制限の他に、utf8x に特有の制限
+    がある。
 
-$B"#(B $B5!G=(B
+■ 機能
 
-    $B4pK\E*$K$O(B bxutf8 $B$HF1$8$J$N$G!"Aj0cE@$r5s$2$F$*$/!#(B
+    基本的には bxutf8 と同じなので、相違点を挙げておく。
 
-    - utf8x (ucs) $B$N%W%m%0%i%`$O(B utf8 $B$HHf$7$FMZ$+$KJ#;($G$"$k!#=>$C$F(B
-      bxutf8x $B$,@5$7$/<BAu$5$l$F$$$k$+$K$D$$$F$O$"$^$j<+?.$,L5$$!#(B
-    - bxutf8x $B$O(B \bxUInt $B$H$$$&FbItL?Na$rMQ$$$k!#(B
-    - utf8x $B$O<B:]$K%U%)%s%H%(%s%3!<%G%#%s%0$,FI$_9~$^$l$F$$$k$+$K4X$o$i(B
-      $B$:9-HO$JHO0O$NJ8;z$r<+J,$G=hM}$7$h$&$H$9$k!#7k2LE*$K!"2$J8$NJ8;z$K(B
-      $B4X$7$F$O$[$H$s$I(B \bxUInt $B$KJQ49$5$l$J$$!#(BCJK $BJ8;z$KBP$7$F$O(B utf8x
-      $B$O4{Dj$G$O=hM}$7$J$$$N$G(B \bxUInt $B$KJQ49$5$l$k!#(B
+    - utf8x (ucs) のプログラムは utf8 と比して遥かに複雑である。従って
+      bxutf8x が正しく実装されているかについてはあまり自信が無い。
+    - bxutf8x は \bxUInt という内部命令を用いる。
+    - utf8x は実際にフォントエンコーディングが読み込まれているかに関わら
+      ず広範な範囲の文字を自分で処理しようとする。結果的に、欧文の文字に
+      関してはほとんど \bxUInt に変換されない。CJK 文字に対しては utf8x
+      は既定では処理しないので \bxUInt に変換される。
 
 
 --------------------------------------------
- bxbase $B%Q%C%1!<%8(B (v0.5) -- $B4pAC%i%$%V%i%j(B 
+ bxbase パッケージ (v0.5) -- 基礎ライブラリ 
 --------------------------------------------
 
-$BB>$N(B BX $B%7%j!<%:$N%Q%C%1!<%8$N2<@A$1$,<g$JLrL\$G$"$k!#J8=q:n@.<T$,$3$N(B
-$B%Q%C%1!<%8$rFI$_9~$`>lLL$O>/$J$$!#(B
+他の BX シリーズのパッケージの下請けが主な役目である。文書作成者がこの
+パッケージを読み込む場面は少ない。
 
-$B"#(B $BBP1~4D6-(B
+■ 対応環境
 
-    $B2$J8(B LaTeX2e / pLaTeX2e / upLaTeX2e
+    欧文 LaTeX2e / pLaTeX2e / upLaTeX2e
 
-$B"#(B $BFI9~(B
+■ 読込
 
-    \usepackage $B$GFI$_9~$`!#%*%W%7%g%s$O$J$$!#(B
+    \usepackage で読み込む。オプションはない。
 
-$B"#(B pxbase $B%Q%C%1!<%8$H$N4X78(B
+■ pxbase パッケージとの関係
 
-    bxbase $B%Q%C%1!<%8$H(B pxbase $B%Q%C%1!<%8(B(PX $B%7%j!<%:(B)$B$OBgItJ,$N5!G=$r(B
-    $B6&DL$K$7$F$$$k!#N>J}FI$_9~$s$@>l9g$O!"6&DL$9$k5!G=$K$D$$$F$OHG$,(B
-    $B?7$7$$J}$,:NMQ$5$l$k!#2a5n8_49@-$rJx$999?7$O9T$o$l$J$$$N$G!"$3$N$3$H(B
-    $B$K4X$7$FJ8=q:n@.<T$,5$$K$9$kI,MW$O$J$$$O$:$G$"$k!#(B
+    bxbase パッケージと pxbase パッケージ(PX シリーズ)は大部分の機能を
+    共通にしている。両方読み込んだ場合は、共通する機能については版が
+    新しい方が採用される。過去互換性を崩す更新は行われないので、このこと
+    に関して文書作成者が気にする必要はないはずである。
 
-    $B$J$*!"8=:_$N=j!"(Bbxbase $B$N$_$KB8:_$9$k5!G=$O$J$$!#(B
+    なお、現在の所、bxbase のみに存在する機能はない。
 
-$B"#(B $B5!G=(B
+■ 機能
 
-    DVI special $B=PNO$NL?Na!#(B
+    DVI special 出力の命令。
 
     \recordpapersize
-      $B<!$N7A$N(B papersize special $BL?Na$r(B DVI $B$N@hF,$K=PNO$9$k!#(B
-        papersize=<$BI}(B>,<$B9b$5(B>
-      ($BI}$H9b$5$O8=:_$N(B \paperwidth $B$H(B \paperheight $B$NCM!#(B)
+      次の形の papersize special 命令を DVI の先頭に出力する。
+        papersize=<幅>,<高さ>
+      (幅と高さは現在の \paperwidth と \paperheight の値。)
 
-    \dvipdfmxmapline{<$B%F%-%9%H(B>}
-      dvipdfmx $B$N%^%C%W;XDj$rJ8=qCf$G9T$&!#(B
-      $B"(<!$N7A$N(B papersize special $BL?Na$r(B DVI $B$N@hF,$K=PNO$9$k!#(B
-        pdf:mapline <$B%F%-%9%H(B>
+    \dvipdfmxmapline{<テキスト>}
+      dvipdfmx のマップ指定を文書中で行う。
+      ※次の形の papersize special 命令を DVI の先頭に出力する。
+        pdf:mapline <テキスト>
 
-    \dvipdfmxmapfile{<$B%U%!%$%kL>(B>}
-      dvipdfmx $B$N%^%C%W%U%!%$%k;XDj$rJ8=qCf$G9T$&!#(B
-      $B"(<!$N7A$N(B papersize special $BL?Na$r(B DVI $B$N@hF,$K=PNO$9$k!#(B
-        pdf:mapfile <$B%U%!%$%kL>(B>
+    \dvipdfmxmapfile{<ファイル名>}
+      dvipdfmx のマップファイル指定を文書中で行う。
+      ※次の形の papersize special 命令を DVI の先頭に出力する。
+        pdf:mapfile <ファイル名>
 
-    $BId9fCM$K$h$kJ8;zF~NO$N$?$a$NL?Na!#(B
+    符号値による文字入力のための命令。
 
-    \Ux{<$B%3!<%ICM(B>,...}
-    \UI{<$B%3!<%ICM(B>,...}
-      Unicode $B%3!<%ICM$K$h$kF~NO$r9T$&!#(B\Ux $B$O2$J8MQ!"(B\UI $B$OOBJ8MQ(B(I $B$O(B
-      Ideographic $B$N0UL#(B)$B!#%3!<%ICM$O0J2<$N7A<0$GI=$9!#%3%s%^$G6h@Z$C$F(B
-      $BJ#?tJ8;zF~NO$G$-$k!#(B
-        - <16$B?J?t(B>:  A72C, 02000B, 1bd $BEy!#(B
-        - +<10$B?J?t(B>: +254, +0937 $BEy!#(B
-        - '<8$B?J?t(B>:  '376, '1651 $BEy!#(B
-      Unicode $BJ8;z$N=PNO$K$O<!$N=gHV$GMxMQ2DG=$J:G=i$N5!G=$rMQ$$$k!#(B(\UI
-      $B$N>l9g(B 3) $B$rHt$P$9!#(B)
-        1) zxjatype $B%Q%C%1!<%8!#$3$N>l9g!"$=$N5!9=$K=>$C$F=PNO$5$l$k!#(B\UI
-           $B$OI,$:OBJ8%U%)%s%H$G=PNO$7!"(B\Ux $B$OOBJ8(B/$B2$J8@ZBX$NBP>]$H$J$k!#(B
-        2) XeTeX $B$N(B Unicode $B=PNO!#(B
-        3) [\Ux $B$N$_(B] bxums $B%Q%C%1!<%8!#(B
-        4) upTeX $B$NOBJ8(B Unicode $B=PNO!#(B
-        5) UTF/OTF/pxotf $B%Q%C%1!<%8!#(B
-        6) ums/bxsuika $B%Q%C%1!<%8!#(B
-      $B$I$l$b;H$($J$$>l9g$O!V(B16$B?JI=8=$K$h$kBeBXI=8=!W$K$J$k!#(B
+    \Ux{<コード値>,...}
+    \UI{<コード値>,...}
+      Unicode コード値による入力を行う。\Ux は欧文用、\UI は和文用(I は
+      Ideographic の意味)。コード値は以下の形式で表す。コンマで区切って
+      複数文字入力できる。
+        - <16進数>:  A72C, 02000B, 1bd 等。
+        - +<10進数>: +254, +0937 等。
+        - '<8進数>:  '376, '1651 等。
+      Unicode 文字の出力には次の順番で利用可能な最初の機能を用いる。(\UI
+      の場合 3) を飛ばす。)
+        1) zxjatype パッケージ。この場合、その機構に従って出力される。\UI
+           は必ず和文フォントで出力し、\Ux は和文/欧文切替の対象となる。
+        2) XeTeX の Unicode 出力。
+        3) [\Ux のみ] bxums パッケージ。
+        4) upTeX の和文 Unicode 出力。
+        5) UTF/OTF/pxotf パッケージ。
+        6) ums/bxsuika パッケージ。
+      どれも使えない場合は「16進表現による代替表現」になる。
 
-    \AJ{<$B%3!<%ICM(B>,...}
-      Adobe-Japan1 $B$N%3!<%ICM$K$h$kF~NO$r9T$&!#%3!<%ICM$O(B 10 $B?J?t$G;XDj(B
-      $B$9$k!#=PNO$K$O<!$N=gHV$GMxMQ2DG=$J:G=i$N5!G=$rMQ$$$k!#(B
-        1) zxotf $B%Q%C%1!<%8!#(B
-        2) UTF/OTF/pxotf $B%Q%C%1!<%8!#(B
-      $B$I$l$b;H$($J$$>l9g$OBeBXI=8=$K$J$k!#(B
+    \AJ{<コード値>,...}
+      Adobe-Japan1 のコード値による入力を行う。コード値は 10 進数で指定
+      する。出力には次の順番で利用可能な最初の機能を用いる。
+        1) zxotf パッケージ。
+        2) UTF/OTF/pxotf パッケージ。
+      どれも使えない場合は代替表現になる。
 
-    \JI{<$B%3!<%ICM(B>,...}
-      $B$$$o$f$k!V(BJIS $B%3!<%I!W!J(BJIS X 0208 $B$N(B GL $BI=8=!K$N%3!<%ICM$K$h$kF~NO(B
-      $B$r9T$&!#%3!<%ICM;XDj$NJ}K!$O(B \Ux $B$HF1$8!#=PNO$K$O(B (u)pTeX $B$N(B JIS
-      $B%3!<%IOBJ8=PNO$N5!G=$r;H$&!#;H$($J$$>l9g$OBeBXI=8=$K$J$k!#(B
+    \JI{<コード値>,...}
+      いわゆる「JIS コード」（JIS X 0208 の GL 表現）のコード値による入力
+      を行う。コード値指定の方法は \Ux と同じ。出力には (u)pTeX の JIS
+      コード和文出力の機能を使う。使えない場合は代替表現になる。
 
-    \KI{<$B%3!<%ICM(B>,...}
-      $B$$$o$f$k!V6hE@%3!<%I!W$N%3!<%ICM$K$h$kF~NO$r9T$&!#%3!<%ICM;XDj$O(B
-      $B0J2<$N$$$:$l$+$NJ}K!$G;XDj$9$k!#(B
-        - RRCC : RR $B$O6hHV9f!"(BCC $B$OE@HV9f$r(B 10 $B?J(B 2 $B7e$GI=$7$?$b$N!#(B
-        - PRRCC : P $B$OLLHV9f!#(BJIS X 0213 $B$N$?$a$N;XDj!#(B
-      $B=PNO$K$O(B (u)pTeX $B$N(B JIS $B%3!<%IOBJ8=PNO$N5!G=$r;H$&!#;H$($J$$>l9g$O(B
-      $BBeBXI=8=$K$J$k!#(BJIS X 0213 $B$NJ8;z$r=PNO$7$?$$>l9g$O!"8=:_$NOBJ8(B
-      $B%U%)%s%H$N%(%s%3!<%G%#%s%0$,(B JIS X 0213 $B$KBP1~$9$k$b$N$G$"$kI,MW$,(B
-      $B$"$k!#$5$i$K!"Bh(B 2 $BLL$NJ8;z$r=PNO$9$k>l9g$K$O(B pTeX $B$NFbIt4A;z%3!<%I(B
-      $B$,(B sjis $B$G$J$1$l$P$J$i$J$$!#(B
+    \KI{<コード値>,...}
+      いわゆる「区点コード」のコード値による入力を行う。コード値指定は
+      以下のいずれかの方法で指定する。
+        - RRCC : RR は区番号、CC は点番号を 10 進 2 桁で表したもの。
+        - PRRCC : P は面番号。JIS X 0213 のための指定。
+      出力には (u)pTeX の JIS コード和文出力の機能を使う。使えない場合は
+      代替表現になる。JIS X 0213 の文字を出力したい場合は、現在の和文
+      フォントのエンコーディングが JIS X 0213 に対応するものである必要が
+      ある。さらに、第 2 面の文字を出力する場合には pTeX の内部漢字コード
+      が sjis でなければならない。
 
     \bxUx / \bxUI / \bxAJ / \bxJI / \bxKI
-       \Ux $BEy$OHs>o$KC;$$L>A0$J$N$GB>$N%Q%C%1!<%8$H>WFM$9$k62$l$,$"$j!"(B
-       $B$=$3$G$3$N%Q%C%1!<%8$G$O4{$KF1L>$NL?Na$,$"$k>l9g$O>e=q$-$7$J$$(B
-       $B$h$&$K$7$F$$$k!#(B\bxUx $BEy$O$=$l$>$l(B \Ux $BEy$HF1$8$G!"@h$N$h$&$J>l9g(B
-       $B$K$b>o$K;H$($k!#(B
+       \Ux 等は非常に短い名前なので他のパッケージと衝突する恐れがあり、
+       そこでこのパッケージでは既に同名の命令がある場合は上書きしない
+       ようにしている。\bxUx 等はそれぞれ \Ux 等と同じで、先のような場合
+       にも常に使える。
 
-    $B2C$($F!"$3$N%Q%C%1!<%8$O(B bxutf8 $B$N0Y$N%I%i%$%P(B \bxUHex $B$*$h$S(B bxutf8x
-    $B$N0Y$N%I%i%$%P$r(B \Ux $B$KAjEv$9$k$b$N$K@_Dj$9$k!#(B
+    加えて、このパッケージは bxutf8 の為のドライバ \bxUHex および bxutf8x
+    の為のドライバを \Ux に相当するものに設定する。
 
-    $B0J2<$N$b$N$OK\Mh$OOBJ8MQ$NL?Na$G$"$k$,!"M}M3$,$"$C$F(B bxbase $B$K$b4^$a$F(B
-    $B$$$k!#(Bpxbase $B$H6&DL$J$N$G>\:Y$O(B PXbase $B$N@bL@=q$r;2>H$7$F$[$7$$!#(B
+    以下のものは本来は和文用の命令であるが、理由があって bxbase にも含めて
+    いる。pxbase と共通なので詳細は PXbase の説明書を参照してほしい。
 
     \safecaret
-      TeX $B%(%9%1!<%W7A<0(B(^^ab)$B$N2r<a$,<:GT$9$k$N$r2sHr$9$k!#(B
+      TeX エスケープ形式(^^ab)の解釈が失敗するのを回避する。
 
-    Bwbel $B4X78$NL?Na!#(B
+    Bwbel 関係の命令。
 
-    \bxcaptionlanguage{<$B8@8lL>(B>}
-      Babel $B$G$O!"DL>o8@8l$,@Z$jBX$o$k$H%-%c%W%7%g%s$dF|IU$NJ8;zNs$,@Z$j(B
-      $BBX$o$k!#$3$NL?Na$r<B9T$9$k$H!"J8;zNs$O;XDj$5$l$?8@8l$N$b$N$G8GDj(B
-      $B$5$l!"(BBabel $B$N8@8l@ZBX$NL?Na$KDI?o$7$J$/$J$k!#$3$NL?Na<+BN$O%W%l(B
-      $B%"%s%V%kCf$G2?2s$G$b;HMQ$G$-$F:G8e$N$b$N$,M-8z$K$J$k!#0z?t$K$OM-8z(B
-      $B$J8@8l%*%W%7%g%s$NL>A0$NB>$K0J2<$N$b$N$,;XDj$G$-$k!#(B
-        - main : $B4pDl8@8l!"$9$J$o$A(B Babel $B$G:G8e$KFI$_9~$^$l$?8@8l$@$,(B
-          $B<!$K=R$Y$k(B \bxmainlanguage $B$GJQ992DG=!#(B
-        - default : $BJ8=q%/%i%9$G;XDj$5$l$?$b$N$r$=$N$^$^MQ$$$k!#F|K\8l(B
-          $B$NJ8=q%/%i%9$G(B Babel $B$rMQ$$$k;~$KJXMx$G$"$k!#(B
-      $B$3$NL?Na$N0U5A$K$D$$$F$O8e$N!V%-%c%W%7%g%sJ8;zNs$N@ZBX5!G=$K$D$$$F!W(B
-      $B$N@a$r;2>H!#(B
+    \bxcaptionlanguage{<言語名>}
+      Babel では、通常言語が切り替わるとキャプションや日付の文字列が切り
+      替わる。この命令を実行すると、文字列は指定された言語のもので固定
+      され、Babel の言語切替の命令に追随しなくなる。この命令自体はプレ
+      アンブル中で何回でも使用できて最後のものが有効になる。引数には有効
+      な言語オプションの名前の他に以下のものが指定できる。
+        - main : 基底言語、すなわち Babel で最後に読み込まれた言語だが
+          次に述べる \bxmainlanguage で変更可能。
+        - default : 文書クラスで指定されたものをそのまま用いる。日本語
+          の文書クラスで Babel を用いる時に便利である。
+      この命令の意義については後の「キャプション文字列の切替機能について」
+      の節を参照。
 
-    \bxmainlanguage{<$B8@8lL>(B>}
-      $B4pDl8@8l!"$9$J$o$A(B \begin{document} $B$ND>8e$K$*$$$FM-8z$H$J$k8@8l$r(B
-      $B@_Dj$9$k!#DL>o$O(B Babel $B$K$*$$$F:G8e$KFI$_9~$^$l$?8@8l%*%W%7%g%s$,(B
-      $B4pDl8@8l$K$J$k!#(B
+    \bxmainlanguage{<言語名>}
+      基底言語、すなわち \begin{document} の直後において有効となる言語を
+      設定する。通常は Babel において最後に読み込まれた言語オプションが
+      基底言語になる。
 
-$B"#(B $B%-%c%W%7%g%sJ8;zNs$N@ZBX5!G=$K$D$$$F(B
+■ キャプション文字列の切替機能について
 
-    Babel $B$N5!G=$N(B 1 $B$D$H$7$F!"8@8l$N@ZBX$KH<$C$F!"%-%c%W%7%g%s$NJ8;zNs(B
-    ($B!V;29MJ88%!W$d!V?^!WEy(B)$B$*$h$SF|IU$N=q<0$r$=$N8@8lMQ$N$b$N$K@Z$jBX$((B
-    $B$k$H$$$&$b$N$,$"$k!#$3$l$K$h$j!"$"$k8@8l(B($BNc$($P%9%m%Y%K%"8l(B)$B$N0Y$N(B
-    $BJ8=q%/%i%9$,$J$/$F$b1Q8lMQ$N%/%i%9$H(B Babel $B$N8@8l@ZBX$G%9%m%Y%K%"8l(B
-    $B$N%-%c%W%7%g%s$NJ8=q$,:n@.$G$-$k(B($B%l%$%"%&%H$,$=$N8@8l$N;HMQ7w$G5vMF(B
-    $B$5$l$k$+$NLdBj$O;D$k$,(B)$B!#$@$,$3$NL\E*$K$O!"%W%l%"%s%V%k$G%-%c%W%7%g%s(B
-    $B8@8l$r(B 1 $B2s;XDj$G$-$l$P$h$/!"J8=qESCf$G$N8@8l@ZBX$K$^$G%-%c%W%7%g%s(B
-    $B$,DI?o$9$kMxE@$O$"$^$j$J$/!">l9g$K$h$C$F$OJ@32$,$"$k$H;W$o$l$k!#$3$N(B
-    $B$h$&$J>l9g$O(B
+    Babel の機能の 1 つとして、言語の切替に伴って、キャプションの文字列
+    (「参考文献」や「図」等)および日付の書式をその言語用のものに切り替え
+    るというものがある。これにより、ある言語(例えばスロベニア語)の為の
+    文書クラスがなくても英語用のクラスと Babel の言語切替でスロベニア語
+    のキャプションの文書が作成できる(レイアウトがその言語の使用圏で許容
+    されるかの問題は残るが)。だがこの目的には、プレアンブルでキャプション
+    言語を 1 回指定できればよく、文書途中での言語切替にまでキャプション
+    が追随する利点はあまりなく、場合によっては弊害があると思われる。この
+    ような場合は
       \bxcaptionlanguage{main}
-    $B$r<B9T$9$l$P!"%-%c%W%7%g%s$O4pDl8@8l(B(\bxmainlanguage $B$N@bL@;2>H(B)$B$G(B
-    $B8GDj$5$l0J8e$OJQ99$5$l$J$$!#$^$?(B
+    を実行すれば、キャプションは基底言語(\bxmainlanguage の説明参照)で
+    固定され以後は変更されない。また
       \bxcaptionlanguage{spanish}
-    $B$N$h$&$KD>@\$K8@8lL>$r;XDj$9$k$3$H$b$G$-$k!#(B
+    のように直接に言語名を指定することもできる。
 
-    $BF|K\8l$N>l9g$O$b$C$HFC<l$J;v>p$,$"$k!#F|K\8l$N%l%$%"%&%H$O2$JF$N8@8l(B
-    $B$N$b$N$H$OBg$-$/0[$J$k$N$G!"F|K\8l$NJ8=q$r:n@.$9$k>l9g$K$OF|K\8lMQ$N(B
-    $BJ8=q%/%i%9$,MQ$$$i$l$k$N$,IaDL$G$"$j!"$=$3$G$OEvA3%-%c%W%7%g%s$O4{$K(B
-    $BF|K\8l$K$J$C$F$$$k!#$3$N$h$&$J>l9g$O(B
+    日本語の場合はもっと特殊な事情がある。日本語のレイアウトは欧米の言語
+    のものとは大きく異なるので、日本語の文書を作成する場合には日本語用の
+    文書クラスが用いられるのが普通であり、そこでは当然キャプションは既に
+    日本語になっている。このような場合は
       \bxcaptionlanguage{default}
-    $B$r<B9T$9$l$P!"%-%c%W%7%g%s$OJ8=q%/%i%9$G@_Dj$5$l$?$b$N$K8GDj$5$l!"(B
-    $B0J8e$OJQ99$5$l$J$$!#(B
+    を実行すれば、キャプションは文書クラスで設定されたものに固定され、
+    以後は変更されない。
 
-$B"#(B $B3+H/<T8~$15!G=(B
+■ 開発者向け機能
 
-    \bxUHex{<$B%3!<%ICM(B16$B?JI=5-(B>}
-      bxutf8 $B$,9=@.$9$kFbItI=8=!#MQ$$$k5!G=$O(B \Ux $B$HF1$8!#(B
-    \bxUInt{<$B@0?t(B>}
-      bxutf8x $B$,9=@.$9$kFbItI=8=!#MQ$$$k5!G=$O(B \Ux $B$HF1$8!#(B
+    \bxUHex{<コード値16進表記>}
+      bxutf8 が構成する内部表現。用いる機能は \Ux と同じ。
+    \bxUInt{<整数>}
+      bxutf8x が構成する内部表現。用いる機能は \Ux と同じ。
 
-    \bxInputDefFIle{<$B%U%!%$%k%Y!<%9L>(B>}
-      $B3HD%;R(B .def $B$N%U%!%$%k$r(B \usepackage $B$HF1$8J}<0$GFI$_9~$`!#(B
-    \bxCheckCPart{<$B%U%!%$%k%Y!<%9L>(B>}
-      $BJL$N%U%!%$%k(B(.sty/.def)$B$H$NHG$NHf3S!#(B
+    \bxInputDefFIle{<ファイルベース名>}
+      拡張子 .def のファイルを \usepackage と同じ方式で読み込む。
+    \bxCheckCPart{<ファイルベース名>}
+      別のファイル(.sty/.def)との版の比較。
     \bxNullify\CS
-      $B%^%/%m(B \CS $B$rL58z$K$9$k!#(B
-    \bxDebug{<$B%F%-%9%H(B>}
-      $B%G%P%C%0%a%C%;!<%8$NI=<(!#(B
-    \bxCheckMA<$B%F%-%9%H(B>\bxEndCheckMA
-      \edef $BCf$G$O$3$NItJ,$,%(%i!<$r=P$9L?Na$KE83+$5$l$k!#(B
+      マクロ \CS を無効にする。
+    \bxDebug{<テキスト>}
+      デバッグメッセージの表示。
+    \bxCheckMA<テキスト>\bxEndCheckMA
+      \edef 中ではこの部分がエラーを出す命令に展開される。
     \bxIfPrimitive\CS{<yes>}{<no>}
-      $B8=:_$N(B \CS $B$NDj5A$,(B($BF1L>$N(B)$B%W%j%_%F%#%V$+$NH=Dj!#(B
-    \bxEngineTypeX  [$B@0?tDj?t(B]
-      1=pTeX$B3HD%(B; 2=XeTeX$B3HD%(B; 3=Omega$B3HD%(B; 0=$B0J>e$K3:Ev$;$:(B
-    \bxEngineTypeY  [$B@0?tDj?t(B]
-      1=eTeX$B3HD%(B; 3=pdfTeX$B3HD%(B; 0=$B0J>e$K3:Ev$;$:(B
-    (upTeX $B$+H]$+$NH=Dj$O(B ifuptex $B%Q%C%1!<%8$rMQ$$$k(B)
+      現在の \CS の定義が(同名の)プリミティブかの判定。
+    \bxEngineTypeX  [整数定数]
+      1=pTeX拡張; 2=XeTeX拡張; 3=Omega拡張; 0=以上に該当せず
+    \bxEngineTypeY  [整数定数]
+      1=eTeX拡張; 3=pdfTeX拡張; 0=以上に該当せず
+    (upTeX か否かの判定は ifuptex パッケージを用いる)
 
-    \bxTrivLangDef{<$B8@8lL>(B>}
-      $BCf?H$,6u$N(B Babel $B8@8l%*%W%7%g%s$r@8@.$9$k!#(B
+    \bxTrivLangDef{<言語名>}
+      中身が空の Babel 言語オプションを生成する。
 
-    \bxToHexTwo{<$B@0?t(B>}      [%02X $B7A<0(B; 0x00$B!A(BFF]
-    \bxToHexThree{<$B@0?t(B>}    [%03X $B7A<0(B; 0x000$B!A(BFFF]
-    \bxToHexFour{<$B@0?t(B>}     [%04X $B7A<0(B; 0x0000$B!A(BFFFF]
-    \bxToHexFive{<$B@0?t(B>}     [%05X $B7A<0(B; 0x00000$B!A(BFFFFF]
-    \bxToHexFiveX{<$B@0?t(B>}    [%05X $B7A<0(B; 0x00000$B!A(BFFFFF $B"((B1]
-    \bxToHexEight{<$B@0?t(B>}    [%08X $B7A<0(B; 0x00000000$B!A(B7FFFFFFF]
-    \bxToHexTiny{<$B@0?t(B>}     [%X $B7A<0(B; 0x0$B!A(BFF]
-    \bxToHexSmall{<$B@0?t(B>}    [%X $B7A<0(B; 0x0$B!A(B7FFF]
-    \bxToHexUC{<$B@0?t(B>}       [%04X $B7A<0(B; 0x0000$B!A(B10FFFF $B"((B2]
-      16 $B?JI=5-$r(B \bxHex $B$KJV$9!#(BUC $B$O(B 4$B!A(B6 $B7e$G$NI=5-!#(B
-      $B"((B1 0xFFFFF $B$rD6$($k>l9g$O(B "FFFFF" $B$K$J$k(B
-      $B"((B2 XeTeX/LuaTeX/upTeX $B$N>l9g!"(B\char $B$,2DG=$JHO0O!#(B
+    \bxToHexTwo{<整数>}      [%02X 形式; 0x00〜FF]
+    \bxToHexThree{<整数>}    [%03X 形式; 0x000〜FFF]
+    \bxToHexFour{<整数>}     [%04X 形式; 0x0000〜FFFF]
+    \bxToHexFive{<整数>}     [%05X 形式; 0x00000〜FFFFF]
+    \bxToHexFiveX{<整数>}    [%05X 形式; 0x00000〜FFFFF ※1]
+    \bxToHexEight{<整数>}    [%08X 形式; 0x00000000〜7FFFFFFF]
+    \bxToHexTiny{<整数>}     [%X 形式; 0x0〜FF]
+    \bxToHexSmall{<整数>}    [%X 形式; 0x0〜7FFF]
+    \bxToHexUC{<整数>}       [%04X 形式; 0x0000〜10FFFF ※2]
+      16 進表記を \bxHex に返す。UC は 4〜6 桁での表記。
+      ※1 0xFFFFF を超える場合は "FFFFF" になる
+      ※2 XeTeX/LuaTeX/upTeX の場合、\char が可能な範囲。
 
-    \bxCodeValueSeq\CS{<$BJ8;zNs(B>}    [16$B?J(B]
-    \bxCodeValueSeqD\CS{<$BJ8;zNs(B>}   [10$B?J(B]
-      \Ux, \UI $B$,;H$C$F$$$k!"%3!<%ICM$NNs$r2r<a$9$k%k!<%A%s!#(B
+    \bxCodeValueSeq\CS{<文字列>}    [16進]
+    \bxCodeValueSeqD\CS{<文字列>}   [10進]
+      \Ux, \UI が使っている、コード値の列を解釈するルーチン。
 
-    \bxAssign<$BBeF~J8(B>\relax
-      $BBeF~J8$,40A4(B($B%4%_$,$J$$(B)$B$+$NH=Dj$7%9%$%C%A(B \ifbxOk $B$KJV$9!#(B
+    \bxAssign<代入文>\relax
+      代入文が完全(ゴミがない)かの判定しスイッチ \ifbxOk に返す。
 
-    \bxToLower{<$BJ8;zNs(B>}
-    \bxToUpper{<$BJ8;zNs(B>}
-      $B>.J8;z(B/$BBgJ8;z$KJQ49$7$?$b$N$r(B \bxRes $B$KJV$9!#(B
+    \bxToLower{<文字列>}
+    \bxToUpper{<文字列>}
+      小文字/大文字に変換したものを \bxRes に返す。
 
-    \bxDocumentSpecial{<$B%F%-%9%H(B>}
-      \AtBeginDvi $B$rIaDL$KMQ$$$F(B DVI $B$N@hF,It$K(B special $B$r=PNO$9$k!#(B
-    \bxDocumentSpecialUrgent{<$B%F%-%9%H(B>}
-      DVI $B$N$J$k$Y$/@hF,(B($BB>$N(B special $B$h$jA0(B)$B$N0LCV$K(B special $B$r=PNO!#(B
+    \bxDocumentSpecial{<テキスト>}
+      \AtBeginDvi を普通に用いて DVI の先頭部に special を出力する。
+    \bxDocumentSpecialUrgent{<テキスト>}
+      DVI のなるべく先頭(他の special より前)の位置に special を出力。
 
     \bxEnableSafeCaret
-      safe caret $B5!G=$r;HMQ2DG=$K$7$F$*$/!#$9$J$o$A!"%W%l%"%s%V%k$G$3$N(B
-      $BL?Na$,8F$P$l$J$+$C$?>l9g!"(Bsafe caret $B$O;HMQIT2D$K$J$k!#<B:]$K$"$k(B
-      $B>u67$G(B safe caret $B$rM-8z$K$9$k$K$O!"(B\bx@acr@normcaret $B$r!V$=$N>u67(B
-      $B$G$NK\Mh$N!R(B^$B!S$NF0:n!W$KDj5A$7$?>e$G!R(B^$B!S$r%"%/%F%#%V$K$9$kI,MW$,(B
-      $B$"$k!#(B
-      $B"((B $B%f!<%6L?Na$N(B \safecaret $B$O$3$NL?Na$r<B9T$9$k$H$H$b$K!"(Bverbatim
-      $B$H(B babel $B$G$NE,@Z$J(B safe caret $B=hM}$rM-8z2=$7$F$$$k!#(B
+      safe caret 機能を使用可能にしておく。すなわち、プレアンブルでこの
+      命令が呼ばれなかった場合、safe caret は使用不可になる。実際にある
+      状況で safe caret を有効にするには、\bx@acr@normcaret を「その状況
+      での本来の〈^〉の動作」に定義した上で〈^〉をアクティブにする必要が
+      ある。
+      ※ ユーザ命令の \safecaret はこの命令を実行するとともに、verbatim
+      と babel での適切な safe caret 処理を有効化している。
 
-    \bxUseShadowMap\CS{<TFM$BL>(B>}
-      $BL?Na8l(B \CS $B$r;XDj$N(B TFM $B$+$i@8@.$5$l$k(B shadow map $B$H$7$FDj5A$9$k!#(B
+    \bxUseShadowMap\CS{<TFM名>}
+      命令語 \CS を指定の TFM から生成される shadow map として定義する。
     \bxMap\CS
-      $B@0?t%l%8%9%?(B \bxUcv $B$N8=:_$NCM$K(B shadow map $B$rE,MQ$7!"$=$N7k2L$r(B
-      \bxUcv $B$KBeF~$9$k!#(B
-      $B"((B shadow map $B$H$O!V(B16 bit $B@0?t(B $B"*(B $B@0?t!W$N<LA|$r(B TFM $B$H$7$FI=8=(B
-      $B$7$?$b$N!#(B
+      整数レジスタ \bxUcv の現在の値に shadow map を適用し、その結果を
+      \bxUcv に代入する。
+      ※ shadow map とは「16 bit 整数 → 整数」の写像を TFM として表現
+      したもの。
 
 ---------------------------------------------------
-  bxucs $B%Q%C%1!<%8(B (v0.2) -- $B2$J8(B Unicode $BJ8;z=PNO(B 
+  bxucs パッケージ (v0.2) -- 欧文 Unicode 文字出力 
 ---------------------------------------------------
 
-Unicode subfont $B$rMxMQ$7$F!"(B($B2$J8$N(B) Unicode $B=hM}G=NO$r%M%$%F%#%V$K$O(B
-$B$b$?$J$$(B LaTeX $B=hM}7O$G(B Unicode $B%U%)%s%H$r:GBg8B3hMQ$9$k0Y$N%Q%C%1!<%8(B
-$B$G$"$k!#(BupLaTeX $B$OOBJ8$K4X$9$k%M%$%F%#%V$J(B Unicode $B=hM}$r9T$&$,!"2$J8(B
-$B$H$7$F(B Unicode $BJ8;z$r07$&>l9g$K$O$3$N%Q%C%1!<%8$,M-8z$G$"$m$&!#(B
+Unicode subfont を利用して、(欧文の) Unicode 処理能力をネイティブには
+もたない LaTeX 処理系で Unicode フォントを最大限活用する為のパッケージ
+である。upLaTeX は和文に関するネイティブな Unicode 処理を行うが、欧文
+として Unicode 文字を扱う場合にはこのパッケージが有効であろう。
 
-$B"#(B $BBP1~4D6-(B
+■ 対応環境
 
-    $B2$J8(B LaTeX2e / pLaTeX2e / upLaTeX2e
+    欧文 LaTeX2e / pLaTeX2e / upLaTeX2e
 
-$B"#(B $BFI9~(B
+■ 読込
 
-    \usepackage $B$GFI$_9~$`!#%*%W%7%g%s$O$J$$!#(B
+    \usepackage で読み込む。オプションはない。
       \usepackage{bxucs}
 
-$B"#(B $B%U%)%s%H$N=`Hw(B
+■ フォントの準備
 
-    $B2$J8%U%)%s%H%U%!%_%j$KBP$7$F$3$N%Q%C%1!<%8$K$h$k(B Unicode $B=PNO$r2DG=(B
-    $B$K$9$k0Y$K$O!"<!$N(B 2 $B<oN`$N%(%s%3!<%G%#%s%0$KBP$9$k%U%!%_%j$N(B NFSS
-    $B$K4p$E$/%U%)%s%HDj5A$,I,MW$G$"$k!#(B
-      - LaTeX $B$NDL>o$N%(%s%3!<%G%#%s%0!":GDc$G$b(B OT1 $B$H(B T1
-      - Unicode subfont $B%(%s%3!<%G%#%s%0(B($B$3$3$G$O(B USF $B$H8F$V(B)
+    欧文フォントファミリに対してこのパッケージによる Unicode 出力を可能
+    にする為には、次の 2 種類のエンコーディングに対するファミリの NFSS
+    に基づくフォント定義が必要である。
+      - LaTeX の通常のエンコーディング、最低でも OT1 と T1
+      - Unicode subfont エンコーディング(ここでは USF と呼ぶ)
 
-    $BNc$($P!"<!$N(B 2 $B%7%'!<%W$+$i$J$k%U%)%s%H%U%!%_%j$,$"$k$H$9$k!#(B
+    例えば、次の 2 シェープからなるフォントファミリがあるとする。
       - FOO_R.ttf : regular weight
       - FOO_B.ttf ; bold weight
-    $B$3$l$r(B LaTeX $B%U%!%_%jL>(B "foo" $B$GDj5A$9$k$3$H$r9M$($k!#(B
+    これを LaTeX ファミリ名 "foo" で定義することを考える。
 
-    $B:G=i$K(B OT1 $B$K4X$9$kDj5A$r$9$k!#$=$N0Y$K$O!"3F%7%'!<%W$KBP$9$k(B TFM $B$N(B
-    $BL>A0$r7h$a$kI,MW$,$"$k!#(Bregular $B$r(B foo-r-ot1$B!"(Bbold $B$r(B foo-b-ot1 $B$H(B
-    $B$9$k(B($BL^O@(B Berry $BL?L>K!$K=>$C$F$bNI$$(B)$B$H!"(BOT1 $B$KBP$9$k%U%)%s%HDj5A(B
-    $B%U%!%$%k(B ot1foo.fd $B$NFbMF$O<!$N$h$&$K$J$k!#(B
+    最初に OT1 に関する定義をする。その為には、各シェープに対する TFM の
+    名前を決める必要がある。regular を foo-r-ot1、bold を foo-b-ot1 と
+    する(勿論 Berry 命名法に従っても良い)と、OT1 に対するフォント定義
+    ファイル ot1foo.fd の内容は次のようになる。
 
       \DeclareFontFamily{T1}{foo}{}
       \DeclareFontShape{T1}{foo}{m}{n}{<->foo-r-ot1}{}
       \DeclareFontShape{T1}{foo}{bx}{n}{<->foo-b-ot1}{}
 
-    T1 $B%(%s%3!<%G%#%s%0$KBP$9$k@_Dj$bF1MM$G$"$k!#(B
+    T1 エンコーディングに対する設定も同様である。
 
-    $B<!$K(B Unicode subfont (USF) $B$KBP$9$kDj5A$r$9$k!#(BUnicode subfont $B$H$O(B
-    Unicode $B$N(B BMP $BNN0h$r(B 256 $BJ8;zKh$KJ,3d$7$FJ#?t$N(B TFM $B$K<}$a$?$b$N$G(B
-    $B$"$k!#=>$C$F!"(B1 $B$D$N%7%'!<%W$KBP$7$F(B TFM $B$O(B($B:GBg$G(B) 256 $B8D$"$k$3$H(B
-    $B$K$J$j!"L>A0$N0lIt$KHV9f(B($B>.J8;z(B 16 $B?JI=5-(B)$B$r4^$a$FI=$9!#:#$N>l9g$G(B
-    $B$ONc$($P(B Regular $B$N%7%'!<%W$KBP$9$k(B TFM $BL>$O(B
-      foo-r-u??   (?? $B$O(B 00, 01, $B!D(B, fe, ff)
-    $B$H$9$k$3$H$,$G$-$k!#F1MM$K(B Bold $B$r(B foo-b-u?? $B$H$9$k!#(BUnicode subfont
-    $B$KBP$9$k%U%)%s%HDj5A%U%!%$%k$O<!$N7A<0$G5-=R$5$l$k!#(B
+    次に Unicode subfont (USF) に対する定義をする。Unicode subfont とは
+    Unicode の BMP 領域を 256 文字毎に分割して複数の TFM に収めたもので
+    ある。従って、1 つのシェープに対して TFM は(最大で) 256 個あること
+    になり、名前の一部に番号(小文字 16 進表記)を含めて表す。今の場合で
+    は例えば Regular のシェープに対する TFM 名は
+      foo-r-u??   (?? は 00, 01, …, fe, ff)
+    とすることができる。同様に Bold を foo-b-u?? とする。Unicode subfont
+    に対するフォント定義ファイルは次の形式で記述される。
 
-      \USFDeclareFontShape{<$B%U%!%_%j(B>}{<$BHV9fNs(B>}{
-        \USFShape{<$B%7%j!<%:(B>}{<$B%7%'!<%W(B>}{<TFM$BDj5A(B>}{<$B=i4|2=(B>}
-        ($BI,MW$J$@$1(B \USFShape $B$r7+$jJV$9(B)
+      \USFDeclareFontShape{<ファミリ>}{<番号列>}{
+        \USFShape{<シリーズ>}{<シェープ>}{<TFM定義>}{<初期化>}
+        (必要なだけ \USFShape を繰り返す)
       }
 
-    Unicode subfont $B$O(B 256 $B8DA4$F$,B7$C$F$$$k$H$O8B$i$J$$!#Nc$($P(B 60 $BHV(B
-    (U+6000$B!A(B60FF) $B$O4A;z$N$_$r4^$`$N$G!"85$N%U%)%s%H%U%!%$%k$,(B CJK $BBP1~(B
-    $B$N$b$N$G$J$$8B$j!"(B60 $BHV$N(B subfont $B$OB8:_$7$J$$$3$H$K$J$k!#(B<$BHV9fNs(B>
-    $B$K$O!"B8:_$9$kHV9f$NHO0O$NNs$r5-$9!#$3$3$G$O(B 00, 01, 02, 03, ff $B$,(B
-    $BB8:_$9$k$H$9$k!#:#$NNc$G$N%U%)%s%HDj5A%U%!%$%k(B usffoo.fd $B$NFbMF$O<!(B
-    $B$N$h$&$K$J$k!#(B
+    Unicode subfont は 256 個全てが揃っているとは限らない。例えば 60 番
+    (U+6000〜60FF) は漢字のみを含むので、元のフォントファイルが CJK 対応
+    のものでない限り、60 番の subfont は存在しないことになる。<番号列>
+    には、存在する番号の範囲の列を記す。ここでは 00, 01, 02, 03, ff が
+    存在するとする。今の例でのフォント定義ファイル usffoo.fd の内容は次
+    のようになる。
 
       \USFDeclareFontShape{foo}{00-03,FF}{
         \USFShape{m}{n}{<->foo-r-u#1}{}
         \USFShape{bx}{n}{<->foo-b-u#1}{}
       }
 
-    $B$"$H$O!":#$N2aDx$G7h$a$?;v9`$K=>$C$F!"<B:]$K(B TFM $B%U%!%$%k$r@8@.$7(B
-    (TrueType $B%U%)%s%H$N>l9g$O(B ttf2tfm $B$r;H$&(B)$B!"$5$i$K(B TFM $B$H<BJ*$N(B
-    $B%U%)%s%H%U%!%$%k$r4XO"IU$1$k$h$&$K(B DVI $B%&%'%"$r@_Dj$9$kI,MW$b$"$k!#(B
+    あとは、今の過程で決めた事項に従って、実際に TFM ファイルを生成し
+    (TrueType フォントの場合は ttf2tfm を使う)、さらに TFM と実物の
+    フォントファイルを関連付けるように DVI ウェアを設定する必要もある。
 
-$B"#(B $B5!G=(B
+■ 機能
 
-    $B$3$N%Q%C%1!<%8$O(B bxbase $B$N(B \Ux $B$N%$%s%?%U%'!<%9$rMxMQ$9$k!#=>$C$F!"(B
+    このパッケージは bxbase の \Ux のインタフェースを利用する。従って、
       \Ux{0425,043E,0440,043E,0448,043E}
-    $B$N$h$&$K(B \Ux $B$N0z?t$K%3!<%ICM$N(B 16 $B?JI=5-$NNs$r=q$1$P$h$$!#$?$@$7(B
-    $B$3$N;~$K!"8=:_$N%U%)%s%H%U%!%_%j$OA0=R$N@bL@$GMQ0U$7$?(B Unicode
-    subfont $B$,Dj5A$5$l$?$b$N$G$J$1$l$P$J$i$J$$!#(B($B$J$*!"$3$N%Q%C%1!<%8$O(B
-    $BFbIt$G(B bxbase $B$rFI$_9~$`$N$GJL$KFI$_9~$`I,MW$O$J$$!#(B)
+    のように \Ux の引数にコード値の 16 進表記の列を書けばよい。ただし
+    この時に、現在のフォントファミリは前述の説明で用意した Unicode
+    subfont が定義されたものでなければならない。(なお、このパッケージは
+    内部で bxbase を読み込むので別に読み込む必要はない。)
 
-    $B;HMQCf$N%U%)%s%H$K;XDj$5$l$?%3!<%I$NJ8;z$,$J$$>l9g$O!"OBJ8MQ$N(B \UI
-    $B$NJ}$K=hM}$rEO$9!#$?$@$7$3$3$G(B e-TeX $B3HD%$,;H$($J$$>l9g!"B8:_$9$k(B
-    $BJ8;z$HF1$8(B subfont $B$KB0$9$kJ8;z$OA4$FB8:_$9$k$HH=CG$5$l$F$7$^$&$H(B
-    $B$$$&@)8B$,$"$j!"7k2L$H$7$FOBJ8%U%)%s%H$K$OJ8;z$,$"$k$N$K;H$($J$$(B
-    $B$H$$$&8=>]$,5/$3$j$&$k!#(B
+    使用中のフォントに指定されたコードの文字がない場合は、和文用の \UI
+    の方に処理を渡す。ただしここで e-TeX 拡張が使えない場合、存在する
+    文字と同じ subfont に属する文字は全て存在すると判断されてしまうと
+    いう制限があり、結果として和文フォントには文字があるのに使えない
+    という現象が起こりうる。
 
 
 -------------------------------------------------------
-  zxbase $B%Q%C%1!<%8(B (v0.4a) -- XeLaTeX $B4pAC%i%$%V%i%j(B
+  zxbase パッケージ (v0.4a) -- XeLaTeX 基礎ライブラリ
 ------------------------------------------------------
 
-$B@[:n$N(B XeLaTeX $BMQ%Q%C%1!<%8(B(ZX $B%7%j!<%:(B)$B$G;H$o$l$kItIJE*5!G=$r<}$a$?(B
-$B%Q%C%1!<%8$G$"$k!#:#$N$H$3$m!"$3$N%Q%C%1!<%8$K$O%f!<%6L?Na$ODj5A$5$l$F(B
-$B$$$J$$$N$G!"J8=q:n@.<T$,(B \usepackage $B$GD>@\$3$l$rFI$_9~$`$3$H$O$J$$!#(B
-($B8=:_!"(Bzxotf $B$,$3$N%Q%C%1!<%8$rFbIt$GFI$_9~$`!#(B)
+拙作の XeLaTeX 用パッケージ(ZX シリーズ)で使われる部品的機能を収めた
+パッケージである。今のところ、このパッケージにはユーザ命令は定義されて
+いないので、文書作成者が \usepackage で直接これを読み込むことはない。
+(現在、zxotf がこのパッケージを内部で読み込む。)
 
 ----------------------------------------
 
-$B"#(B $B99?7MzNr(B
+■ 更新履歴
 
     version 0.5 <2010/06/15>
-      - bxbase: \JI/\KI $B$rDI2C!#(B
-      - bxbase: \dvipdfmxmapline/\dvipdfmxmapfont $B$rDI2C!#(B
-      - bxutf8: BMP $B30$NId9fCM$X$NBP1~!#(B
+      - bxbase: \JI/\KI を追加。
+      - bxbase: \dvipdfmxmapline/\dvipdfmxmapfont を追加。
+      - bxutf8: BMP 外の符号値への対応。
 
     version 0.4a <2009/11/16>
-      - bxbase $B$G(B \UI/\Ux $B$r(B zxjatype $B$H!"(B\AJ $B$r(B zxotf $B$HO"7H$5$;$?!#(B
-      - zxbase $B%Q%C%1!<%8$rDI2C!#(B
+      - bxbase で \UI/\Ux を zxjatype と、\AJ を zxotf と連携させた。
+      - zxbase パッケージを追加。
 
     version 0.4 <2009/07/05>
-      - PXbase $B$N(B v0.4 $B$K9g$o$;$?2~D{!#(B
+      - PXbase の v0.4 に合わせた改訂。
 
     version 0.3 <2008/04/06>
-      - bxutf8x $B$rDI2C!#(B
-      - bxutf8 $B$N%P%0$r=$@5!#(B
-      - bxbase $B$G$b(B pxbase $B$NL?Na(B \recordpapersize $B$r;HMQ2DG=$K$7$?!#(B
+      - bxutf8x を追加。
+      - bxutf8 のバグを修正。
+      - bxbase でも pxbase の命令 \recordpapersize を使用可能にした。
 
     version 0.2 <2008/03/28>
-      - $B:G=i$N8x3+HG!#(B
+      - 最初の公開版。
 
 # EOF
