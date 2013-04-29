@@ -1,0 +1,151 @@
+% 文字コードは UTF-8
+% uplatex で組版する
+\documentclass[a4paper,uplatex]{jsarticle}
+\usepackage{shortvrb}
+\MakeShortVerb{\|}
+\newcommand{\PkgVersion}{1.0}
+\newcommand{\Pkg}[1]{\textsf{#1}}
+\newcommand{\Meta}[1]{$\langle$\mbox{}#1\mbox{}$\rangle$}
+\newcommand{\Note}{\par\noindent ※}
+\newcommand{\Means}{~：\quad}
+\providecommand{\pTeX}{p\TeX}
+\providecommand{\upTeX}{u\pTeX}
+\providecommand{\pLaTeX}{p\LaTeX}
+\providecommand{\upLaTeX}{u\pLaTeX}
+%-----------------------------------------------------------
+\begin{document}
+\title{\Pkg{bxbase} パッケージ（v\PkgVersion）\\
+（ユーザ命令の解説）}
+\author{八登崇之\ （Takayuki YATO; aka.~``ZR''）}
+\date{2013/04/29}
+\maketitle
+
+%===========================================================
+\section{パッケージの読込}
+
+|\usepackage| で読み込む。オプションは無い。
+\begin{quote}\small\begin{verbatim}
+\usepackage{bxbase}
+\end{verbatim}\end{quote}
+
+\Note 本パッケージのライブラリとしての機能は特定の
+エンジンやDVIウェアに依存しないが、以下に述べる命令に
+ついては必ずしもそうでないことに注意。
+
+%===========================================================
+\section{機能}
+
+%-------------------
+\subsection{DVI special 出力}
+
+\begin{itemize}
+\item |\recordpapersize|\Means
+次の形のpapersize special命令をDVIの先頭に出力する。
+\begin{quote}\small\begin{verbatim}
+papersize=<幅>,<高さ>
+\end{verbatim}\end{quote}
+ (幅と高さは現在の |\paperwidth| と |\paperheight| の値。)
+ \Note papersize specialはdvips、dvipdfmx、dviout等の
+ DVIウェアで有効である。（pdf\TeX では無効。）
+ 
+\item |\dvipdfmxmapfile{|\Meta{修飾子}\Meta{ファイル名}|}|\Means
+dvipdfmxのマップファイル指定を文書中で行う。
+\Meta{修飾子} は空（置換）、|+|（追加）、|-|（削除）
+の何れかである。
+当然dvipdfmx専用である。
+\Note 次の形のspecial命令をDVIの先頭に出力する。
+\begin{quote}\small\begin{verbatim}
+pdf:mapfile <修飾子><ファイル名>
+\end{verbatim}\end{quote}
+
+
+\item |\dvipdfmxmapline{|\Meta{修飾子}\Meta{マップ行}|}|\Means
+dvipdfmxのマップ行指定を文書中で行う。
+\Meta{修飾子} については前項と同じ。
+dvipdfmx専用。
+\Note 次の形のspecial命令をDVIの先頭に出力する。
+\begin{quote}\small\begin{verbatim}
+pdf:mapline <修飾子><マップ行>
+\end{verbatim}\end{quote}
+
+\end{itemize}
+
+%-------------------
+\subsection{符号値による文字入力}
+
+\begin{itemize}
+\item |\Ux{|\Meta{コード値}|,...}|\\
+      |\UI{|\Meta{<コード値>}|,...}|\Means
+Unicode コード値による入力を行う。
+|\Ux| は欧文用、|\UI| は和文用
+（I は Ideographic の意味）。
+コード値は以下の形式で表す。
+コンマで区切って複数文字入力できる。
+\begin{itemize}
+\item \Meta{16進数}\Means    |A72C|, |02000B|, |1bd| 等。
+\item |+|\Meta{10進数}\Means |+254|, |+0937| 等。
+\item |'|\Meta{8進数}\Means  |'376|, |'1651| 等。
+\end{itemize}
+
+Unicode 文字の出力には次の順番で利用可能な最初の機能を用いる。
+（|\UI| の場合 3) を飛ばす。）
+\begin{enumerate}
+\item[1)] \Pkg{zxjatype}パッケージ。
+この場合、その機構に従って出力される。
+すなわち |\UI| は必ず和文フォントで出力し、
+|\Ux| は和文/欧文切替の対象となる。
+\item[2)] XeTeXのUnicode出力。
+\item[3)] （|\Ux| のみ）\Pkg{bxucs}パッケージ。
+\item[4)] {\upTeX}の和文Unicode出力。
+\item[5)] \Pkg{UTF}／\Pkg{OTF}パッケージ。
+\item[6)] \Pkg{ums}／\Pkg{bxsuika}パッケージ。
+\end{enumerate}
+どれも使えない場合は「16進表現による代替表現」になる。
+
+\item |\AJ{|\Meta{コード値}|,...}|\Means
+Adobe-Japan1のコード値による入力を行う。
+コード値は10進数で指定する。
+出力には次の順番で利用可能な最初の機能を用いる。
+\begin{enumerate}
+\item[1)] \Pkg{zxotf}パッケージ。
+\item[2)] \Pkg{UTF}／\Pkg{OTF}パッケージ。
+\end{enumerate}
+どれも使えない場合は代替表現になる。
+
+\item |\JI{|\Meta{コード値}|,...}|\Means
+いわゆる「JISコード」（JIS~X~0208のGL表現）
+のコード値による入力を行う。
+コード値指定の方法は |\Ux| と同じ。
+出力には{(u)\pTeX}のJISコード和文出力の機能を使う。
+使えない場合は代替表現になる。
+
+\item |\KI{|\Meta{コード値}|,...}|\Means
+いわゆる「区点コード」のコード値による入力を行う。
+コード値指定は「RRCC」（RRは区番号、CCは点番号を10進2桁で表したもの）
+の形式で指定する。
+出力には{(u)\pTeX}のJISコード和文出力の機能を使う。
+使えない場合は代替表現になる。
+%\paragraph{JIS~X~0213対応}
+% 現在の和文フォントのエンコーディングがJIS~X~0213に対応する
+%ものである場合
+%\footnote{普及しているパッケージだけではこれは実現できない。
+%（だからこの段落の内容は大部分の人には無意味。）}
+%は、コード値指定を「PRRCC」（Pは面番号）とすることで
+%JIS~X~0213の文字を指定できる。
+%ただし、第2面の文字を出力する場合には{\pTeX}の内部漢字コード
+%がsjisでなければならない。
+
+\item |\bxUx| / |\bxUI| / |\bxAJ| / |\bxJI| / |\bxKI|\Means
+|\Ux| 等は非常に短い名前なので他のパッケージと衝突する恐れがあり、
+そこでこのパッケージでは既に同名の命令がある場合は上書きしない
+ようにしている。
+|\bxUx| 等はそれぞれ |\Ux| 等と同じで、
+先のような場合にも常に使える。
+
+\end{itemize}
+
+なお、このパッケージは\Pkg{bxutf8}の為のドライバ（|\bxUHex|）
+および\Pkg{bxutf8x}の為のドライバを |\Ux| に相当するものに設定する。
+
+%===========================================================
+\end{document}
