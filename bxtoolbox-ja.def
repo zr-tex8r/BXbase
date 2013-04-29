@@ -33,12 +33,20 @@
 
 %%------ related to pTeX
 
+%%
+\newbool{bxtb@pxbase@ok}
+\ifbxinpTeX
+  \IfFileExists{pxbase.sty}{%
+    \bxtb@pxbase@oktrue
+  }{}
+\fi
+
 %%<+> \bxToYokoDir
 % Switches to horizontal(yoko) writing direction
 % when using pTeX.
 \ifbxinpTeX         %----<*pTeX>
 \newcommand*\bxToYokoDir{%
-  \bxIftdir{\yoko}{}}
+  \bxIfydir{}{\yoko}}
 \else               %----<*!pTeX>
 \newcommand*\bxToYokoDir{}
 \fi                 %----</pTeX>
@@ -94,17 +102,25 @@
 
 %%<+> \bxInternalJaEncoding
 \let\bxInternalJaEncoding=?
-\ifbxinpTeX
+\ifbxHasAlUcsChar
+  \let\bxInternalJaEncoding=u
+\else\ifbxinpdfTeX
+  \let\bxInternalJaEncoding=b
+\else\ifbxinpTeX
   \ifnum\jis"2121="8140 \let\bxInternalJaEncoding=s\else
   \ifnum\jis"2121="A1A1 \let\bxInternalJaEncoding=e\else
   \ifnum\jis"2121="3000 \let\bxInternalJaEncoding=u\fi\fi\fi
-\fi
+\fi\fi\fi
 %%<+D> \pxInternalJEnc
 \let\pxInternalJEnc\bxInternalJaEncoding
 
 %%<+> \bxInputJaEncoding
 \let\bxInputJaEncoding=?
-\ifbxinpTeX
+\ifbxHasAlUcsChar
+  \let\bxInputJaEncoding=u
+\else\ifbxinpdfTeX
+  \let\bxInputJaEncoding=b
+\else\ifbxtb@pxbase@ok
   \@@input pxbsjc.def\relax
   \def\bxtb@tmpb#1#2\@nil{%
     \ifnum `#1=\jis"723F \let\bxInputJaEncoding=s\else
@@ -117,15 +133,15 @@
       \ifnum `#1=\jis"723F \let\bxInputJaEncoding=a\fi}
     \expandafter\bxtb@tmpb\bxtb@tmpa\@nil
   \fi
-\fi
+\fi\fi\fi
 %%<+D> \pxSourceJEnc
 \let\pxSourceJEnc\bxInputJaEncoding
 
 %%<+> \bxOutputJaEncoding
 \let\bxOutputJaEncoding=?
-\ifbxinpTeX
-  \let\bxOutputJaEncoding=\bxInputJaEncoding
-\fi
+% if input is 'auto', output shold not be equal to it,
+% but I don't know what to do then.
+\let\bxOutputJaEncoding=\bxInputJaEncoding
 
 %% \bxtb@jaencname
 \def\bxtb@jaencname#1#2{%
@@ -133,7 +149,8 @@
   \ifx s#1sjis\else
   \ifx e#1euc\else
   \ifx a#1auto\else
-  (unknown)\fi\fi\fi\fi}
+  \ifx b#1byte\else
+  (unknown)\fi\fi\fi\fi\fi}
 
 %%<*> \internaljaencodingname
 \newcommand*\internaljaencodingname{}
@@ -151,12 +168,13 @@
   \bxtb@jaencname\bxOutputJaEncoding{utf8}}
 
 %%<*> \infojenc
-\def\bxtb@tmpa{%
+\newcommand*\infojenc{%
+  \typeout{%
   Kanji encoding:
   input=\inputjaencodingname;
   output=\outputjaencodingname;
-  internal=\internaljaencodingname}
-\edef\infojenc{\noexpand\typeout{\bxtb@tmpa}}
+  internal=\internaljaencodingname}%
+}
 
 %%------ all done
 \endinput
