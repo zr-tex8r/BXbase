@@ -4,7 +4,7 @@
 
 %% File declaration
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesFile{bxtoolbox-ja.def}[2012/08/19 v0.9b BX base library]
+\ProvidesFile{bxtoolbox-ja.def}[2013/04/29 v1.0]
 % avoid multiple loading
 \csname bxtoolboxja@def@loaded\endcsname
 

@@ -2,7 +2,7 @@
 % bxutf8.def
 %
 %% file declaration
-\ProvidesFile{bxutf8.def}[2011/03/01 v0.9 BX UTF-8 input encoding]
+\ProvidesFile{bxutf8.def}[2013/04/29 v1.0 BX UTF-8 input encoding]
 %
 % Note: All definitions in this file should be local.
 % This file should not spill any spaces or \par.

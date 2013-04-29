@@ -4,7 +4,7 @@
 
 %% File declaration
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesFile{bxbase.def}[2012/08/19 v0.9b BX base library]
+\ProvidesFile{bxbase.def}[2013/04/29 v1.0 BX base library]
 % avoid multiple loading
 \csname bxbase@def@loaded\endcsname
 
@@ -18,7 +18,7 @@
 \def\bx@err@uddrv#1{\bx@error{\string#1 is undefined}\@eha}
 
 %% General preparations
-\RequirePackage{bxtoolbox}[2012/05/13]
+\RequirePackage{bxtoolbox}[2013/04/29]
 \ifundef\bxUcv
 {\newcount\bxUcv}{}   % argument of \bx@Ux
 
