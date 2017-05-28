@@ -5,8 +5,12 @@
 %% file declaration
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesFile{bxtoolbox-ja.def}[2017/05/29 v1.1pre]
-% avoid multiple loading
-\csname bxtoolboxja@def@loaded\endcsname
+
+%% check intergrity
+\edef\bxtb@tmpa{\@currname.\@currext}\def\bxtb@tmpb{bxtoolbox-ja.def}
+\ifx\bxtb@tmpa\bxtb@tmpb\else
+  \PackageError\bxtb@pkgname{Illegal load sequence}\@eha
+\expandafter\endinput\fi\relax
 
 %% load submodule
 \providecommand*\bxRequireDefinition[1]{%
@@ -14,22 +18,27 @@
 \bxRequireDefinition{bxtoolbox-ext}
 
 %% code guards
-\edef\bxtb@x@restore@cc{% < ! " ' + ^ >
-  \catcode33=\the\catcode33\relax %<!>
-  \catcode34=\the\catcode34\relax %<">
-  \catcode39=\the\catcode39\relax %<'>
-  \catcode43=\the\catcode43\relax %<+>
-  \catcode94=\the\catcode94\relax %<^>
-}
-\catcode33=12
-\catcode34=12
-\catcode39=12
-\catcode43=12
-\catcode94=6
+\edef\bxtb@j@restore@codes{%
+  \catcode34=\the\catcode34%
+  \catcode45=\the\catcode45%
+  \catcode46=\the\catcode46%
+  \catcode47=\the\catcode47%
+  \catcode58=\the\catcode58%
+  \catcode59=\the\catcode59%
+  \catcode63=\the\catcode63%
+  \catcode96=\the\catcode96%
+\relax}
+\catcode34=12 % <">
+\catcode45=12 % <->
+\catcode46=12 % <.>
+\catcode47=12 % </>
+\catcode58=12 % <:>
+\catcode59=12 % <;>
+\catcode63=12 % <?>
+\catcode96=12 % <`>
 \AtEndOfPackage{%
-  \bxtb@x@restore@cc
-  \undef\bxtb@x@restore@cc}
-\def\bxtoolboxja@def@loaded{\endinput}
+  \bxtb@j@restore@codes
+  \undef\bxtb@j@restore@codes}
 
 %--------------------------------------- pTeX something
 
@@ -111,8 +120,6 @@
   \ifnum\jis"2121="A1A1 \let\bxInternalJaEncoding=e\else
   \ifnum\jis"2121="3000 \let\bxInternalJaEncoding=u\fi\fi\fi
 \fi\fi\fi
-%%<+D> \pxInternalJEnc
-\let\pxInternalJEnc\bxInternalJaEncoding
 
 %%<+> \bxInputJaEncoding
 \let\bxInputJaEncoding=?
@@ -134,12 +141,10 @@
     \expandafter\bxtb@tmpb\bxtb@tmpa\@nil
   \fi
 \fi\fi\fi
-%%<+D> \pxSourceJEnc
-\let\pxSourceJEnc\bxInputJaEncoding
 
 %%<+> \bxOutputJaEncoding
 \let\bxOutputJaEncoding=?
-% if input is 'auto', output shold not be equal to it,
+% if input is 'auto', output should not be equal to it,
 % but I don't know what to do then.
 \let\bxOutputJaEncoding=\bxInputJaEncoding
 

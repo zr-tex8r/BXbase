@@ -5,45 +5,57 @@
 %% file declaration
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesFile{bxtoolbox-ext.def}[2017/05/29 v1.1pre]
-% avoid multiple loading
-\csname bxtoolboxext@def@loaded\endcsname
 
-%% Error messages
-\def\bxtb@pkgname{BXtoolbox} % bundle name
-\def\bxtb@error{\PackageError\bxtb@pkgname}
-\def\bxtb@warn{\PackageWarningNoLine\bxtb@pkgname}
-\def\bxtb@err@oorng{\bxtb@error{Number out of range}\@eha}
+%% check intergrity
+\edef\bxtb@tmpa{\@currname.\@currext}\def\bxtb@tmpb{bxtoolbox-ext.def}
+\ifx\bxtb@tmpa\bxtb@tmpb\else
+  \PackageError\bxtb@pkgname{Illegal load sequence}\@eha
+\expandafter\endinput\fi\relax
 
-%% General preparations
+%% load submodule
 \providecommand*\bxRequireDefinition[1]{%
   \def\bx@@def{def}\@onefilewithoptions{#1}[][]\bx@@def}
 \bxRequireDefinition{bxtoolbox}
-\bxIfcsundefX{ifbxOk}
-{\newbool{bxOk}}{}    % all-purpsoe switch
-\bxIfcsundefX{bxResDim}
-{\newdimen\bxResDim}{}
 
-%% common stuffs
+%% code guards
+\edef\bxtb@x@restore@codes{%
+  \catcode33=\the\catcode33%
+  \catcode34=\the\catcode34%
+  \catcode39=\the\catcode39%
+  \catcode45=\the\catcode45%
+  \catcode46=\the\catcode46%
+  \catcode47=\the\catcode47%
+  \catcode58=\the\catcode58%
+  \catcode59=\the\catcode59%
+  \catcode60=\the\catcode60%
+  \catcode62=\the\catcode62%
+  \catcode96=\the\catcode96%
+\relax}
+\catcode33=12 % <!>
+\catcode34=12 % <">
+\catcode39=12 % <'>
+\catcode45=12 % <->
+\catcode46=12 % <.>
+\catcode47=12 % </>
+\catcode58=12 % <:>
+\catcode59=12 % <;>
+\catcode60=12 % <<>
+\catcode62=12 % <>>
+\catcode96=12 % <`>
+\AtEndOfPackage{%
+  \bxtb@x@restore@codes
+  \undef\bxtb@x@restore@codes}
+
+%--------------------------------------- general
+
+%% variables
+\bxIfcsundefX{ifbxOk}{\newbool{bxOk}}{} % all-purpsoe switch
+\bxIfcsundefX{bxResDim}{\newdimen\bxResDim}{}
 \let\bxHex\relax      % result of \bxToHex...
 \let\bxRes\relax      % result of \bxToLower
 
-%% code guards
-\edef\bxtb@x@restore@cc{% < ! " ' + ^ >
-  \catcode33=\the\catcode33\relax %<!>
-  \catcode34=\the\catcode34\relax %<">
-  \catcode39=\the\catcode39\relax %<'>
-  \catcode43=\the\catcode43\relax %<+>
-  \catcode94=\the\catcode94\relax %<^>
-}
-\catcode33=12
-\catcode34=12
-\catcode39=12
-\catcode43=12
-\catcode94=6
-\AtEndOfPackage{%
-  \bxtb@x@restore@cc
-  \undef\bxtb@x@restore@cc}
-\def\bxtoolboxext@def@loaded{\endinput}
+%% error messages
+\def\bxtb@err@oorng{\bxtb@error{Number out of range}\@eha}
 
 %--------------------------------------- programming tools
 
@@ -175,10 +187,6 @@
 \def\bxtb@rem@elt@check@a#1#2\bxtb@rem@elt@end{%
   \ifstrempty{#2}{\@tempswatrue}{\@tempswafalse}}
 
-%% \bxtb@uniq
-% Unique token for general purpose.
-\def\bxtb@uniq{\bxtb@uniq@}
-
 %--------------------------------------- character tokens
 
 %%<+> \ifbxHasUcsChar
@@ -228,15 +236,15 @@
 \let\bxToUcsChar\bxToChar
 \fi\fi
 
-%%<+> \bxToUcsCharDual{<num1>}{<num2>}
-% Makes \bxRes expand to a single character token with
-% character code <num> (in Unicode); valid for Unicode-aware
-% engines plus upTeX.
+%%<+> \bxToUcsCharDual{<jis>}{<ucs>}
+% Makes \bxRes expand to a single character token with the following
+% character code: (1) on pTeX, <jis> in internal CJK encoding; and
+% (2) on Unicode-aware engines, <ucs> in Unicode.
 \ifdef{\bxToUcsChar}
  {\newcommand*\bxToUcsCharDual[2]{\bxToUcsChar{#2}}}%
  {\newcommand*\bxToUcsCharDual[2]{\bxToJaChar{\jis#1}}}
 
-%%<+> \bxToUcsCharSeq{<num1>}{<num2>}
+%%<+> \bxToUcsCharSeq{<jis>:<ucs>,...}
 \newcommand*\bxToUcsCharSeq[1]{%
   \let\bx@tch@temp\@empty
   \bxForEachIn#1\do{\bxtb@toucs@charseq@a##1\bxtb@end}%

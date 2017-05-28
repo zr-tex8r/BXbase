@@ -28,8 +28,9 @@
 
 %% error messages
 \def\bxbz@pkgname{bxbase}
-\def\bxbz@info{\PackageInfo\bxbz@pkgname}
-\def\bxbz@inf@aecsq#1{\bxbz@info{Command \string#1 already exists}}
+\def\bxbz@inf@aecsq#1{%
+  \PackageInfo\bxbz@pkgname
+   {Command \string#1 already exists}}
 
 %--------------------------------------- extra
 

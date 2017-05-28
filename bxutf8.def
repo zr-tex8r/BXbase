@@ -8,32 +8,47 @@
 % Note: All definitions in this file should be local.
 % This file should not spill any spaces or \par.
 %
-%% preparation
+%% code guards
 % Here spaces are set back to effective. So great care must be taken
 % so spaces should not be spilt out (in horizontal mode).
 \catcode32=10\relax
-\expandafter\edef\csname bxus@i@restore@cc\endcsname{%  " . : @
-  \catcode34=\the\catcode34% <">
-  \catcode46=\the\catcode46% <.>
-  \catcode58=\the\catcode58% <:>
-  \catcode64=\the\catcode64% <@>
-\relax}%
-\catcode34=12 %
-\catcode46=12 %
-\catcode58=12 %
-\catcode64=11 %
+\edef\bxus@i@restore@codes{%
+  \catcode33=\the\catcode33%
+  \catcode34=\the\catcode34%
+  \catcode39=\the\catcode39%
+  \catcode45=\the\catcode45%
+  \catcode46=\the\catcode46%
+  \catcode47=\the\catcode47%
+  \catcode58=\the\catcode58%
+  \catcode63=\the\catcode63%
+  \catcode96=\the\catcode96%
+\relax}
+\catcode33=12 % <!>
+\catcode34=12 % <">
+\catcode39=12 % <'>
+\catcode45=12 % <->
+\catcode46=12 % <.>
+\catcode47=12 % </>
+\catcode58=12 % <:>
+\catcode63=12 % <?>
+\catcode96=12 % <`>
+\g@addto@macro\bxus@i@restore@codes{%
+  \let\bxus@i@restore@codes\@undefined}%
+%
+%--------------------------------------- dynamic part
+%
 % abort when this is first loaded after \begin{document}
 \def\bxus@i@error{\PackageError{inputenc}}%
 \ifx\@nodocument\relax
   \ifx\bxus@bxutf@loaded\@undefined
     \bxus@i@error
      {cannot load `bxutf8' after \string\begin{document}}\@eha
-    \bxus@i@restore@cc\endinput\fi\fi
+    \bxus@i@restore@codes\endinput\fi\fi
 %
 %% load 'utf8' encoding
 \InputIfFileExists{utf8.def}{}%
-  {\bxus@i@error{input encoding `utf8' unavailable}%
-    \@eha \bxus@i@restore@cc\endinput}%
+  {\bxus@i@error{input encoding `utf8' unavailable}\@eha
+    \bxus@i@restore@codes\endinput}%
 \makeatletter     % is this needed??
 %\@inpenc@test  % This is done in utf8.def
 %
@@ -45,26 +60,12 @@
 \def\UTFviii@four@octets#1#2#3#4{\expandafter\bxus@choice@four
   \csname u8:#1\string#2\string#3\string#4\endcsname#1#2#3#4@}%
 %
-%% attach the hook (old version)
-% * This hook was found to fail in pTeX.
-% Here #1 is a control word of form \u8:<UTF-8_bytes>. If it is
-% defined in standard way of utf8.def, then it is dispatched;
-% otherwise it is passed to \bxus@preproc.
-%\def\UTFviii@defined#1{%
-%  \ifx#1\relax \bxus@preproc#1%
-%  \else\expandafter#1\fi}%
-%% \bxus@preproc\CS
-%\def\bxus@preproc#1{%
-%  \expandafter\bxus@preproc@a\string#1..\@nil}%
-%\def\bxus@preproc@a#1:#2#3#4#5#6\@nil{%
-%  \if.#5\bxus@proc#2#3#4\else\bxus@err@uknbc\fi}%
-%
 % When this file is reloaded, the 'static' part will be skipped.
 \ifx\bxus@bxutf@loaded\@undefined\else
-  \bxus@i@restore@cc\endinput \fi
+  \bxus@i@restore@codes\endinput \fi
 \let\bxus@bxutf@loaded=t%
 %
-%--------------------------------------- Static part
+%--------------------------------------- static part
 %
 %% error messages
 \def\bxus@err@uknbc{\bxus@i@error
@@ -176,6 +177,6 @@
 \newcommand*\bxUHexDummyBxutf[1]{?\protect\bxus@err@nodrv}%
 %
 %--------------------------------------- all done
-\bxus@i@restore@cc
+\bxus@i@restore@codes
 \endinput
 %% EOF

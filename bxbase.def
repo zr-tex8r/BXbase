@@ -5,46 +5,65 @@
 %% file declaration
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesFile{bxbase.def}[2017/05/29 v1.1pre BX base library]
-% avoid multiple loading
-\csname bxbase@def@loaded\endcsname
-
-%% Error messages
 \def\bx@pkgname{BXbase} % bundle name
+
+%% check intergrity
+\edef\bxbz@tmpa{\@currname.\@currext}\def\bxbz@tmpb{bxbase.def}
+\ifx\bxbz@tmpa\bxbz@tmpb\else
+  \PackageError\bx@pkgname{Illegal load sequence}\@eha
+\expandafter\endinput\fi\relax
+
+%% code guards
+\edef\bxbz@restore@codes{%
+  \catcode33=\the\catcode33%
+  \catcode34=\the\catcode34%
+  \catcode39=\the\catcode39%
+  \catcode43=\the\catcode43%
+  \catcode45=\the\catcode45%
+  \catcode46=\the\catcode46%
+  \catcode47=\the\catcode47%
+  \catcode58=\the\catcode58%
+  \catcode60=\the\catcode60%
+  \catcode62=\the\catcode62%
+  \catcode94=\the\catcode94%
+  \catcode96=\the\catcode96%
+\relax}
+\catcode33=12 % <!>
+\catcode34=12 % <">
+\catcode39=12 % <'>
+\catcode43=12 % <+>
+\catcode45=12 % <->
+\catcode46=12 % <.>
+\catcode47=12 % </>
+\catcode58=12 % <:>
+\catcode60=12 % <<>
+\catcode62=12 % <>>
+\catcode94=7 % <^>
+\catcode96=12 % <`>
+\AtEndOfPackage{%
+  \bxbz@restore@codes
+  \let\bxbz@restore@codes\@undefined}
+
+%--------------------------------------- general
+
+%% packages
+\RequirePackage{bxtoolbox}[2017/05/28]
+
+%% variables
+\let\bxHex\relax      % result of \bxToHex...
+\let\bxRes\relax      % result of \bxToLower
+\ifundef\bxUcv{\newcount\bxUcv}{}   % argument of \bx@Ux
+
+%% unique tokens
+\def\bxbz@uniq{\bxbz@uniq@}
+
+%% error messages
 \def\bx@error{\PackageError\bx@pkgname}
 \def\bx@warn{\PackageWarningNoLine\bx@pkgname}
 \def\bx@err@nobbl{\bx@error{babel not yet loaded}\@eha}
 \def\bx@err@nanbc{\bx@error{Non-BMP characters not supported}\@eha}
 \def\bx@err@ilnfm{\bx@error{Illegal number format}\@eha}
 \def\bx@err@uddrv#1{\bx@error{\string#1 is undefined}\@eha}
-
-%% General preparations
-\RequirePackage{bxtoolbox}[2013/04/29]
-\ifundef\bxUcv
-{\newcount\bxUcv}{}   % argument of \bx@Ux
-
-%% common stuffs
-\let\bxHex\relax      % result of \bxToHex...
-\let\bxRes\relax      % result of \bxToLower
-\edef\bxbz@restore@cc{% < ! " ' + ^ >
-  \catcode33=\the\catcode33\relax %<!>
-  \catcode34=\the\catcode34\relax %<">
-  \catcode39=\the\catcode39\relax %<'>
-  \catcode43=\the\catcode43\relax %<+>
-  \catcode94=\the\catcode94\relax %<^>
-}
-\catcode33=12
-\catcode34=12
-\catcode39=12
-\catcode43=12
-\catcode94=6
-\AtEndOfPackage{%
-  \bxbz@restore@cc
-  \undef\bxbz@restore@cc}
-\def\bxbase@def@loaded{\endinput}
-
-%--------------------------------------- general
-
-%% errors
 \def\bxbz@warn@depre#1#2{%
   \PackageWarning\bx@pkgname
    {The command '\string#1' is obsolete and\MessageBreak
@@ -73,10 +92,6 @@
   \PackageWarning\bx@pkgname
    {'\string\bxCheckCounterpart' is no more supported,%
     \MessageBreak detected}}
-
-%% \bxbz@uniq
-% Unique token for general purpose.
-\def\bxbz@uniq{\bxbz@uniq@}
 
 %--------------------------------------- TeX engine distinction
 
@@ -554,7 +569,7 @@
   \let\bxEnableSafeCaret\@undefined}%
   \bxNullify\bxBDHookSafeCaret}
 
-\catcode`\^=6                 %---- make caret normal
+\catcode`\^=7                 %---- make caret normal
 
 %--------------------------------------- hyphenation something
 

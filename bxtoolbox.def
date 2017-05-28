@@ -5,41 +5,57 @@
 %% file declaration
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesFile{bxtoolbox.def}[2017/05/29 v1.1pre]
-% avoid multiple loading
-\csname bxtoolbox@def@loaded\endcsname
+\providecommand*\bxtb@pkgname{BXtoolbox}% bundle name
 
-%% Error messages
-\def\bxtb@pkgname{BXtoolbox} % bundle name
-\def\bxtb@error{\PackageError\bxtb@pkgname}
-\def\bxtb@warn{\PackageWarningNoLine\bxtb@pkgname}
+%% check intergrity
+\edef\bxtb@tmpa{\@currname.\@currext}\def\bxtb@tmpb{bxtoolbox.def}
+\ifx\bxtb@tmpa\bxtb@tmpb\else
+  \PackageError\bxtb@pkgname{Illegal load sequence}\@eha
+\expandafter\endinput\fi\relax
 
-%% General preparations
+%% code guards
+\edef\bxtb@restore@codes{%
+  \catcode33=\the\catcode33%
+  \catcode34=\the\catcode34%
+  \catcode39=\the\catcode39%
+  \catcode45=\the\catcode45%
+  \catcode46=\the\catcode46%
+  \catcode47=\the\catcode47%
+  \catcode58=\the\catcode58%
+  \catcode60=\the\catcode60%
+  \catcode62=\the\catcode62%
+  \catcode63=\the\catcode63%
+  \catcode96=\the\catcode96%
+\relax}
+\catcode33=12 % <!>
+\catcode34=12 % <">
+\catcode39=12 % <'>
+\catcode45=12 % <->
+\catcode46=12 % <.>
+\catcode47=12 % </>
+\catcode58=12 % <:>
+\catcode60=12 % <<>
+\catcode62=12 % <>>
+\catcode63=12 % <?>
+\catcode96=12 % <`>
+\AtEndOfPackage{%
+  \bxtb@restore@codes
+  \let\bxtb@restore@codes\@undefined}
+
+%--------------------------------------- 0. Prologue
+
+%% variables
 \newif\ifbxOk       % general-purpose switch
 \let\bxRes\relax    % result container
 
-%% Catcode settings
-\edef\bxtb@restore@cc{%
-  \catcode33=\the\catcode33\relax %<">
-  \catcode38=\the\catcode38\relax %<&>
-  \catcode62=\the\catcode62\relax %<>>
-  \catcode64=\the\catcode64\relax %<@>
-  \catcode96=\the\catcode96\relax %<`>
-}
-\catcode33=12
-\catcode38=6
-\catcode62=12
-\catcode64=11
-\catcode96=12
-\AtEndOfPackage{%
-  \bxtb@restore@cc
-  \let\bxtb@restore@cc\@undefined}
-\def\bxtoolbox@def@loaded{\endinput}
+%% unique tokens
+\def\bxtb@uniq{\bxtb@uniq@}
+
+%% error messages
+\def\bxtb@error{\PackageError\bxtb@pkgname}
+\def\bxtb@warn{\PackageWarningNoLine\bxtb@pkgname}
 
 %--------------------------------------- 1. Engine-independent stuffs
-
-%% \bxtb@uniq
-% A unique token for general purpose.
-\def\bxtb@uniq{\bxtb@uniq@}
 
 %% \bxtb@@bs
 \let\bxtb@@bs\@backslashchar
@@ -1053,7 +1069,7 @@
     {\string\AfterEndDocument\space is now disabled}\@eha}}
 \bxtb@patch@enddocument
 
-%--------------------------------------- all done
+%--------------------------------------- 8. Epilogue
 \def\do#1{%
   \ifx#1\@undefined \bxtb@warn{\string#1 not yet implemented}\fi}
 \bxtb@provided

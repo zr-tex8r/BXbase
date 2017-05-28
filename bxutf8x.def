@@ -8,9 +8,9 @@
 % Note: All definitions in this file should be local.
 % This file should not spill any spaces or \par.
 %
-%% preparation
+%% code guards
 \catcode32=10\relax
-\expandafter\edef\csname bxus@i@restore@cc\endcsname{%
+\expandafter\edef\csname bxus@i@restore@codes\endcsname{%
   \catcode34=\the\catcode34% <">
   \catcode46=\the\catcode46% <.>
   \catcode58=\the\catcode58% <:>
@@ -20,23 +20,28 @@
 \catcode46=12 %
 \catcode58=12 %
 \catcode64=11 %
+\g@addto@macro\bxus@i@restore@codes{%
+  \let\bxus@i@restore@codes\@undefined}%
+%
+%--------------------------------------- dynamic part
+%
 \def\bxus@i@error{\PackageError{inputenc}}%
 \ifx\@nodocument\relax
   \ifx\bxus@bxutfx@loaded\@undefined
     \bxus@i@error
      {cannot load `bxutf8x' after \string\begin{document}}\@eha
-    \bxus@i@restore@cc\endinput\fi\fi
+    \bxus@i@restore@codes\endinput\fi\fi
 %
-%%%% load 'utf8x' encoding
+%% load 'utf8x' encoding
 \InputIfFileExists{utf8x.def}{}%
   {\PackageError{inputenc}{input encoding `utf8x' unavailable}%
    {You must install `unicode' package to use it.}%
-   \bxus@i@restore@cc\endinput}%
+   \bxus@i@restore@codes\endinput}%
 %\@inpenc@test  % This is done in utf8.def
 %
 % When this file is reloaded, the 'static' part will be skipped.
 \ifx\bxus@bxutfx@loaded\@undefined\else
-  \bxus@i@restore@cc \endinput \fi
+  \bxus@i@restore@codes \endinput \fi
 \let\bxus@bxutfx@loaded=t%
 %
 %--------------------------------------- Static part
@@ -86,6 +91,6 @@
 \newcommand*\bxUIntDummyBxutfx[1]{?\protect\bxus@err@nodrv}%
 %
 %--------------------------------------- all done
-\bxus@i@restore@cc
+\bxus@i@restore@codes
 \endinput
 %% EOF

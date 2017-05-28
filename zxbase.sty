@@ -17,8 +17,6 @@
 %% preparations
 \RequirePackage{bxbase}
 \def\zx@pkgname{zxbase}
-\def\zx@error{\PackageError\zx@pkgname}
-\def\zx@warn{\PackageWarningNoLine\zx@pkgname}
 
 %--------------------------------------- generic family detection
 
@@ -85,8 +83,9 @@
 \newif\ifzx@jisenc
 
 %% errors
-\def\zx@err@ukenc#1{\zx@error{File '#1' is in unknown encoding}%
-{The file must be encoded in ISO-2022-JP or UTF-8.}}
+\def\zx@err@ukenc#1{\PackageError\zx@pkgname
+ {File '#1' is in unknown encoding}%
+ {The file must be encoded in ISO-2022-JP or UTF-8.}}
 
 %%<+> \zxRequirepLaTeXPackage{<package>}
 \@onlypreamble\zxRequirepLaTeXPackage
@@ -98,7 +97,7 @@
   \fi
   \let\NeedsTeXFormat\zx@mute@NeedsTeXFormat
   \ifzx@jisenc \XeTeXdefaultencoding ISO-2022-JP\relax \fi
-  \RequirePackage{#1}%
+  \RequirePackage{#1}\relax
   \ifzx@jisenc \XeTeXdefaultencoding auto\relax \fi
   \let\NeedsTeXFormat\zx@org@NeedsTeXFormat
 }
@@ -143,8 +142,7 @@
 
 %%<*> \platexpackagesinunicode
 \@onlypreamble\platexpackagesinunicode
-% FIXME
-\let\platexpackagesinunicode\zxPPInUTFEight
+\newcommand*\platexpackagesinunicode{\zxPPInUTFEighttrue}
 
 %--------------------------------------- all done
 \endinput
