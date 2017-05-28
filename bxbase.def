@@ -42,6 +42,17 @@
   \undef\bxbz@restore@cc}
 \def\bxbase@def@loaded{\endinput}
 
+%--------------------------------------- general
+
+%% errors
+\def\bxbz@warn@depre#1#2{%
+  \PackageWarning\bx@pkgname
+   {The command '\string#1' is obsolete and\MessageBreak
+    its use is deprecated%
+    \ifx\relax#2\relax, \else
+      \MessageBreak (use #2 instead),\MessageBreak
+    \fi detected}}
+
 %--------------------------------------- programming tools
 
 %%<+> \bxCheckMA\CS <text> \bxEndCheckMA
@@ -53,21 +64,15 @@
 \def\bx@chkma@b#1#2#3\bxEncCheckMA{\noexpand\bx@err@ivfrg#1#2}
 \def\bx@err@ivfrg#1{\bx@error{Cannot use \string#1 here}\@eha}
 
-%%<+> \bxCheckCounterpart{<base_name>}
+%%<+D> \bxCheckCounterpart{<base_name>}
 % Compares the version between the current file and <base_name>
 % with the extension of current file, and if the latter file is
 % already loaded and moreover turns out to be newer than the
 % system aborts loading the current file.
 \bxPreamble\newcommand*\bxCheckCounterpart[1]{%
-  \@ifl@aded\@currext{#1}{%
-    \ifnum\bxbz@check@cp@ver{#1}>\bxbz@check@cp@ver\@currname
-      \expandafter\endinput\fi}{}}
-\bxPreamble\def\bxbz@check@cp@ver#1{%
-  \expandafter\expandafter\expandafter\@parse@version
-  \csname ver@#1.\@currext\endcsname//00\@nil}
-%%<+D> \bxCheckCPart{<base_name>}
-% Old name for \bxCheckCounterpart
-\bxPreamble\newcommand*\bxCheckCPart{\bxCheckCounterpart}
+  \PackageWarning\bx@pkgname
+   {'\string\bxCheckCounterpart' is no more supported,%
+    \MessageBreak detected}}
 
 %% \bxbz@uniq
 % Unique token for general purpose.
@@ -157,31 +162,29 @@
 \csdef{captions**Z}{\@empty}
 \csdef{date**Z}{\@empty}
 
-%%<*> \fixcaptionlanguage{<lang>}
+%%<*D> \fixcaptionlanguage{<lang>}
+%%<+> \bxFixCaptionLanguage{<lang>}
 % Change the caption language manually, with disabling automatic
 % switching on it.
 \bxPreamble\newcommand*\fixcaptionlanguage[1]{%
+  \bxbz@warn@depre\fixcaptionlanguage{}%
+  \bxFixCaptionLanguage{#1}}
+\bxPreamble\newcommand*\bxFixCaptionLanguage[1]{%
   \@ifpackageloaded{babel}%
    {\bx@bbl@patch@sel@lang
     \xdef\bx@bbl@captlang{#1}}%
    {\bx@err@nobbl}}
-%%<*D> \bxcaptionlanguage{<lang>}
-% Old name for \fixcaptionlanguage
-\bxPreamble\newcommand*\bxcaptionlanguage{\fixcaptionlanguage}
 
 %%<+> \bxProvideCaptionLanguage{<lang>}
 \bxPreamble\newcommand*\bxProvideCaptionLanguage[1]{%
   \ifundef\bx@bbl@captlang
-   {\fixcaptionlanguage{#1}}{}}
+   {\bxFixCaptionLanguage{#1}}{}}
 
 %%<*> \setmainlanguage{<lang>}
 % Changes the 'main' language (one that is effective at beginning).
 \bxPreamble\newcommand*\setmainlanguage[1]{%
   \bxIfcsundef{date#1}{\@nolanerr{#1}}{}%
   \xdef\bbl@main@language{#1}}
-%%<*D> \bxmainlanguage{<lang>}
-% Old name for \setmainlanguage
-\bxPreamble\newcommand*\bxmainlanguage{\setmainlanguage}
 
 %%<+> \bxTrivLangDef{<lang>}
 % Makes a fake language option.
@@ -577,7 +580,7 @@
 
 %--------------------------------------- DVI-specials
 
-%%<*> \usejapanesepdfstring
+%%<*D> \usejapanesepdfstring
 \bxPreamble\newcommand*\usejapanesepdfstring{}
 \if s\bxInternalJaEncoding
   \def\usejapanesepdfstring{%  why use CP932??
@@ -597,22 +600,31 @@
       since internal encoding is unknown}%
     \bxNullify\usejapanesepdfstring}
 \fi\fi\fi
+\preto\usejapanesepdfstring{%
+  \bxbz@warn@depre\usejapanesepdfstring{'pxjahyper' package}}
 
-%%<*> \recordpapersize
+%%<*D> \recordpapersize
 \bxPreamble\newcommand*\recordpapersize{%
+  \bxbz@warn@depre\recordpapersize{'bxpapersize' package}%
   \bxDocumentSpecial{papersize=\the\paperwidth,\the\paperheight}%
   \bxNullify\recordpapersize}
 
-%%<*> \dvipdfmxmapline{<text>}
-%%<*> \dvipdfmxmapfile{<text>}
+%%<*D> \dvipdfmxmapline{<text>}
+%%<*D> \dvipdfmxmapfile{<text>}
 \bxPreamble\newcommand*\dvipdfmxmapline[1]{%
+  \bxbz@warn@depre@dpxmap
   \bxDocumentSpecial{pdf:mapline #1}}
 \bxPreamble\newcommand*\dvipdfmxmapfile[1]{%
+  \bxbz@warn@depre@dpxmap
   \bxDocumentSpecial{pdf:mapfile #1}}
+\def\bxbz@warn@depre@dpxmap{%
+  \bxbz@warn@depre\dvipdfmxmapfile{'pxchfon' package}%
+  \global\let\bxbz@warn@depre@dpxmap\relax}
 
 %--------------------------------------- CJK font scaling
 
-%%<+> \pxDocClassType
+%% \bxbz@doc@class@type
+%%<+D> \pxDocClassType
 % 1 = pLaTeX standard class
 % 2 = New standard classes by Okumura
 % 0 = otherwise
@@ -630,12 +642,16 @@
 \@ifclassloaded{utreport}{\bxUcv=\@ne}{}
 \@ifclassloaded{utbook}{\bxUcv=\@ne}{}
 \@ifclassloaded{jsarticle}{\bxUcv=\tw@}{}
+\@ifclassloaded{jsreport}{\bxUcv=\tw@}{}
 \@ifclassloaded{jsbook}{\bxUcv=\tw@}{}
+\chardef\bxbz@doc@class@type=\bxUcv
 \chardef\pxDocClassType=\bxUcv
 
 %%<+> \pxUpScale
 \edef\pxUpScale{%
-  \ifcase\pxDocClassType 1\or 0.962216\or 0.924690\else 1\fi}
+  \ifx\Cjascale\@undefined
+    \ifcase\bxbz@doc@class@type 1\or 0.962216\or 0.924690\else 1\fi
+  \else \Cjascale \fi}
 
 %--------------------------------------- all done
 \endinput

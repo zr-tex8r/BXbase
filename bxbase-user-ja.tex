@@ -36,41 +36,6 @@
 \section{機能}
 
 %-------------------
-\subsection{DVI special 出力}
-
-\begin{itemize}
-\item |\recordpapersize|\Means
-次の形のpapersize special命令をDVIの先頭に出力する。
-\begin{quote}\small\begin{verbatim}
-papersize=<幅>,<高さ>
-\end{verbatim}\end{quote}
- (幅と高さは現在の |\paperwidth| と |\paperheight| の値。)
- \Note papersize specialはdvips、dvipdfmx、dviout等の
- DVIウェアで有効である。（pdf\TeX では無効。）
- 
-\item |\dvipdfmxmapfile{|\Meta{修飾子}\Meta{ファイル名}|}|\Means
-dvipdfmxのマップファイル指定を文書中で行う。
-\Meta{修飾子} は空（置換）、|+|（追加）、|-|（削除）
-の何れかである。
-当然dvipdfmx専用である。
-\Note 次の形のspecial命令をDVIの先頭に出力する。
-\begin{quote}\small\begin{verbatim}
-pdf:mapfile <修飾子><ファイル名>
-\end{verbatim}\end{quote}
-
-
-\item |\dvipdfmxmapline{|\Meta{修飾子}\Meta{マップ行}|}|\Means
-dvipdfmxのマップ行指定を文書中で行う。
-\Meta{修飾子} については前項と同じ。
-dvipdfmx専用。
-\Note 次の形のspecial命令をDVIの先頭に出力する。
-\begin{quote}\small\begin{verbatim}
-pdf:mapline <修飾子><マップ行>
-\end{verbatim}\end{quote}
-
-\end{itemize}
-
-%-------------------
 \subsection{符号値による文字入力}
 
 \begin{itemize}
@@ -125,15 +90,6 @@ Adobe-Japan1のコード値による入力を行う。
 の形式で指定する。
 出力には{(u)\pTeX}のJISコード和文出力の機能を使う。
 使えない場合は代替表現になる。
-%\paragraph{JIS~X~0213対応}
-% 現在の和文フォントのエンコーディングがJIS~X~0213に対応する
-%ものである場合
-%\footnote{普及しているパッケージだけではこれは実現できない。
-%（だからこの段落の内容は大部分の人には無意味。）}
-%は、コード値指定を「PRRCC」（Pは面番号）とすることで
-%JIS~X~0213の文字を指定できる。
-%ただし、第2面の文字を出力する場合には{\pTeX}の内部漢字コード
-%がsjisでなければならない。
 
 \item |\bxUx| / |\bxUI| / |\bxAJ| / |\bxJI| / |\bxKI|\Means
 |\Ux| 等は非常に短い名前なので他のパッケージと衝突する恐れがあり、

@@ -33,7 +33,6 @@ bxbase.def で定義される機能
     デバック出力用命令。このパッケージでの定義では何もしない。
   * `\bxRequireDefinition{<ファイルベース名>}`  
     拡張子 .def のファイルを `\usepackage` と同じ方式で読み込む。  
-    [旧命令名: `\bxInputDefFile`]
   * `\bxNullify\制御綴`  
     `\制御綴` を「何もしない命令」で `\providecommand` により
     上書きされないものに再定義する。
@@ -61,11 +60,6 @@ bxbase.def で定義される機能
     スイッチ `\ifbxOk` に返す。
   * `\bxCheckMA<テキスト>\bxEndCheckMA`  
     `\edef` 中ではこの部分がエラーを出す命令に展開される。
-  * `\bxCheckCounterpart{<ベース名>}`  
-    現在のファイルと `<ベース名>`（同じ拡張子）との間で版を比較する。
-    もし、後者が読込済でかつ版が新しい場合は、現在のファイルの読込を
-    中止する。  
-    [旧名称： `\bxCheckCPart`]
 
 ### TeX エンジン判別
 
@@ -73,15 +67,11 @@ bxbase.def で定義される機能
     1=pTeX拡張; 2=XeTeX拡張; 3=Omega拡張; 0=以上に該当せず
   * `\bxEngineTypeY`  [整数定数]  
     1=eTeX拡張; 3=pdfTeX拡張; 5=LuaTeX拡張; 0=以上に該当せず  
-    ※従来は LuaTeX は X/Y=3/3 としていたが、少なくとも現在の
-    LaTeX では LuaTeX は Omega 拡張をもつとみなさないので、
-    X/Y=0/5 の位置に変更した。  
+    ※現在の LuaTeX は X/Y=0/5 となる。
     ※upTeX か否かの判定は ifptex パッケージを用いる。
 
 ### Babel 関係
 
-  * `\bxBDHookBabel`  
-    Babel 関係の begin-document フック。
   * `\bxAtBeginDocumentBabel{<テキスト>}`  
     Babel 読込時にのみ実行される begin-document 時のフック。
   * `\bxTrivLangDef{<言語名>}`  
@@ -107,9 +97,6 @@ bxbase.def で定義される機能
 
 ### 符号値による入力
 
-  * `\bxBDHookUnicode`  
-  * `\bxBDHookJisInput`  
-    符号値入力に関する begin-document フック。
   * `\bxCodeValueSeq\制御綴{<符号値>,...}    [16進]`  
   * `\bxCodeValueSeqD\制御綴{<符号値>,...}   [10進]`  
     各々の `<符号値>` を解釈した結果を `\bxUcv` に代入してマクロ
