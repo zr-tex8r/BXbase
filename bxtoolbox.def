@@ -1,10 +1,10 @@
-%
-% bxtoolbox.def
-%
+%%
+%% This is file 'bxtoolbox.def'.
+%%
 
-%% File declaration
+%% file declaration
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesFile{bxtoolbox.def}[2013/04/29 v1.0]
+\ProvidesFile{bxtoolbox.def}[2017/05/29 v1.1pre]
 % avoid multiple loading
 \csname bxtoolbox@def@loaded\endcsname
 
@@ -35,7 +35,7 @@
   \let\bxtb@restore@cc\@undefined}
 \def\bxtoolbox@def@loaded{\endinput}
 
-%----------------------- 1. Engine-independent stuffs
+%--------------------------------------- 1. Engine-independent stuffs
 
 %% \bxtb@uniq
 % A unique token for general purpose.
@@ -287,7 +287,7 @@
   \fi\@secondoftwo}
 
 
-%----------------------- 2. Dummy if-token definitions.
+%--------------------------------------- 2. Dummy if-token definitions.
 
 %% \bxtb@make@dummy@if@setter
 \bxPreamble\def\bxtb@make@dummy@if@setter#1#2{%
@@ -355,7 +355,7 @@
   ydir,tdir%
 }
 
-%----------------------- 3. Macrodef prefix operations
+%--------------------------------------- 3. Macrodef prefix operations
 
 %% \bxtb@all@prefix
 \def\bxtb@all@prefix{\do{protected}\do{long}\do{outer}}
@@ -408,7 +408,7 @@
 }
 \expandafter\bxtb@do\bxtb@g@args
 
-%------------------- 4. pdfTeX primitives
+%--------------------------------------- 4. pdfTeX primitives
 
 %%<+> \ifbxPrimitive
 % The primitive equivalent to pdfTeX's \ifpdfprimitive; if the
@@ -470,7 +470,7 @@
   \fi
 \fi                 %----</LuaTeX>
 
-%------------------- 5. non etoolbox stuffs
+%--------------------------------------- 5. non etoolbox stuffs
 
 %%<+> \bxRobustdef\CS
 %%<+> \bxRobustgdef\CS
@@ -686,7 +686,7 @@
 \newcommand*\bxCsNoexpand[1]{%
   \expandafter\noexpand\csname#1\endcsname}
 
-%------------------- 6. Import from etoolbox
+%--------------------------------------- 6. Import from etoolbox
 
 %% \bxtb@import{\CSA \CSB ...}
 % [e-TeX] Aliases each of macros to a new name with 'bx' prefixed.
@@ -765,7 +765,7 @@
 \bxUnsetDummyIfs
 \expandafter\endinput
 \fi                 %</etex>
-%------------------- 7. etoolbox compatible functions
+%--------------------------------------- 7. etoolbox compatible functions
 
 %% error messages
 \def\bxtb@err@ukbool#1{\bxtb@error
@@ -1053,7 +1053,7 @@
     {\string\AfterEndDocument\space is now disabled}\@eha}}
 \bxtb@patch@enddocument
 
-%--------------------------------------- All done
+%--------------------------------------- all done
 \def\do#1{%
   \ifx#1\@undefined \bxtb@warn{\string#1 not yet implemented}\fi}
 \bxtb@provided

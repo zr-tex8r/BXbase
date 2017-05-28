@@ -1,13 +1,14 @@
-%
-% bxutf8.def
+%%
+%% This is file 'bxutf8.def'.
+%%
 %
 %% file declaration
-\ProvidesFile{bxutf8.def}[2013/04/29 v1.0 BX UTF-8 input encoding]
+\ProvidesFile{bxutf8.def}[2017/05/29 v1.1pre BX UTF-8 input encoding]
 %
 % Note: All definitions in this file should be local.
 % This file should not spill any spaces or \par.
 %
-%%%% preparation
+%% preparation
 % Here spaces are set back to effective. So great care must be taken
 % so spaces should not be spilt out (in horizontal mode).
 \catcode32=10\relax
@@ -63,7 +64,7 @@
   \bxus@i@restore@cc\endinput \fi
 \let\bxus@bxutf@loaded=t%
 %
-%%------------------ Static part
+%--------------------------------------- Static part
 %
 %% error messages
 \def\bxus@err@uknbc{\bxus@i@error
@@ -174,7 +175,7 @@
 \providecommand*\bxUHex{\bxUHexDummyBxutf}%
 \newcommand*\bxUHexDummyBxutf[1]{?\protect\bxus@err@nodrv}%
 %
-%%------------------ all done
+%--------------------------------------- all done
 \bxus@i@restore@cc
 \endinput
 %% EOF

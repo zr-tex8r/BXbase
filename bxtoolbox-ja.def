@@ -1,14 +1,14 @@
-%
-% bxtoolbox-ja.def
-%
+%%
+%% This is file 'bxtoolbox-ja.def'.
+%%
 
-%% File declaration
+%% file declaration
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesFile{bxtoolbox-ja.def}[2013/04/29 v1.0]
+\ProvidesFile{bxtoolbox-ja.def}[2017/05/29 v1.1pre]
 % avoid multiple loading
 \csname bxtoolboxja@def@loaded\endcsname
 
-%% General preparations
+%% load submodule
 \providecommand*\bxRequireDefinition[1]{%
   \def\bx@@def{def}\@onefilewithoptions{#1}[][]\bx@@def}
 \bxRequireDefinition{bxtoolbox-ext}
@@ -31,9 +31,9 @@
   \undef\bxtb@x@restore@cc}
 \def\bxtoolboxja@def@loaded{\endinput}
 
-%%------ related to pTeX
+%--------------------------------------- pTeX something
 
-%%
+%% switch 'bxtb@pxbase@ok'
 \newbool{bxtb@pxbase@ok}
 \ifbxinpTeX
   \IfFileExists{pxbase.sty}{%
@@ -57,7 +57,7 @@
   \global\setbox\@begindvibox\vbox{%
     \bxToYokoDir\unvbox\@begindvibox#1}}
 
-%%------ Japanese language
+%--------------------------------------- Japanese something
 
 %%<+> \bxGetZenkakuWidth
 % Assigns 1zw to \bxResDim
@@ -98,7 +98,7 @@
 \do thecha:% 12
 \do kanjic:% 16-19(upTeX)
 
-%%------ 
+%--------------------------------------- kanji-encoding something
 
 %%<+> \bxInternalJaEncoding
 \let\bxInternalJaEncoding=?
@@ -176,6 +176,6 @@
   internal=\internaljaencodingname}%
 }
 
-%%------ all done
+%--------------------------------------- all done
 \endinput
 %% EOF

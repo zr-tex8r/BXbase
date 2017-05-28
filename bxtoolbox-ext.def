@@ -1,10 +1,10 @@
-%
-% bxtoolbox-ext.def
-%
+%%
+%% This is file 'bxtoolbox-ext.def'.
+%%
 
-%% File declaration
+%% file declaration
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesFile{bxtoolbox-ext.def}[2013/04/29 v1.0]
+\ProvidesFile{bxtoolbox-ext.def}[2017/05/29 v1.1pre]
 % avoid multiple loading
 \csname bxtoolboxext@def@loaded\endcsname
 
@@ -45,7 +45,7 @@
   \undef\bxtb@x@restore@cc}
 \def\bxtoolboxext@def@loaded{\endinput}
 
-%%------ Programming tools
+%--------------------------------------- programming tools
 
 %%<+> \bxDebug{<text>}
 % Prints a debug message. By default, it is no-op.
@@ -179,7 +179,7 @@
 % Unique token for general purpose.
 \def\bxtb@uniq{\bxtb@uniq@}
 
-%%------ character tokens
+%--------------------------------------- character tokens
 
 %%<+> \ifbxHasUcsChar
 \newbool{bxHasUcsChar}
@@ -245,7 +245,7 @@
   \bxToUcsCharDual{"#1}{"#2}%
   \eappto\bx@tch@temp{\bxRes}}
 
-%%------ 'Number-to-hex-string' functions
+%--------------------------------------- number to hex-string
 % All public commands put their result in \bxHex.
 
 %%<+> \bxToHexTiny
@@ -374,7 +374,7 @@
 \def\bx@hx@todecfive@a#1#2#3#4#5#6#7\@nil{\bx@hx@todecfive@b#1#2#3#4#5#6\@nil}
 \def\bx@hx@todecfive@b#1"#2\@nil{\def\bxHex{#2#1}}
 
-%%------ Case conversion
+%--------------------------------------- case conversion
 
 %%<+> \bxToLower{<string>}
 % Sets to \bxRes <string> converted to lowercase.
@@ -385,7 +385,7 @@
 \newcommand*\bxToUpper[1]{%
   \edef\bxRes{\uppercase{\def\noexpand\bxRes{#1}}}\bxRes}
 
-%%------ Document-level specials
+%--------------------------------------- document-level specials
 % Such specials must come before any typeset commands in DVI.
 
 %%<+> \bxDocumentSpecial{<text>}
@@ -414,7 +414,7 @@
     \fi}%
   \bxNullify\bx@docspec@urgent@init}
 
-%%------ "shadow map" module
+%--------------------------------------- "shadow map" module
 
 %%<+> \bxUseShadowMap\CS{<map_tfm>}
 \bxPreamble\newcommand*\bxUseShadowMap[2]{%
@@ -428,7 +428,7 @@
   \advance\bxUcv-\count@ \setbox\z@\hbox{#1\bx@m@hb\char\bxUcv}%
   \global\bxUcv\wd\z@ \endgroup}
 
-%%------ module name
+%--------------------------------------- module name
 
 %%<+> \bxSetModuleName{<name>}
 \newcommand*\bxSetModuleName[1]{%
@@ -451,7 +451,7 @@
   \PackageWarningNoLine\bxModuleName}
 \newcommand*\bxCurrentInfo{\PackageInfo\bxModuleName}
 
-%%------ keyval extension
+%--------------------------------------- keyval extension
 
 %%<+> \bxPrepareSetKeysSafe
 \bxPreamble\newcommand*\bxPrepareSetKeysSafe{%
@@ -486,7 +486,7 @@
 \def\bxtb@setkeys@safe#1#2{\bxCurrentError
   {\string\bxSetKeysSafe\space not enabled}\@ehc}
 
-%%------ driver handling
+%--------------------------------------- driver handling
 
 %%<+> \bxDriverList
 \providecommand*\bxDriverList{dvips,dvipdfmx,dviout}
@@ -550,6 +550,6 @@
   \bxForEachIn\bxDriverList\do{%
     \DeclareOption{##1}{\bxSetDriver{##1}}}}
 
-%%------ all done
+%--------------------------------------- all done
 \endinput
 %% EOF

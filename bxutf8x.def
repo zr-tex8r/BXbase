@@ -1,8 +1,9 @@
-%
-% bxutf8x.def
+%%
+%% This is file 'bxutf8x.def'.
+%%
 %
 %% file declaration
-\ProvidesFile{bxutf8x.def}[2013/04/29 v1.0 BX extended utf8x input]
+\ProvidesFile{bxutf8x.def}[2017/05/29 v1.1pre BX extended utf8x input]
 %
 % Note: All definitions in this file should be local.
 % This file should not spill any spaces or \par.
@@ -38,7 +39,7 @@
   \bxus@i@restore@cc \endinput \fi
 \let\bxus@bxutfx@loaded=t%
 %
-%%------------------ Static part
+%--------------------------------------- Static part
 %
 %% error messages
 \def\bxus@err@nodrv{\bxus@i@error
@@ -84,7 +85,7 @@
 \providecommand*\bxUInt{\bxUIntDummyBxutfx}%
 \newcommand*\bxUIntDummyBxutfx[1]{?\protect\bxus@err@nodrv}%
 %
-%%------------------ all done
+%--------------------------------------- all done
 \bxus@i@restore@cc
 \endinput
 %% EOF

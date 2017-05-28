@@ -1,15 +1,25 @@
-%
-% bxbase.sty
-%
+%%
+%% This is file 'bxbase.sty'.
+%% 
+%% Copyright (c) 2017 Takayuki YATO (aka. "ZR")
+%%   GitHub:   https://github.com/zr-tex8r
+%%   Twitter:  @zr_tex8r
+%%
+%% This package is distributed under the MIT License.
+%%
 
-%% Package declaration
+%% package declaration
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{bxbase}[2013/04/29 v1.0 BX base library]
+\ProvidesPackage{bxbase}[2017/05/29 v1.1pre BX base library]
 
-%% include 'bxbase.def'
+%--------------------------------------- main
+
+%% load submodule
 \providecommand*\bxRequireDefinition[1]{%
   \def\bxbz@ext{def}\@onefilewithoptions{#1}[][]\bxbz@ext}
 \bxRequireDefinition{bxbase}
+
+%% enable begin-document hooks
 \bxBDHookBabel
 \bxBDHookUnicode
 \bxBDHookJisInput
@@ -18,12 +28,10 @@
 
 %% error messages
 \def\bxbz@pkgname{bxbase}
-%\def\bxbz@error{\PackageError\bxbz@pkgname}
-%\def\bxbz@warn{\PackageWarningNoLine\bxbz@pkgname}
 \def\bxbz@info{\PackageInfo\bxbz@pkgname}
 \def\bxbz@inf@aecsq#1{\bxbz@info{Command \string#1 already exists}}
 
-%%------
+%--------------------------------------- extra
 
 %%<*> \Ux / \UI / \AJ / \JI / \KI
 % define commands unless their name is already used
@@ -35,9 +43,8 @@
 \bxbz@charcmd\JI\bxJI
 \bxbz@charcmd\KI\bxKI
 
-%%------ all done
+%--------------------------------------- all done
 \endinput
-%% EOF
 %
 % * bxbase provides:
 %   - bx@Uxh@fb      (terminal)
@@ -62,3 +69,4 @@
 %             v                    v       
 %           bx@UI     >          bx@UIh  =  bx@Uxh@fb or bx@UIh@p
 %
+%% EOF

@@ -1,10 +1,10 @@
-%
-% bxbase.def
-%
+%%
+%% This is file 'bxbase.def'.
+%%
 
-%% File declaration
+%% file declaration
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesFile{bxbase.def}[2013/04/29 v1.0 BX base library]
+\ProvidesFile{bxbase.def}[2017/05/29 v1.1pre BX base library]
 % avoid multiple loading
 \csname bxbase@def@loaded\endcsname
 
@@ -42,8 +42,7 @@
   \undef\bxbz@restore@cc}
 \def\bxbase@def@loaded{\endinput}
 
-%%------ Programming tools
-
+%--------------------------------------- programming tools
 
 %%<+> \bxCheckMA\CS <text> \bxEndCheckMA
 % If this construct appears in moving arguments, it expands to
@@ -74,7 +73,7 @@
 % Unique token for general purpose.
 \def\bxbz@uniq{\bxbz@uniq@}
 
-%%------ TeX engine distinction
+%--------------------------------------- TeX engine distinction
 
 %%<+> \bxEngineTypeX / \bxEngineTypeY
 % Numbers that signify what I am.
@@ -108,7 +107,7 @@
 \fi\fi\fi
 \bxDebug{engine type = \the\bxEngineTypeX/\the\bxEngineTypeY}
 
-%%------ Babel something
+%--------------------------------------- Babel something
 
 %%<+> \bxBDHookBabel
 % A begindocument-hook about Babel.
@@ -197,7 +196,7 @@
     \csdef{date#1}{\relax}%
   }{}}
 
-%%------ Input through code values
+%--------------------------------------- input through code values
 
 %%<+> \bxBDHookUnicode
 % A begindocument-hook about Unicode (& CID) input.
@@ -299,7 +298,7 @@
   \bxFallbackSym{{\sml#6}\\#1#2\\#3#4}}
 \def\bx@hx@supzero#1{\ifx0#1\else\expandafter#1\fi}
 
-%%%% \bx@assign@Ux
+%% \bx@assign@Ux
 % Picks up appropriate drivers \bx@Ux etc. according to current
 % load-states of packages.
 % [driver]  [purpose]      [argument]    [default]
@@ -424,11 +423,14 @@
   \advance\bxUcv\bx@ki@bas}
 \fi                           %----</pTeX>
 
-%%----- "safe-caret" module
+%--------------------------------------- "safe-caret" module
+
+%% variables
 \newbool{bx@acr@ok}
 \newbool{bx@acr@needed}
 \newbool{bx@safecaret}
-\catcode`\^=13
+
+\catcode`\^=13                %---- make caret active
 
 %%<*> \safecaret
 \bxPreamble\newcommand*\safecaret{%
@@ -549,19 +551,21 @@
   \let\bxEnableSafeCaret\@undefined}%
   \bxNullify\bxBDHookSafeCaret}
 
-\catcode`\^=6
+\catcode`\^=6                 %---- make caret normal
 
-%%------ 'withnohyph' environment
+%--------------------------------------- hyphenation something
 
+%%<*> 'withnohyph' environment
 \expandafter\ifx\csname l@nohyphenation\endcsname\relax
   \newlanguage\l@nohyphenation \fi
 \def\withnohyph{\language\l@nohyphenation}
 \let\endwithnohyph\relax
 
-%%------ force ucs 'fasterrors' option in pTeX
+%--------------------------------------- patch for 'ucs' package
 
-%% begin-document hook
 %% \bxBDHookUcsFastErrors
+% The begin-document hook, which forces the 'fasterrors' option
+% of 'ucs' package when running on pTeX.
 \bxPreamble\newcommand*\bxBDHookUcsFastErrors{%
   \ifbxinpTeX
     \AtBeginDocument{%
@@ -571,7 +575,7 @@
   \fi
   \bxNullify\bxBDHookUcsFastErrors}
 
-%%------ commands about DVI-specials
+%--------------------------------------- DVI-specials
 
 %%<*> \usejapanesepdfstring
 \bxPreamble\newcommand*\usejapanesepdfstring{}
@@ -606,7 +610,7 @@
 \bxPreamble\newcommand*\dvipdfmxmapfile[1]{%
   \bxDocumentSpecial{pdf:mapfile #1}}
 
-%%------ CJK font scaling
+%--------------------------------------- CJK font scaling
 
 %%<+> \pxDocClassType
 % 1 = pLaTeX standard class
@@ -633,6 +637,6 @@
 \edef\pxUpScale{%
   \ifcase\pxDocClassType 1\or 0.962216\or 0.924690\else 1\fi}
 
-%%------ all done
+%--------------------------------------- all done
 \endinput
 %% EOF

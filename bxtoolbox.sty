@@ -1,24 +1,31 @@
-%
-% bxtoolbox.sty
-%
+%%
+%% This is file 'bxtoolbox.sty'.
+%% 
+%% Copyright (c) 2017 Takayuki YATO (aka. "ZR")
+%%   GitHub:   https://github.com/zr-tex8r
+%%   Twitter:  @zr_tex8r
+%%
+%% This package is distributed under the MIT License.
+%%
 
-%% File declaration
+%% file declaration
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{bxtoolbox}[2013/04/29 v1.0 BX developers' toolbox]
+\ProvidesPackage{bxtoolbox}[2017/05/29 v1.1pre BX developers' toolbox]
 
 %% Error messages
 \def\bxtb@pkgname{BXtoolbox} % bundle name
 \def\bxtb@error{\PackageError\bxtb@pkgname}
 \def\bxtb@warn{\PackageWarningNoLine\bxtb@pkgname}
 
-%--------------------------------------- Load submodules
+%--------------------------------------- main
 
+%% load submodules
 \providecommand*\bxRequireDefinition[1]{%
   \def\bx@@def{def}\@onefilewithoptions{#1}[][]\bx@@def}
 \bxRequireDefinition{bxtoolbox}
 \bxRequireDefinition{bxtoolbox-ext}
 \bxRequireDefinition{bxtoolbox-ja}
 
-%--------------------------------------- All done
+%--------------------------------------- all done
 \endinput
 %% EOF

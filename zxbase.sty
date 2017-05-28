@@ -1,21 +1,29 @@
-%
-% zxbase.sty
-%
-%%%% package declaration
+%%
+%% This is file 'zxbase.sty'.
+%% 
+%% Copyright (c) 2017 Takayuki YATO (aka. "ZR")
+%%   GitHub:   https://github.com/zr-tex8r
+%%   Twitter:  @zr_tex8r
+%%
+%% This package is distributed under the MIT License.
+%%
+
+%% package declaration
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{zxbase}[2013/04/29 v1.0]
+\ProvidesPackage{zxbase}[2017/05/29 v1.1pre]
 \RequirePackage{ifxetex}
 \RequireXeTeX
 
-%%%% preparations
+%% preparations
 \RequirePackage{bxbase}
 \def\zx@pkgname{zxbase}
 \def\zx@error{\PackageError\zx@pkgname}
 \def\zx@warn{\PackageWarningNoLine\zx@pkgname}
 
-%%------ generic family detection
+%--------------------------------------- generic family detection
 
-%%%% constants \zxSpecFamily, \zxRMFamily, etc.
+%%<+> \zxSpecFamily / \zxRMFamily / \zxSFFamily / \zxTTFamily
+% The constants signifying each generic family.
 % These values can be considered as fixed, so you can say i.e.
 % "\ifnum\zxGFFlag<\zxSFFamily <non-sans> \else <sans> \fi"
 \chardef\zxSpecFamily=0
@@ -23,7 +31,7 @@
 \chardef\zxSFFamily=2
 \chardef\zxTTFamily=3
 
-%%%% \zx@set@genfamflag
+%% \zx@set@genfamflag
 % A patch to be inserted to \selectfont. This makes \selectfont
 % set a right \zx..Family constant to \zxGFFlag.
 \def\zx@set@genfamflag{%
@@ -40,7 +48,7 @@
   \zx@set@gff@get\zx@genfam#1%
   \ifx\zx@genfam\zx@curfam \let\zxGFFlag#2\fi}
 
-%%%% \zxBDHookGenFamFlag
+%%<+> \zxBDHookGenFamFlag
 \def\zxBDHookGenFamFlag{\zx@bdhook@genfamflag@do}
 \@onlypreamble\zx@bdhook@genfamflag@do
 \def\zx@bdhook@genfamflag@do{%
@@ -51,8 +59,11 @@
   \expandafter\def\expandafter#1\expandafter{%
     \expandafter\zx@set@genfamflag#1}}
 
-%%------ Forging pTeX direction primitives
+%--------------------------------------- forge pTeX primitives
+% It is not totally safe, but is required so as to make
+% the 'ajmacros' package work.
 
+%%<+> \zxBDHookForgepTeXDir
 \def\zxBDHookForgepTeXDir{\zx@bdhook@forgeptexdir@do}
 \@onlypreamble\zx@bdhook@forgeptexdir@do
 \def\zx@bdhook@forgeptexdir@do{%
@@ -65,14 +76,19 @@
     \expandafter\let\csname if#1\expandafter\endcsname
     \csname if#2\endcsname \fi}
 
-%%------ Forcing to read pLaTeX packages
+%--------------------------------------- load pLaTeX packages
 
+%%<+> switch 'zxPPInUTFEight'
 \newif\ifzxPPInUTFEight
+
+%% variables
 \newif\ifzx@jisenc
+
+%% errors
 \def\zx@err@ukenc#1{\zx@error{File '#1' is in unknown encoding}%
 {The file must be encoded in ISO-2022-JP or UTF-8.}}
 
-%%%% \zxRequirepLaTeXPackage
+%%<+> \zxRequirepLaTeXPackage{<package>}
 \@onlypreamble\zxRequirepLaTeXPackage
 \def\zxRequirepLaTeXPackage#1{%
   \ifzxPPInUTFEight \zx@jisencfalse
@@ -87,12 +103,12 @@
   \let\NeedsTeXFormat\zx@org@NeedsTeXFormat
 }
 
-%%%% \zx@mute@NeedsTeXFormat
+%% \zx@mute@NeedsTeXFormat
 \def\zx@mute@NeedsTeXFormat#1{\@ifnextchar[{\zx@mute@ntf@a}{\relax}}
 \def\zx@mute@ntf@a[#1]{\relax}
 \let\zx@org@NeedsTeXFormat\NeedsTeXFormat
 
-%%%% \zx@checkjisorutfeight{<file>}
+%% \zx@checkjisorutfeight{<file>}
 % Decides whether <file> is encoded in JIS or UTF-8 and sets to \zx@joru.
 %  0:binary; 1:JIS; 2:UTF-8; 3:US-ASCII
 \def\zx@checkjisorutfeight#1{%
@@ -127,25 +143,9 @@
 
 %%<*> \platexpackagesinunicode
 \@onlypreamble\platexpackagesinunicode
+% FIXME
 \let\platexpackagesinunicode\zxPPInUTFEight
 
-%%------ trashed stuff
-
-%\def\zxRemoveFSSuffix#1{%
-%  \edef\zx@tmpx{#1}\bxOkfalse
-%  \let\bxRes\@empty \let\zx@chunk\@gobble
-%  \expandafter\zx@rem@fssfx@a\zx@tmpx(@\@nil}
-%\def\zx@rem@fssfx@a#1(#2#3\@nil{%
-%  \ifx @#2\edef\bxRes{\bxRes\zx@chunk\@empty}%
-%        \def\zx@nxt{\zx@rem@fssfx@b#1@)@\@nil}%
-%  \else \edef\bxRes{\bxRes\zx@chunk(}\def\zx@chunk{#1}%
-%        \def\zx@nxt{\zx@rem@fssfx@a#2#3\@nil}%
-%  \fi \zx@nxt}
-%\def\zx@rem@fssfx@b#1)@#2\@nil{%
-%  \ifx\bxRes\@empty\else
-%    \ifx @#2@\else \bxAssign\@tempcnta0#1\relax \fi \fi
-%  \ifbxOk\else \let\bxRes\zx@tmpx \fi}
-
-%%------ all done
+%--------------------------------------- all done
 \endinput
 %% EOF

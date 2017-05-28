@@ -1,331 +1,331 @@
-bxbase $B$K4^$^$l$k3+H/<T8~$15!G=(B
+bxbase に含まれる開発者向け機能
 ===============================
 
-$B$3$3$G$O!"(Bbxbase $B%Q%C%1!<%8!J(Bbxbase.sty$B!K$,Ds6!$9$k3+H/<T8~$1(B
-$B5!G=$K$D$$$F4JC1$K2r@b$9$k!#$3$l$O<!$N(B 2 $B$D$KBgJL$5$l$k!#(B
+ここでは、bxbase パッケージ（bxbase.sty）が提供する開発者向け
+機能について簡単に解説する。これは次の 2 つに大別される。
 
-  * bxtoolbox $B%Q%C%1!<%8!J(Bbxbase $B$+$iFI$_9~$^$l$k!K$N5!G=!'(B  
-    etoolbox $B8_495!G=!"$=$NB>$NHFMQE*$J5!G=!#(B
-  * bxbase.def$B!J(Bbxbase $B$N%3!<%I$N<BBN!K$GDj5A$5$l$k5!G=!'(B  
-    $B@[:n%Q%C%1!<%8$G$N;HMQ$rA[Dj$7$?5!G=!#(B
+  * bxtoolbox パッケージ（bxbase から読み込まれる）の機能：  
+    etoolbox 互換機能、その他の汎用的な機能。
+  * bxbase.def（bxbase のコードの実体）で定義される機能：  
+    拙作パッケージでの使用を想定した機能。
 
-### $B=q<05-=R$K4X$9$kCm0U(B
+### 書式記述に関する注意
 
-`<LaTeX$B%^%/%mDj5A5-=R(B>` $B$O(B `\newcommand` $BEy$N(B LaTeX $B%^%/%mDj5AL?Na$K(B
-$B8eB3$9$kMWAGNs$G!"0J2<$N$b$N$KEy$7$$!#(B
+`<LaTeXマクロ定義記述>` は `\newcommand` 等の LaTeX マクロ定義命令に
+後続する要素列で、以下のものに等しい。
 
-    {<$BL?Na(B>}[<$B0z?t8D?t(B>][<$B0z?t4{DjCM(B>]{<$BCV49%F%-%9%H(B>}
+    {<命令>}[<引数個数>][<引数既定値>]{<置換テキスト>}
 
-`<TeX$B%^%/%mDj5A5-=R(B>` $B$O(B `\def` $BEy$N(B TeX $B%^%/%mDj5A%W%j%_%F%#%V$K(B
-$B8eB3$9$kMWAGNs$G!"0J2<$N$b$N$KEy$7$$!#(B
+`<TeXマクロ定義記述>` は `\def` 等の TeX マクロ定義プリミティブに
+後続する要素列で、以下のものに等しい。
 
-    <$BL?Na(B><$B0z?t@k8@It(B>{<$BCV49%F%-%9%H(B>}
+    <命令><引数宣言部>{<置換テキスト>}
 
-`<TeX$B%^%/%mDj5A5-=R(B*>` $B$O(B `<TeX$B%^%/%mDj5A5-=R(B>` $B$N@hF,$N(B `<$BL?Na(B>`
-$B$r=|5n$7$?$b$N!#(B
+`<TeXマクロ定義記述*>` は `<TeXマクロ定義記述>` の先頭の `<命令>`
+を除去したもの。
 
-bxbase.def $B$GDj5A$5$l$k5!G=(B
+bxbase.def で定義される機能
 ---------------------------
 
-### $B%W%m%0%i%_%s%0Jd=u(B
+### プログラミング補助
 
-  * `\bxDebug{<$B%F%-%9%H(B>}`  
-    $B%G%P%C%/=PNOMQL?Na!#$3$N%Q%C%1!<%8$G$NDj5A$G$O2?$b$7$J$$!#(B
-  * `\bxRequireDefinition{<$B%U%!%$%k%Y!<%9L>(B>}`  
-    $B3HD%;R(B .def $B$N%U%!%$%k$r(B `\usepackage` $B$HF1$8J}<0$GFI$_9~$`!#(B  
-    [$B5lL?NaL>(B: `\bxInputDefFile`]
-  * `\bxNullify\$B@)8fDV(B`  
-    `\$B@)8fDV(B` $B$r!V2?$b$7$J$$L?Na!W$G(B `\providecommand` $B$K$h$j(B
-    $B>e=q$-$5$l$J$$$b$N$K:FDj5A$9$k!#(B
-  * `\bxForEachIn<$B0z?t(B1>,<$B0z?t(B2>,...\do{<$BCV49%F%-%9%H(B>}`  
-    $B3F!9$N0z?t$K$D$$$F!"(B`<$BCV49%F%-%9%H(B>` $B$N(B `#1` $B$r$=$l$GCV$-49$($?(B
-    $B$b$N$r<B9T$9$k!#(BLaTeX $B$N(B `\@for` $B$N%i%C%Q!<$G!"(B`\@for` $B$HF1$8$/!"(B
-    `\bxForEachIn` $B$ND>8e$N%H!<%/%s$OM=$a0lEYE83+$5$l$k!#(B
-  * `\bxForEachTokenIn<$B%H!<%/%s(B1><$B%H!<%/%s(B2>...\do{<$BCV49%F%-%9%H(B>}`  
-    $B3F!9$N0z?t$K$D$$$F(B `<$BCV49%F%-%9%H(B>` $B$N(B `#1` $B$rCV$-49$($?$b$N$r(B
-    $B<B9T$9$k!#(BLaTeX $B$N(B `\@tfor` $B$N%i%C%Q!<!#(B
-  * `\bxWithArgExpd{<$B0z?t(B1>}\do{<$BCV49%F%-%9%H(B>}`  
-  * `\bxWithArgsExpd{<$B0z?t(B1>}{<$B0z?t(B2>}...\do{<$BCV49%F%-%9%H(B>}`  
-    `<$BCV49%F%-%9%H(B>` $BCf$N(B `#1`$B!"(B`#2`$B!D(B $B$r3F!9$N0z?t$r0l2sE83+$7$?(B
-    $B$b$N$KCV$-49$($?$b$N$r<B9T$9$k!#(B`\bxWithArgExpd` $B$O(B 1 $B0z?tMQ$K(B
-    $B:GE,2=$7$?$b$N!#(B
-  * `\bxWithArgFullExpd{<$B0z?t(B1>}\do{<$BCV49%F%-%9%H(B>}`  
-  * `\bxWithArgsFullExpd{<$B0z?t(B1>}{<$B0z?t(B2>}...\do{<$BCV49%F%-%9%H(B>}`  
-    `\bxWithArgsExpd` $B$HF1MM$@$,!"0l2sE83+$G$J$/40A4E83+$9$kE@$,(B
-    $B0[$J$k!#(B
-  * `\bxChompComma<$BL?Na(B>`  
-    `<$BL?Na(B>` $B$N(B $BCV49%F%-%9%H$N@hF,$,(B `,` $B$N>l9g!"$=$l$r:o=|$7$?$b$N$G(B
-    $B:FDj5A$9$k!#(B
-  * `\bxAssign<$BBeF~J8(B>\relax`  
-    $BBeF~$r9T$C$?8e!"BeF~J8$N8e$m$K%4%_$,$J$$$+$rH=Dj$7$=$N7k2L$r(B
-    $B%9%$%C%A(B `\ifbxOk` $B$KJV$9!#(B
-  * `\bxCheckMA<$B%F%-%9%H(B>\bxEndCheckMA`  
-    `\edef` $BCf$G$O$3$NItJ,$,%(%i!<$r=P$9L?Na$KE83+$5$l$k!#(B
-  * `\bxCheckCounterpart{<$B%Y!<%9L>(B>}`  
-    $B8=:_$N%U%!%$%k$H(B `<$B%Y!<%9L>(B>`$B!JF1$83HD%;R!K$H$N4V$GHG$rHf3S$9$k!#(B
-    $B$b$7!"8e<T$,FI9~:Q$G$+$DHG$,?7$7$$>l9g$O!"8=:_$N%U%!%$%k$NFI9~$r(B
-    $BCf;_$9$k!#(B  
-    [$B5lL>>N!'(B `\bxCheckCPart`]
+  * `\bxDebug{<テキスト>}`  
+    デバック出力用命令。このパッケージでの定義では何もしない。
+  * `\bxRequireDefinition{<ファイルベース名>}`  
+    拡張子 .def のファイルを `\usepackage` と同じ方式で読み込む。  
+    [旧命令名: `\bxInputDefFile`]
+  * `\bxNullify\制御綴`  
+    `\制御綴` を「何もしない命令」で `\providecommand` により
+    上書きされないものに再定義する。
+  * `\bxForEachIn<引数1>,<引数2>,...\do{<置換テキスト>}`  
+    各々の引数について、`<置換テキスト>` の `#1` をそれで置き換えた
+    ものを実行する。LaTeX の `\@for` のラッパーで、`\@for` と同じく、
+    `\bxForEachIn` の直後のトークンは予め一度展開される。
+  * `\bxForEachTokenIn<トークン1><トークン2>...\do{<置換テキスト>}`  
+    各々の引数について `<置換テキスト>` の `#1` を置き換えたものを
+    実行する。LaTeX の `\@tfor` のラッパー。
+  * `\bxWithArgExpd{<引数1>}\do{<置換テキスト>}`  
+  * `\bxWithArgsExpd{<引数1>}{<引数2>}...\do{<置換テキスト>}`  
+    `<置換テキスト>` 中の `#1`、`#2`… を各々の引数を一回展開した
+    ものに置き換えたものを実行する。`\bxWithArgExpd` は 1 引数用に
+    最適化したもの。
+  * `\bxWithArgFullExpd{<引数1>}\do{<置換テキスト>}`  
+  * `\bxWithArgsFullExpd{<引数1>}{<引数2>}...\do{<置換テキスト>}`  
+    `\bxWithArgsExpd` と同様だが、一回展開でなく完全展開する点が
+    異なる。
+  * `\bxChompComma<命令>`  
+    `<命令>` の 置換テキストの先頭が `,` の場合、それを削除したもので
+    再定義する。
+  * `\bxAssign<代入文>\relax`  
+    代入を行った後、代入文の後ろにゴミがないかを判定しその結果を
+    スイッチ `\ifbxOk` に返す。
+  * `\bxCheckMA<テキスト>\bxEndCheckMA`  
+    `\edef` 中ではこの部分がエラーを出す命令に展開される。
+  * `\bxCheckCounterpart{<ベース名>}`  
+    現在のファイルと `<ベース名>`（同じ拡張子）との間で版を比較する。
+    もし、後者が読込済でかつ版が新しい場合は、現在のファイルの読込を
+    中止する。  
+    [旧名称： `\bxCheckCPart`]
 
-### TeX $B%(%s%8%sH=JL(B
+### TeX エンジン判別
 
-  * `\bxEngineTypeX`  [$B@0?tDj?t(B]  
-    1=pTeX$B3HD%(B; 2=XeTeX$B3HD%(B; 3=Omega$B3HD%(B; 0=$B0J>e$K3:Ev$;$:(B
-  * `\bxEngineTypeY`  [$B@0?tDj?t(B]  
-    1=eTeX$B3HD%(B; 3=pdfTeX$B3HD%(B; 5=LuaTeX$B3HD%(B; 0=$B0J>e$K3:Ev$;$:(B  
-    $B"(=>Mh$O(B LuaTeX $B$O(B X/Y=3/3 $B$H$7$F$$$?$,!">/$J$/$H$b8=:_$N(B
-    LaTeX $B$G$O(B LuaTeX $B$O(B Omega $B3HD%$r$b$D$H$_$J$5$J$$$N$G!"(B
-    X/Y=0/5 $B$N0LCV$KJQ99$7$?!#(B  
-    $B"((BupTeX $B$+H]$+$NH=Dj$O(B ifptex $B%Q%C%1!<%8$rMQ$$$k!#(B
+  * `\bxEngineTypeX`  [整数定数]  
+    1=pTeX拡張; 2=XeTeX拡張; 3=Omega拡張; 0=以上に該当せず
+  * `\bxEngineTypeY`  [整数定数]  
+    1=eTeX拡張; 3=pdfTeX拡張; 5=LuaTeX拡張; 0=以上に該当せず  
+    ※従来は LuaTeX は X/Y=3/3 としていたが、少なくとも現在の
+    LaTeX では LuaTeX は Omega 拡張をもつとみなさないので、
+    X/Y=0/5 の位置に変更した。  
+    ※upTeX か否かの判定は ifptex パッケージを用いる。
 
-### Babel $B4X78(B
+### Babel 関係
 
   * `\bxBDHookBabel`  
-    Babel $B4X78$N(B begin-document $B%U%C%/!#(B
-  * `\bxAtBeginDocumentBabel{<$B%F%-%9%H(B>}`  
-    Babel $BFI9~;~$K$N$_<B9T$5$l$k(B begin-document $B;~$N%U%C%/!#(B
-  * `\bxTrivLangDef{<$B8@8lL>(B>}`  
-    $BCf?H!J%-%c%W%7%g%sDj5AEy!K$,6u$N(B Babel $B8@8l%*%W%7%g%s$r@8@.$9$k!#(B
+    Babel 関係の begin-document フック。
+  * `\bxAtBeginDocumentBabel{<テキスト>}`  
+    Babel 読込時にのみ実行される begin-document 時のフック。
+  * `\bxTrivLangDef{<言語名>}`  
+    中身（キャプション定義等）が空の Babel 言語オプションを生成する。
 
-### $B?tCM$N=q<02==PNO(B
+### 数値の書式化出力
 
-  * `\bxToHexTwo{<$B@0?t(B>}`      [%02X $B7A<0(B; 0x00$B!A(BFF]  
-  * `\bxToHexThree{<$B@0?t(B>}`    [%03X $B7A<0(B; 0x000$B!A(BFFF]  
-  * `\bxToHexFour{<$B@0?t(B>}`     [%04X $B7A<0(B; 0x0000$B!A(BFFFF]  
-  * `\bxToHexFive{<$B@0?t(B>}`     [%05X $B7A<0(B; 0x00000$B!A(BFFFFF]  
-  * `\bxToHexFiveX{<$B@0?t(B>}`    [%05X $B7A<0(B; 0x00000$B!A(BFFFFF $B"((B1]  
-  * `\bxToHexEight{<$B@0?t(B>}`    [%08X $B7A<0(B; 0x00000000$B!A(B7FFFFFFF]  
-  * `\bxToHexTiny{<$B@0?t(B>}`     [%X $B7A<0(B; 0x0$B!A(BFF]  
-  * `\bxToHexSmall{<$B@0?t(B>}`    [%X $B7A<0(B; 0x0$B!A(B7FFF]  
-  * `\bxToHexUC{<$B@0?t(B>}`       [%04X $B7A<0(B; 0x0000$B!A(B10FFFF $B"((B2]  
-    16 $B?JI=5-$r(B `\bxHex` $B$KJV$9!#(BUC $B$O(B 4$B!A(B6 $B7e$G$NI=5-!#(B  
-    $B"((B1 0xFFFFF $B$rD6$($k>l9g$O(B `FFFFF` $B$K$J$k(B  
-    $B"((B2 XeTeX/LuaTeX/upTeX $B$N>l9g!"(B`\char` $B$,2DG=$JHO0O!#(B
-  * `\bxToDecFour{<$B@0?t(B>}`     [%04d $B7A<0(B; 0000$B!A(B9999]  
-  * `\bxToDecFive{<$B@0?t(B>}`     [%05d $B7A<0(B; 00000$B!A(B99999]  
-    $B%<%mIU$N(B 10 $B?JI=5-$r(B `\bxHex` $B$KJV$9!#(B
+  * `\bxToHexTwo{<整数>}`      [%02X 形式; 0x00～FF]  
+  * `\bxToHexThree{<整数>}`    [%03X 形式; 0x000～FFF]  
+  * `\bxToHexFour{<整数>}`     [%04X 形式; 0x0000～FFFF]  
+  * `\bxToHexFive{<整数>}`     [%05X 形式; 0x00000～FFFFF]  
+  * `\bxToHexFiveX{<整数>}`    [%05X 形式; 0x00000～FFFFF ※1]  
+  * `\bxToHexEight{<整数>}`    [%08X 形式; 0x00000000～7FFFFFFF]  
+  * `\bxToHexTiny{<整数>}`     [%X 形式; 0x0～FF]  
+  * `\bxToHexSmall{<整数>}`    [%X 形式; 0x0～7FFF]  
+  * `\bxToHexUC{<整数>}`       [%04X 形式; 0x0000～10FFFF ※2]  
+    16 進表記を `\bxHex` に返す。UC は 4～6 桁での表記。  
+    ※1 0xFFFFF を超える場合は `FFFFF` になる  
+    ※2 XeTeX/LuaTeX/upTeX の場合、`\char` が可能な範囲。
+  * `\bxToDecFour{<整数>}`     [%04d 形式; 0000～9999]  
+  * `\bxToDecFive{<整数>}`     [%05d 形式; 00000～99999]  
+    ゼロ付の 10 進表記を `\bxHex` に返す。
 
-### $BId9fCM$K$h$kF~NO(B
+### 符号値による入力
 
   * `\bxBDHookUnicode`  
   * `\bxBDHookJisInput`  
-    $BId9fCMF~NO$K4X$9$k(B begin-document $B%U%C%/!#(B
-  * `\bxCodeValueSeq\$B@)8fDV(B{<$BId9fCM(B>,...}    [16$B?J(B]`  
-  * `\bxCodeValueSeqD\$B@)8fDV(B{<$BId9fCM(B>,...}   [10$B?J(B]`  
-    $B3F!9$N(B `<$BId9fCM(B>` $B$r2r<a$7$?7k2L$r(B `\bxUcv` $B$KBeF~$7$F%^%/%m(B
-    `\$B@)8fDV(B` $B$r8F$S=P$9!#2r<aJ}K!$O$=$l$>$l(B `\Ux` $B$H(B `\AJ` $BL?Na$N(B
-    $B2r@b$K$"$kDL$j!#(B
-  * `\bxUHex{<$B%3!<%ICM(B16$B?JI=5-(B>}`  
-    bxutf8 $B$,9=@.$9$kFbItI=8=!#MQ$$$k5!G=$O(B `\Ux` $B$HF1$8!#(B
-  * `\bxUInt{<$B@0?t(B>}`  
-    bxutf8x $B$,9=@.$9$kFbItI=8=!#MQ$$$k5!G=$O(B `\Ux` $B$HF1$8!#(B
+    符号値入力に関する begin-document フック。
+  * `\bxCodeValueSeq\制御綴{<符号値>,...}    [16進]`  
+  * `\bxCodeValueSeqD\制御綴{<符号値>,...}   [10進]`  
+    各々の `<符号値>` を解釈した結果を `\bxUcv` に代入してマクロ
+    `\制御綴` を呼び出す。解釈方法はそれぞれ `\Ux` と `\AJ` 命令の
+    解説にある通り。
+  * `\bxUHex{<コード値16進表記>}`  
+    bxutf8 が構成する内部表現。用いる機能は `\Ux` と同じ。
+  * `\bxUInt{<整数>}`  
+    bxutf8x が構成する内部表現。用いる機能は `\Ux` と同じ。
 
-### $BJ8;zNsA`:n(B
+### 文字列操作
 
-  * `\bxToLower{<$BJ8;zNs(B>}  [$B>.J8;z(B]`  
-  * `\bxToUpper{<$BJ8;zNs(B>}  [$BBgJ8;z(B]`  
-    `<$BJ8;zNs(B>` $B$r>.J8;z!?BgJ8;z$KJQ49$7$?$b$N$r(B `\bxRes` $B$KJV$9!#(B
+  * `\bxToLower{<文字列>}  [小文字]`  
+  * `\bxToUpper{<文字列>}  [大文字]`  
+    `<文字列>` を小文字／大文字に変換したものを `\bxRes` に返す。
 
-### Special $B=PNO(B
+### Special 出力
 
-  * `\bxDocumentSpecial{<$B%F%-%9%H(B>}`  
-    `\AtBeginDvi` $B$rIaDL$KMQ$$$F(B DVI $B$N@hF,It$K(B special $B$r=PNO$9$k!#(B
-  * `\bxDocumentSpecialUrgent{<$B%F%-%9%H(B>}`  
-    DVI $B$N$J$k$Y$/@hF,!JB>$N(B special $B$h$jA0!K$N0LCV$K(B special $B$r=PNO!#(B
+  * `\bxDocumentSpecial{<テキスト>}`  
+    `\AtBeginDvi` を普通に用いて DVI の先頭部に special を出力する。
+  * `\bxDocumentSpecialUrgent{<テキスト>}`  
+    DVI のなるべく先頭（他の special より前）の位置に special を出力。
 
-### Safe caret $B5!G=(B
+### Safe caret 機能
 
   * `\bxBDHookSafeCaret`  
-    safe caret $B5!G=$K4X$9$k(B begin-document $B%U%C%/!#(B
+    safe caret 機能に関する begin-document フック。
   * `\bxEnableSafeCaret`  
-    safe caret $B5!G=$r;HMQ2DG=$K$7$F$*$/!#$9$J$o$A!"%W%l%"%s%V%k$G$3$N(B
-    $BL?Na$,8F$P$l$J$+$C$?>l9g!"(Bsafe caret $B$O;HMQIT2D$K$J$k!#<B:]$K$"$k(B
-    $B>u67$G(B safe caret $B$rM-8z$K$9$k$K$O!"(B`\bx@acr@normcaret` $B$r!V$=$N(B
-    $B>u67$G$NK\Mh$N(B `^` $B$NF0:n!W$KDj5A$7$?>e$G(B `^` $B$r%"%/%F%#%V$K$9$k(B
-    $BI,MW$,$"$k!#(B  
-    $B"((B $B%f!<%6L?Na$N(B `\safecaret` $B$O$3$NL?Na$r<B9T$7$?>e$G!"(Bverbatim
-    $B$H(B babel $B$G$NE,@Z$J(B safe caret $B=hM}$rM-8z2=$7$F$$$k!#(B
+    safe caret 機能を使用可能にしておく。すなわち、プレアンブルでこの
+    命令が呼ばれなかった場合、safe caret は使用不可になる。実際にある
+    状況で safe caret を有効にするには、`\bx@acr@normcaret` を「その
+    状況での本来の `^` の動作」に定義した上で `^` をアクティブにする
+    必要がある。  
+    ※ ユーザ命令の `\safecaret` はこの命令を実行した上で、verbatim
+    と babel での適切な safe caret 処理を有効化している。
 
-### Shadow map $B5!G=(B
+### Shadow map 機能
 
-Shadow map $B$H$O!V(B16 $B%S%C%H@0?t(B $B"*(B $B@0?t!W$N<LA|$r(B TFM $B$H$7$FI=8=(B
-$B$7$?$b$N!#(B
+Shadow map とは「16 ビット整数 → 整数」の写像を TFM として表現
+したもの。
 
-  * `\bxUseShadowMap\$B@)8fDV(B{<TFM$BL>(B>}`  
-    `\$B@)8fDV(B` $B$r;XDj$N(B TFM $B$+$i@8@.$5$l$k(B shadow map $B$H$7$FDj5A!#(B
-  * `\bxMap\$B@)8fDV(B`  
-    $B@0?t%l%8%9%?(B `\bxUcv` $B$N8=:_$NCM$K(B shadow map $B$rE,MQ$7!"$=$N7k2L$r(B
-    `\bxUcv` $B$KBeF~$9$k!#(B
+  * `\bxUseShadowMap\制御綴{<TFM名>}`  
+    `\制御綴` を指定の TFM から生成される shadow map として定義。
+  * `\bxMap\制御綴`  
+    整数レジスタ `\bxUcv` の現在の値に shadow map を適用し、その結果を
+    `\bxUcv` に代入する。
 
-### $B%b%8%e!<%kL>(B
+### モジュール名
 
-$B$3$3$G$$$&!V%b%8%e!<%k!W$H$OJ8=q%/%i%9!J(B.cls$B!K!&%Q%C%1!<%8!J(B.sty$B!K!&(B
-$BDj5A%U%!%$%k!J(B.def$B!K$NAm>N!#!V%b%8%e!<%kFI9~Cf$KH/@8$9$k%(%i!<$r=PNO(B
-$B$9$k$?$a$N%^%/%m!W$rJL$N%b%8%e!<%kFb$GDj5A$9$k:]$K!"8F$S=P$7$?B&$N(B
-$B%b%8%e!<%kL>$r%a%C%;!<%8Cf$K=PNO$5$;$k$?$a$N;EAH$_!#(B
+ここでいう「モジュール」とは文書クラス（.cls）・パッケージ（.sty）・
+定義ファイル（.def）の総称。「モジュール読込中に発生するエラーを出力
+するためのマクロ」を別のモジュール内で定義する際に、呼び出した側の
+モジュール名をメッセージ中に出力させるための仕組み。
 
-  * `\bxSetModuleName{<$BJ8;zNs(B>}`  
-    $B8=:_$N%b%8%e!<%k$KBP$9$k%b%8%e!<%kL>$r@_Dj$9$k!#(B
+  * `\bxSetModuleName{<文字列>}`  
+    現在のモジュールに対するモジュール名を設定する。
   * `\bxModuleName`  
-    $B8=:_$N%b%8%e!<%k$KBP$9$k%b%8%e!<%kL>$KE83+$5$l$k!#%b%8%e!<%kL>$,(B
-    $B@_Dj$5$l$F$$$J$$>l9g$O%U%!%$%k$N%Y!<%9L>$rBe$o$j$K;H$&!#(B
-  * `\bxError`            [`\PackageError` $B$KBP1~(B]  
-  * `\bxWarning`          [`\PackageWarning` $B$KBP1~(B]  
-  * `\bxWarningNoLine`    [`\PackageWarningNoLine` $B$KBP1~(B]  
-  * `\bxInfo`             [`\PackageInfo` $B$KBP1~(B]  
-    $B8=:_$N%b%8%e!<%kL>$r%Q%C%1!<%8L>$H$7$F(B `\PackageError` $BEy$r8F$V!#(B
+    現在のモジュールに対するモジュール名に展開される。モジュール名が
+    設定されていない場合はファイルのベース名を代わりに使う。
+  * `\bxError`            [`\PackageError` に対応]  
+  * `\bxWarning`          [`\PackageWarning` に対応]  
+  * `\bxWarningNoLine`    [`\PackageWarningNoLine` に対応]  
+  * `\bxInfo`             [`\PackageInfo` に対応]  
+    現在のモジュール名をパッケージ名として `\PackageError` 等を呼ぶ。
 
-### keyval $B$N3HD%(B
+### keyval の拡張
 
-$B!J(Bxkeyval $B$,Ia5Z$7$?:#$G$OHs?d>)$+$b!D!K(B
+（xkeyval が普及した今では非推奨かも…）
 
-keyval $B$N(B `\setkeys` $B$K$D$$$F!"!VL$Dj5A$N%-!<$r%(%i!<$K$;$:!"Be$o$j$K(B
-$BL$Dj5A$N%-!<$N%j%9%H$r:n@.$9$k!W$H$$$&JQ<o$rDs6!$9$k!#$3$N5!G=$O(B
-xkeyval $B$G(B `\setkeys*` $B$H$7$FDs6!$5$l$F$$$k!#$7$+$7(B xkeyval $B$,MxMQ(B
-$B$G$-$J$$4D6-$KBP1~$9$k$?$a$K(B keyval $B$X$N%Q%C%A$H$7$F<B8=$9$k$3$H(B
-$B$K$9$k!#$7$+$7!"(Bxkeyval $B$O$3$N%Q%C%A$rL58z2=$7$F$7$^$&!#=>$C$F(B
-xkeyval.sty $B$,B8:_$9$k$+$K1~$8$F=hM}$rJ,$1$k$3$H$K$7$?!#(B
+keyval の `\setkeys` について、「未定義のキーをエラーにせず、代わりに
+未定義のキーのリストを作成する」という変種を提供する。この機能は
+xkeyval で `\setkeys*` として提供されている。しかし xkeyval が利用
+できない環境に対応するために keyval へのパッチとして実現すること
+にする。しかし、xkeyval はこのパッチを無効化してしまう。従って
+xkeyval.sty が存在するかに応じて処理を分けることにした。
 
   * `\bxPrepareSetKeysSafe`  
-    `\bxSetKeysSafe` $B$r;HMQ2DG=$K$9$k!#(B  
-    $B"((B xkeyval.sty $B$,B8:_$9$k$+$rH=Dj$7!"B8:_$9$l$PFI$_9~$`!#(B
-    $B$=$7$F(B `\bxSetKeysSafe` $B$N<B8=J}K!$r$3$NCJ3,$G3NDj$5$;$k!#(B
-  * `\bxSetKeysSafe{<$B%U%!%_%j(B>}{<$B%F%-%9%H(B>}`  
-    `\setkeys` $B$HF1MM$@$,!"L$Dj5A$N%-!<$r%(%i!<$H$;$:!"Be$o$j$K(B
-    $BL$Dj5A$N%-!<$+$i$J$k%3%s%^6h@Z$j$N%j%9%H$r(B `\bxRestKeys` $B$K(B
-    $BBeF~$9$k!#(B
+    `\bxSetKeysSafe` を使用可能にする。  
+    ※ xkeyval.sty が存在するかを判定し、存在すれば読み込む。
+    そして `\bxSetKeysSafe` の実現方法をこの段階で確定させる。
+  * `\bxSetKeysSafe{<ファミリ>}{<テキスト>}`  
+    `\setkeys` と同様だが、未定義のキーをエラーとせず、代わりに
+    未定義のキーからなるコンマ区切りのリストを `\bxRestKeys` に
+    代入する。
 
-### $B%I%i%$%PH=JL(B
+### ドライバ判別
 
-$B0J2<$N@bL@$G!V@hE7E*$J!W%I%i%$%P$H$O!"(BTeX $B<B9T;~$K;HMQ$,H=Dj$G$-$k(B
-$B$b$N!J;v<B>e!V(BTeX $B%(%s%8%s$,%I%i%$%P$r7s$M$k$b$N!W$KEy$7$$!K$r;X$7!"(B
-$BNc$($P(B pdfTeX$B!"(BXeTeX$B!"(BLuaTeX $B$,3:Ev$9$k!#(B
+以下の説明で「先天的な」ドライバとは、TeX 実行時に使用が判定できる
+もの（事実上「TeX エンジンがドライバを兼ねるもの」に等しい）を指し、
+例えば pdfTeX、XeTeX、LuaTeX が該当する。
 
   * `\bxDriverList`  
-    $B!J8eE7E*$J!K%I%i%$%PL>$N%j%9%H!#(B  
-    $B"((B $B8=>u$G$O!V(B`dvips,dvipdfmx,dviout`$B!W!#(B
+    （後天的な）ドライバ名のリスト。  
+    ※ 現状では「`dvips,dvipdfmx,dviout`」。
   * `\bxDriverInherent`  
-    $B@hE7E*$J%I%i%$%PL>!JL$Dj5A$J$i6u!K$KE83+$5$l$k!#(B
-  * `\bxSetDriver[<$B%U%!%$%kL>(B>]{<$B%I%i%$%PL>(B>}`  
-    $B;XDj$N%U%!%$%kL>$r$b$D%b%8%e!<%k$KBP$9$k%I%i%$%PL>$r;XDj$9$k!#(B
-    `<$B%U%!%$%kL>(B>` $B$,$J$$>l9g$O8=:_$N%b%8%e!<%k$KBP$9$k@_Dj!#(B
+    先天的なドライバ名（未定義なら空）に展開される。
+  * `\bxSetDriver[<ファイル名>]{<ドライバ名>}`  
+    指定のファイル名をもつモジュールに対するドライバ名を指定する。
+    `<ファイル名>` がない場合は現在のモジュールに対する設定。
   * `\bxDriver`  
-    $B8=:_$N%b%8%e!<%k$KBP$9$k%I%i%$%PL>$KE83+$5$l$k!#L$Dj5A$J$i$P(B
-    `default` $B$rJV$9!#(B
-  * `\bxDriverSpecifiedFor{<$B%U%!%$%kL>(B>}`  
-    `\bxDriver` $B$HF1MM$@$,!";XDj$N%U%!%$%kL>$r$b$D%b%8%e!<%k$K(B
-    $BBP$9$k@_Dj$rJV$9!#(B
-  * `\bxDefineDDProcess{<$BL>A0(B>}{<$B%I%i%$%PL>(B>}<TeX$B%^%/%mDj5A5-=R(B*>`  
-    $B%I%i%$%P0MB8%^%/%m$rDj5A$9$k!#(B
-  * `\bxDefineDDProcessDefault{<$BL>A0(B>}`  
-    `<$B%I%i%$%PL>(B>` $B$,(B `default` $B$N(B `\bxDefineDDProcess`$B!#(B
-  * `\bxDoDDProcess{<$BL>A0(B>}`  
-    $B%I%i%$%P0MB8%^%/%m$r<B9T$9$k!#(B
+    現在のモジュールに対するドライバ名に展開される。未定義ならば
+    `default` を返す。
+  * `\bxDriverSpecifiedFor{<ファイル名>}`  
+    `\bxDriver` と同様だが、指定のファイル名をもつモジュールに
+    対する設定を返す。
+  * `\bxDefineDDProcess{<名前>}{<ドライバ名>}<TeXマクロ定義記述*>`  
+    ドライバ依存マクロを定義する。
+  * `\bxDefineDDProcessDefault{<名前>}`  
+    `<ドライバ名>` が `default` の `\bxDefineDDProcess`。
+  * `\bxDoDDProcess{<名前>}`  
+    ドライバ依存マクロを実行する。
   * `\bxDeclareDriverOptions`  
-    $B8eE7E*$J%I%i%$%PL>$N3F!9$K$D$$$F!"!V(B`\bxSetDriver{$B%I%i%$%PL>(B}`
-    $B$r8F$V!W$H$$$&F0:n$N%Q%C%1!<%8!J%/%i%9!K%*%W%7%g%s$rDj5A$9$k!#(B
+    後天的なドライバ名の各々について、「`\bxSetDriver{ドライバ名}`
+    を呼ぶ」という動作のパッケージ（クラス）オプションを定義する。
 
-### bxtoolbox $B$GDj5A$5$l$k5!G=(B
+### bxtoolbox で定義される機能
 
-#### etoolbox $B8_49L?Na(B
+#### etoolbox 互換命令
 
-$B$3$3$K5s$2$kL?Na$O!"(Betoolbox $B$NL?Na$NJ#@=$G$"$j!"$=$l$>$l!"L?NaL>$N(B
-$BF,$N(B bx $B$r<h$C$F@hF,$r>.J8;z$KJQ$($?L>A0!J(B`\bxCsde` $B"*(B `\csdef`$B!K(B
-$B$N(B etoolbox $B$NL?Na$KBP1~$9$k!#(Be-TeX $B3HD%$r$b$D%(%s%8%s$GF0:n$5$;$k(B
-$B>l9g$O!"<B:]$K(B etoolbox $B$rFI$_9~$s$G$=$l$NL?Na$N%(%$%j%"%9$H$9$k$,!"(B
-$B$=$&$G$J$$>l9g$O<+A0$N<BAu$rMQ$$$k!#(B
+ここに挙げる命令は、etoolbox の命令の複製であり、それぞれ、命令名の
+頭の bx を取って先頭を小文字に変えた名前（`\bxCsde` → `\csdef`）
+の etoolbox の命令に対応する。e-TeX 拡張をもつエンジンで動作させる
+場合は、実際に etoolbox を読み込んでそれの命令のエイリアスとするが、
+そうでない場合は自前の実装を用いる。
 
-$B3FL?Na$N@bL@$K$D$$$F$O(B etoolbox $B$N%^%K%e%"%k$r;2>H$5$l$?$$!#(B
-etoolbox $B$N85$NL?Na$H;EMM$,0[$J$kItJ,$K$N$_@bL@$rIU$7$F$$$k(B
-$B!J$3$N@bL@$O(B e-TeX $BHs3HD%$N%(%s%8%s$G$NF0:n;~$N$_Ev$F$O$^$k$3$H(B
-$B$KCm0U!K!#(B
+各命令の説明については etoolbox のマニュアルを参照されたい。
+etoolbox の元の命令と仕様が異なる部分にのみ説明を付している
+（この説明は e-TeX 非拡張のエンジンでの動作時のみ当てはまること
+に注意）。
 
-($B4h6/$JL?Na$NDj5A(B)
+(頑強な命令の定義)
 
-  * `\bxNewrobustcmd[*]<LaTeX$B%^%/%mDj5A5-=R(B>`  
-  * `\bxRenewrobustcmd[*]<LaTeX$B%^%/%mDj5A5-=R(B>`  
-  * `\bxProviderobustcommand[*]<LaTeX$B%^%/%mDj5A5-=R(B>`  
-  * `\bxRobustify{<$BL?Na(B>}`  
-      e-TeX $B$N(B \protected $B$NBe$o$j$K(B LaTeX $B$N(B protect $B=hM}$rMQ$$$k!#7k2L(B
-      $BE*$K(B \DeclareRobustCommand $B$HF1$8=hM}$,;H$o$l$k!#(B
+  * `\bxNewrobustcmd[*]<LaTeXマクロ定義記述>`  
+  * `\bxRenewrobustcmd[*]<LaTeXマクロ定義記述>`  
+  * `\bxProviderobustcommand[*]<LaTeXマクロ定義記述>`  
+  * `\bxRobustify{<命令>}`  
+      e-TeX の \protected の代わりに LaTeX の protect 処理を用いる。結果
+      的に \DeclareRobustCommand と同じ処理が使われる。
 
-($B%a%$%sJ8=q%3%s%Q%$%k;~%U%C%/(B)
+(メイン文書コンパイル時フック)
 
-  * `\AfterPreamble{<$B%F%-%9%H(B>}`  
-  * `\AtEndPreamble{<$B%F%-%9%H(B>}`  
-  * `\AfterEndPreamble{<$B%F%-%9%H(B>}`  
-  * `\AfterEndDocument{<$B%F%-%9%H(B>}`  
+  * `\AfterPreamble{<テキスト>}`  
+  * `\AtEndPreamble{<テキスト>}`  
+  * `\AfterEndPreamble{<テキスト>}`  
+  * `\AfterEndDocument{<テキスト>}`  
 
-($B%^%/%mDj5A(B)
+(マクロ定義)
 
-  * `\csdef<TeX$B%^%/%mDj5A5-=R(B*>`  
-  * `\csgdef<TeX$B%^%/%mDj5A5-=R(B*>`  
-  * `\csedef<TeX$B%^%/%mDj5A5-=R(B*>`  
-  * `\csxdef<TeX$B%^%/%mDj5A5-=R(B*>`  
+  * `\csdef<TeXマクロ定義記述*>`  
+  * `\csgdef<TeXマクロ定義記述*>`  
+  * `\csedef<TeXマクロ定義記述*>`  
+  * `\csxdef<TeXマクロ定義記述*>`  
 
-($BL?Na$N0UL#$NA`:n(B)
+(命令の意味の操作)
 
-  * `\cslet{<$BL?NaL>(B1>}{<$BL?Na(B2>}`  
-  * `\letcs{<$BL?Na(B1>}{<$BL?NaL>(B2>}`  
-  * `\csletcs{<$BL?NaL>(B1>}{<$BL?NaL>(B2>}`  
-  * `\bxCsuse{<$BL?NaL>(B>}`  
-  * `\undef{<$BL?Na(B>}`  
-  * `\csundef{<$BL?NaL>(B>}`  
-  * `\bxCsshow{<$BL?NaL>(B>}`  
-    `\bxCsuse` $B$H(B `\bxCsshow` $B$O!"(BLaTeX $B$N(B protect $B$r;\$7$F$$$k$,!"(B
-    $BF0$/0z?t$NCf$GE83+$5$l$k$H%(%i!<$K$J$k!#(B
+  * `\cslet{<命令名1>}{<命令2>}`  
+  * `\letcs{<命令1>}{<命令名2>}`  
+  * `\csletcs{<命令名1>}{<命令名2>}`  
+  * `\bxCsuse{<命令名>}`  
+  * `\undef{<命令>}`  
+  * `\csundef{<命令名>}`  
+  * `\bxCsshow{<命令名>}`  
+    `\bxCsuse` と `\bxCsshow` は、LaTeX の protect を施しているが、
+    動く引数の中で展開されるとエラーになる。
 
-($B%^%/%m$NDI5-<0Dj5A(B)
+(マクロの追記式定義)
 
-  * `\appto{<$BL?Na(B>}{<$B%F%-%9%H(B>}`  
-  * `\gappto{<$BL?Na(B>}{<$B%F%-%9%H(B>}`  
-  * `\eappto{<$BL?Na(B>}{<$B%F%-%9%H(B>}`  
-  * `\xappto{<$BL?Na(B>}{<$B%F%-%9%H(B>}`  
-  * `\csappto{<$BL?NaL>(B>}{<$B%F%-%9%H(B>}`  
-  * `\csgappto{<$BL?NaL>(B>}{<$B%F%-%9%H(B>}`  
-  * `\cseappto{<$BL?NaL>(B>}{<$B%F%-%9%H(B>}`  
-  * `\csxappto{<$BL?NaL>(B>}{<$B%F%-%9%H(B>}`  
-  * `\preto{<$BL?Na(B>}{<$B%F%-%9%H(B>}`  
-  * `\gpreto{<$BL?Na(B>}{<$B%F%-%9%H(B>}`  
-  * `\epreto{<$BL?Na(B>}{<$B%F%-%9%H(B>}`  
-  * `\xpreto{<$BL?Na(B>}{<$B%F%-%9%H(B>}`  
-  * `\cspreto{<$BL?NaL>(B>}{<$B%F%-%9%H(B>}`  
-  * `\csgpreto{<$BL?NaL>(B>}{<$B%F%-%9%H(B>}`  
-  * `\csepreto{<$BL?NaL>(B>}{<$B%F%-%9%H(B>}`  
-  * `\csxpreto{<$BL?NaL>(B>}{<$B%F%-%9%H(B>}`  
+  * `\appto{<命令>}{<テキスト>}`  
+  * `\gappto{<命令>}{<テキスト>}`  
+  * `\eappto{<命令>}{<テキスト>}`  
+  * `\xappto{<命令>}{<テキスト>}`  
+  * `\csappto{<命令名>}{<テキスト>}`  
+  * `\csgappto{<命令名>}{<テキスト>}`  
+  * `\cseappto{<命令名>}{<テキスト>}`  
+  * `\csxappto{<命令名>}{<テキスト>}`  
+  * `\preto{<命令>}{<テキスト>}`  
+  * `\gpreto{<命令>}{<テキスト>}`  
+  * `\epreto{<命令>}{<テキスト>}`  
+  * `\xpreto{<命令>}{<テキスト>}`  
+  * `\cspreto{<命令名>}{<テキスト>}`  
+  * `\csgpreto{<命令名>}{<テキスト>}`  
+  * `\csepreto{<命令名>}{<テキスト>}`  
+  * `\csxpreto{<命令名>}{<テキスト>}`  
 
-($B??M}CMJQ?t!=(Bbool$B7O(B)
+(真理値変数―bool系)
 
-  * `\newbool{<$BL>A0(B>}`  
-  * `\providebool{<$BL>A0(B>}`  
-  * `\booltrue{<$BL>A0(B>}`  
-  * `\boolfalse{<$BL>A0(B>}`  
-  * `\setbool{<$BL>A0(B>}{<$BCM(B>}`  
-  * `\ifbool{<$BL>A0(B>}{<$B??(B>}{<$B56(B>}`  
-  * `\notbool{<$BL>A0(B>}{<$B??(B>}{<$B56(B>}`  
+  * `\newbool{<名前>}`  
+  * `\providebool{<名前>}`  
+  * `\booltrue{<名前>}`  
+  * `\boolfalse{<名前>}`  
+  * `\setbool{<名前>}{<値>}`  
+  * `\ifbool{<名前>}{<真>}{<偽>}`  
+  * `\notbool{<名前>}{<真>}{<偽>}`  
 
-($B??M}CMJQ?t!=(Btoggle$B7O(B)
+(真理値変数―toggle系)
 
-  * `\newtoggle{<$BL>A0(B>}`  
-  * `\providetoggle{<$BL>A0(B>}`  
-  * `\toggletrue{<$BL>A0(B>}`  
-  * `\togglefalse{<$BL>A0(B>}`  
-  * `\settoggle{<$BL>A0(B>}{<$BCM(B>}`  
-  * `\iftoggle{<$BL>A0(B>}{<$B??(B>}{<$B56(B>}`  
-  * `\nottoggle{<$BL>A0(B>}{<$B??(B>}{<$B56(B>}`  
+  * `\newtoggle{<名前>}`  
+  * `\providetoggle{<名前>}`  
+  * `\toggletrue{<名前>}`  
+  * `\togglefalse{<名前>}`  
+  * `\settoggle{<名前>}{<値>}`  
+  * `\iftoggle{<名前>}{<真>}{<偽>}`  
+  * `\nottoggle{<名前>}{<真>}{<偽>}`  
 
-($BDj5A:QH=Dj(B)
+(定義済判定)
 
-  * `\ifdef{<$BL?Na(B>}{<$B??(B>}{<$B56(B>}`  
-  * `\ifundef{<$BL?Na(B>}{<$B??(B>}{<$B56(B>}`  
-  * `\bxIfcsdef{<$BL?NaL>(B>}{<$B??(B>}{<$B56(B>}`  
-  * `\bxIfcsundef{<$BL?NaL>(B>}{<$B??(B>}{<$B56(B>}`  
-    `\bxIfcsdef` $B$H(B `\bxIfcsdef` $B$OF0$/0z?t$NCf$GE83+$5$l$k$H%(%i!<$K(B
-    $B$J$k!#(B
+  * `\ifdef{<命令>}{<真>}{<偽>}`  
+  * `\ifundef{<命令>}{<真>}{<偽>}`  
+  * `\bxIfcsdef{<命令名>}{<真>}{<偽>}`  
+  * `\bxIfcsundef{<命令名>}{<真>}{<偽>}`  
+    `\bxIfcsdef` と `\bxIfcsdef` は動く引数の中で展開されるとエラーに
+    なる。
 
-#### $B$=$l0J30$NL?Na(B
+#### それ以外の命令
 
-($B%(%s%8%s%A%'%C%/!=(Bif$B%H!<%/%s(B)
+(エンジンチェック―ifトークン)
 
   * `\ifbxineTeX`  
   * `\ifbxinpdfTeX`  
@@ -335,121 +335,121 @@ etoolbox $B$N85$NL?Na$H;EMM$,0[$J$kItJ,$K$N$_@bL@$rIU$7$F$$$k(B
   * `\ifbxinXeTeX`  
   * `\ifbxinpTeX`  
   * `\ifbxinupTeX`  
-    $B%(%s%8%s$N%A%'%C%/!#$3$l$i$O(B TeX $B$N(B if-$B%H!<%/%s$G$"$k!#(B
+    エンジンのチェック。これらは TeX の if-トークンである。
 
-($B%(%s%8%s%A%'%C%/!=(BLaTeX$B%F%9%H(B)
+(エンジンチェック―LaTeXテスト)
 
-  * `\bxIfineTeX{<$B??(B>}{<$B56(B>}`  
-  * `\bxIfinpdfTeX{<$B??(B>}{<$B56(B>}`  
-  * `\bxIfinLuaTeX{<$B??(B>}{<$B56(B>}`  
-  * `\bxIfinOmega{<$B??(B>}{<$B56(B>}`  
-  * `\bxIfinAleph{<$B??(B>}{<$B56(B>}`  
-  * `\bxIfinXeTeX{<$B??(B>}{<$B56(B>}`  
-  * `\bxIfinpTeX{<$B??(B>}{<$B56(B>}`  
-  * `\bxIfinupTeX{<$B??(B>}{<$B56(B>}`  
-    $B%(%s%8%s$N%A%'%C%/!#$3$l$i$O(B LaTeX $B7A<0$N%F%9%H$G$"$k!#!J40A4E83+(B
-    $B2DG=$G$"$k!#!K(B
+  * `\bxIfineTeX{<真>}{<偽>}`  
+  * `\bxIfinpdfTeX{<真>}{<偽>}`  
+  * `\bxIfinLuaTeX{<真>}{<偽>}`  
+  * `\bxIfinOmega{<真>}{<偽>}`  
+  * `\bxIfinAleph{<真>}{<偽>}`  
+  * `\bxIfinXeTeX{<真>}{<偽>}`  
+  * `\bxIfinpTeX{<真>}{<偽>}`  
+  * `\bxIfinupTeX{<真>}{<偽>}`  
+    エンジンのチェック。これらは LaTeX 形式のテストである。（完全展開
+    可能である。）
 
-($B%W%j%_%F%#%V(Bif$B%H!<%/%s$N(BLaTeX$B%F%9%HHG(B)
+(プリミティブifトークンのLaTeXテスト版)
 
-  * `\bxIf{<$B%F%9%H(B>}{<$B??(B>}{<$B56(B>}`  
-  * `\bxIfcat{<$B%F%9%H(B>}{<$B??(B>}{<$B56(B>}`  
-  * `\bxIfx{<$B%F%9%H(B>}{<$B??(B>}{<$B56(B>}`  
-  * `\bxIfdim{<$B%F%9%H(B>}{<$B??(B>}{<$B56(B>}`  
-  * `\bxIfnum{<$B%F%9%H(B>}{<$B??(B>}{<$B56(B>}`  
-    TeX $B$N%W%j%_%F%#%V$J%F%9%H$r(B LaTeX $B7A<0$N%F%9%H$K$7$?$b$N!#Nc$($P(B
-    $B0J2<$N$h$&$K$7$F;H$&!#(B  
+  * `\bxIf{<テスト>}{<真>}{<偽>}`  
+  * `\bxIfcat{<テスト>}{<真>}{<偽>}`  
+  * `\bxIfx{<テスト>}{<真>}{<偽>}`  
+  * `\bxIfdim{<テスト>}{<真>}{<偽>}`  
+  * `\bxIfnum{<テスト>}{<真>}{<偽>}`  
+    TeX のプリミティブなテストを LaTeX 形式のテストにしたもの。例えば
+    以下のようにして使う。  
     `\bxIfx{\somecs\relax}{\dotrue}{\dofalse}`  
     `\bxIfnum{\count@<3}{\dotrue}{\dofalse}`  
-    $B!J$3$l$i$NL?Na$O40A4E83+2DG=$G$"$k!#!K(B
+    （これらの命令は完全展開可能である。）
 
-($B%W%j%_%F%#%VH=Dj(B)
+(プリミティブ判定)
 
-  * `\bxIfPrimitive{<$BL?Na(B>}{<$B??(B>}{<$B56(B>}`  
-  * `\bxIfPrimitiveX{<$BL?NaL>(B>}{<$B??(B>}{<$B56(B>}`  
-    `<$BL?Na(B>` $B$,F1L>$N(B TeX $B%W%j%_%F%#%V$G$"$k$+$rH=Dj$9$k!#5!G=$H$7$F$O(B
-    pdfTeX $B$N(B `\ifpdfprimitive` $B$HF1$8!#(B`\bxIfPrimitive` $B$O@H<e$G$"$k!#(B
-    `\bxIfPrimitiveX` $B$O40A4E83+2DG=!J=>$C$F4h6/!K$G$"$k$,!"(BpdfTeX
-    $B3HD%$N(B `\ifpdfprimitive` $B$,;H$($J$$;~$O=hM}$,Hs>o$K=E$$!#(B
-  * `\bxIfCsPrimitive{<$BL?NaL>(B>}{<$B??(B>}{<$B56(B>}`  
-    $B0z?t$,L?NaL>$G$"$k$3$H$r=|$-(B `\bxIfPrimitive` $B$HF1$8!#(B
+  * `\bxIfPrimitive{<命令>}{<真>}{<偽>}`  
+  * `\bxIfPrimitiveX{<命令名>}{<真>}{<偽>}`  
+    `<命令>` が同名の TeX プリミティブであるかを判定する。機能としては
+    pdfTeX の `\ifpdfprimitive` と同じ。`\bxIfPrimitive` は脆弱である。
+    `\bxIfPrimitiveX` は完全展開可能（従って頑強）であるが、pdfTeX
+    拡張の `\ifpdfprimitive` が使えない時は処理が非常に重い。
+  * `\bxIfCsPrimitive{<命令名>}{<真>}{<偽>}`  
+    引数が命令名であることを除き `\bxIfPrimitive` と同じ。
 
-($BJ8;zNs2=(B)
+(文字列化)
 
-  * `\bxDetokenize{<$B%F%-%9%H(B>}`  
-    e-TeX $B3HD%$N(B `\detokenize` $B$HF1$85!G=$G!"(Be-TeX $B3HD%$,M-8z$N>l9g$O(B
-    `\detokenize` $B$N%(%$%j%"%9$K$J$k!#L58z$N>l9g$O<+A0$N<BAu$r;H$&$,!"(B
-    $B=hM}$,Hs>o$K=E$$!#!J40A4E83+2DG=$G$"$k!#!K(B
-  * `\bxStringify{<$B%F%-%9%H(B>}`  
-    $B40A4E83+$7$F(B detokenize $B$7$?J8;zNs$KE83+$9$k!#8=>u$G$OA4%(%s%8%s(B
-    $B$K$D$$$F<+A0$N<BAu$r;H$C$F$$$F=hM}$,Hs>o$K=E$$!#!J40A4E83+2DG=!#!K(B
+  * `\bxDetokenize{<テキスト>}`  
+    e-TeX 拡張の `\detokenize` と同じ機能で、e-TeX 拡張が有効の場合は
+    `\detokenize` のエイリアスになる。無効の場合は自前の実装を使うが、
+    処理が非常に重い。（完全展開可能である。）
+  * `\bxStringify{<テキスト>}`  
+    完全展開して detokenize した文字列に展開する。現状では全エンジン
+    について自前の実装を使っていて処理が非常に重い。（完全展開可能。）
 
-($B%H!<%/%sNsHf3S(B)
+(トークン列比較)
 
-  * `\bxIfExpToEqual{<$B%F%-%9%H(B1>}{<$B%F%-%9%H(B2>}{<$B??(B>}{<$B56(B>}`  
-  * `\bxIfExpToEqualX{<$B%F%-%9%H(B1>}{<$B%F%-%9%H(B2>}{<$B??(B>}{<$B56(B>}`  
-    2$B$D$N%F%-%9%H$K$D$$$F!"40A4E83+$7$F(B detokenize $B$7$?7k2L$NJ8;zNs$,(B
-    $BEy$7$$$+$rH=Dj$9$k!#5!G=$H$7$F$O(B pdfTeX $B$N(B `\pdfstrcmp` $B$G$NEy2A(B
-    $BH=Dj$HF1$8!#(B`\bxIfExpToEqual` $B$O@H<e$G$"$k!#(B`\bxIfExpToEqualX`
-    $B$O40A4E83+2DG=$@$,!"(B`\pdfstrcmp` $B$,;H$($J$$;~$O=hM}$,Hs>o$K=E$$!#(B
-  * `\bxIfstrequalX{<$B%F%-%9%H(B1>}{<$B%F%-%9%H(B2>}{<$B??(B>}{<$B56(B>}`  
-    etoolbox $B$N(B `\ifstrequal` $B$HF1$85!G=!"$9$J$o$A(B 2 $B$D$N%F%-%9%H$K(B
-    $B$D$$$FE83+$;$:$K(B detokenize $B$7$?7k2L$NJ8;zNs$,Ey$7$$$+$rH=Dj$9$k!#(B
-    $B85$N(B `\ifstrequal` $B$H0[$J$j40A4E83+2DG=$G$"$k$,!"(Be-TeX $B3HD%$,L58z(B
-    $B$N;~$O=hM}$,Hs>o$K=E$$!#(B
+  * `\bxIfExpToEqual{<テキスト1>}{<テキスト2>}{<真>}{<偽>}`  
+  * `\bxIfExpToEqualX{<テキスト1>}{<テキスト2>}{<真>}{<偽>}`  
+    2つのテキストについて、完全展開して detokenize した結果の文字列が
+    等しいかを判定する。機能としては pdfTeX の `\pdfstrcmp` での等価
+    判定と同じ。`\bxIfExpToEqual` は脆弱である。`\bxIfExpToEqualX`
+    は完全展開可能だが、`\pdfstrcmp` が使えない時は処理が非常に重い。
+  * `\bxIfstrequalX{<テキスト1>}{<テキスト2>}{<真>}{<偽>}`  
+    etoolbox の `\ifstrequal` と同じ機能、すなわち 2 つのテキストに
+    ついて展開せずに detokenize した結果の文字列が等しいかを判定する。
+    元の `\ifstrequal` と異なり完全展開可能であるが、e-TeX 拡張が無効
+    の時は処理が非常に重い。
 
-($B%W%l%"%s%V%k@lMQL?Na@k8@(B)
+(プレアンブル専用命令宣言)
 
-  * `\bxPreamble<TeX$B%^%/%mDj5AL?Na(B><TeX$B%^%/%mDj5A5-=R(B>`  
-  * `\bxPreamble<LaTeX$B%^%/%mDj5AL?Na(B>[*]<LaTeX$B%^%/%mDj5A5-=R(B>`  
-    `\@onlypreamble` $B$r@_Dj$7$F%^%/%m$rDj5A$9$k!#(B  
-    $B"((B $B<B:]$NF0:n$OC1$K(B `\bxPreamble\$B@)8fDV(BA[*]\$B@)8fDV(BB` $B$r(B  
-    `\@onlypreamble\$B@)8fDV(BB \$B@)8fDV(BA[*]\$B@)8fDV(BB`  
-    $B$KCV$-49$($F$$$k$@$1$G$"$k!#(B
+  * `\bxPreamble<TeXマクロ定義命令><TeXマクロ定義記述>`  
+  * `\bxPreamble<LaTeXマクロ定義命令>[*]<LaTeXマクロ定義記述>`  
+    `\@onlypreamble` を設定してマクロを定義する。  
+    ※ 実際の動作は単に `\bxPreamble\制御綴A[*]\制御綴B` を  
+    `\@onlypreamble\制御綴B \制御綴A[*]\制御綴B`  
+    に置き換えているだけである。
 
-($BJ]8nIU%^%/%mDj5A(B)
+(保護付マクロ定義)
 
-  * `\bxRobustdef<TeX$B%^%/%mDj5A5-=R(B>`  
-  * `\bxRobustgdef<TeX$B%^%/%mDj5A5-=R(B>`  
-  * `\bxRobustedef<TeX$B%^%/%mDj5A5-=R(B>`  
-  * `\bxRobustxdef<TeX$B%^%/%mDj5A5-=R(B>`  
-    $BJ]8nIU$JL?Na$rDj5A$9$k!#(Be-TeX $B3HD%$,M-8z$G$"$l$P!"(B`\protected` $B$r(B
-    $BM-8z$K$7!"L58z$G$"$l$P!"(BLaTeX $B$NJ]8n5!9=$rMQ$$$k!#A0$K(B `\long` $B$r(B
-    $BIU$1$i$l$k$,(B `\global` $B$OIT2D!#(B
+  * `\bxRobustdef<TeXマクロ定義記述>`  
+  * `\bxRobustgdef<TeXマクロ定義記述>`  
+  * `\bxRobustedef<TeXマクロ定義記述>`  
+  * `\bxRobustxdef<TeXマクロ定義記述>`  
+    保護付な命令を定義する。e-TeX 拡張が有効であれば、`\protected` を
+    有効にし、無効であれば、LaTeX の保護機構を用いる。前に `\long` を
+    付けられるが `\global` は不可。
 
-($B$=$NB>(B)
+(その他)
 
-  * `\bxIfInMovingArg{<$B??(B>}{<$B56(B>}`  
-    $B$$$o$f$kF0$/0z?t(B($B<B9T$,M^;_$5$l$?4D6-(B)$B$G$"$k$+$N%F%9%H!#<B9T$,M-8z(B
-    $B$G$"$k>l9g$O!"(B<$B56(B> $B$r<B9T$7$?$N$HEy2A$K$J$k!#<B9T$,M^;_$5$l$F$$$k(B
-    $B>l9g$O!VL50UL#$JBeF~J8!W$N8e$K(B <$B??(B> $B$rB3$1$?$b$N$KE83+$5$l$k!#$3$N(B
-    $BL?Na$O!"F0$/0z?t$NCf$G$N;HMQ$r;vA0$K8!::$7$F%(%i!<$r=P$9$H$$$&L\E*(B
-    $B$rA[Dj$7$F$$$k!#(B(`\bxCheckForMovingArg` $B$b;2>H!#(B)
+  * `\bxIfInMovingArg{<真>}{<偽>}`  
+    いわゆる動く引数(実行が抑止された環境)であるかのテスト。実行が有効
+    である場合は、<偽> を実行したのと等価になる。実行が抑止されている
+    場合は「無意味な代入文」の後に <真> を続けたものに展開される。この
+    命令は、動く引数の中での使用を事前に検査してエラーを出すという目的
+    を想定している。(`\bxCheckForMovingArg` も参照。)
 
-  * `\bxMessageToken{<$BJ8;zNs(B>}{<$B%F%-%9%H(B>}`  
-    `<$B%F%-%9%H(B>` $B$NCf$N(B `#1` $B$r@)8fDV(B `\<$BJ8;zNs(B>` $B$KCV49$7$?%F%-%9%H(B
-    $B$r<B9T$9$k!#(B`\<$BJ8;zNs(B>` $B$NDj5A$OJQ2=$7$J$$!#(B`<$B%F%-%9%H(B>` $BCf$G(B
-    $B%Q%i%a%?(B `#1` $BEy$r;H$&>l9g$O(B `##1` $B$N$h$&$K=q$/I,MW$,$"$k!#Nc$($P(B
-    $B0J2<$N$h$&$KMQ$$$k!#(B
+  * `\bxMessageToken{<文字列>}{<テキスト>}`  
+    `<テキスト>` の中の `#1` を制御綴 `\<文字列>` に置換したテキスト
+    を実行する。`\<文字列>` の定義は変化しない。`<テキスト>` 中で
+    パラメタ `#1` 等を使う場合は `##1` のように書く必要がある。例えば
+    以下のように用いる。
 
         \bxMessageToken{Hello TeX!}{\def\dohello{\do#1}}
 
-    `\dohello` $B$NDj5A$O(B `\do` $B$N8e$K@)8fDV!V(B`\Hello TeX!`$B!W$,B3$$$?(B
-    $B$b$N$K$J$k!#(B
+    `\dohello` の定義は `\do` の後に制御綴「`\Hello TeX!`」が続いた
+    ものになる。
 
-  * `\bxCheckForMovingArg{<$B%F%-%9%H(B>}`  
-    $BF0$/0z?t$NCf$G$"$k$+$N3NG'!#F0$/0z?t$NCf$G$J$$>l9g$O(B `<$B%F%-%9%H(B>`
-    $B$,<B9T$5$l$k$,!"$"$k>l9g$O<!$N$h$&$K!VL$Dj5AL?Na$N7A!W$G%(%i!<$,(B
-    $BI=<($5$l$k!#$3$3$G$O!"(B`\xx@prepare` $B$NCf$G(B `\bxCheckForMovingArg`
-    $B$N%F%9%H$r9T$C$F$$$k$H$9$k!#(B
+  * `\bxCheckForMovingArg{<テキスト>}`  
+    動く引数の中であるかの確認。動く引数の中でない場合は `<テキスト>`
+    が実行されるが、ある場合は次のように「未定義命令の形」でエラーが
+    表示される。ここでは、`\xx@prepare` の中で `\bxCheckForMovingArg`
+    のテストを行っているとする。
 
         ! Undefined control sequence.
         <argument> \ ERROR: Use in wrong place!
         <*> \protected@edef\xx@example{\xx@prepare
                                                   \xx@tmpa}
 
-    $B"((B $B<B9T$,M^;_$5$l$F$$$k>l9g$O(B `\errmessage` $B%W%j%_%F%#%V$b<B9T(B
-    $B$5$l$J$$$N$G!"IaDL$K%(%i!<I=<($,$G$-$J$$$N$G$"$k!#(B  
-    $B"((B `\bxIfInMovingArg` $B$rMxMQ$7$F$$$k$N$G!"$=$3$K=R$Y$i$l$F$$$k(B
-    $B$h$&$K!"F0$/0z?t$G$"$k>l9g$NE83+7k2L$K$O%4%_$,;D$k!#(B
+    ※ 実行が抑止されている場合は `\errmessage` プリミティブも実行
+    されないので、普通にエラー表示ができないのである。  
+    ※ `\bxIfInMovingArg` を利用しているので、そこに述べられている
+    ように、動く引数である場合の展開結果にはゴミが残る。
 
