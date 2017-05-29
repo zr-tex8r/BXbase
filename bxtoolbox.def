@@ -4,7 +4,7 @@
 
 %% file declaration
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesFile{bxtoolbox.def}[2017/05/29 v1.1pre]
+\ProvidesFile{bxtoolbox.def}[2017/05/29 v1.1]
 \providecommand*\bxtb@pkgname{BXtoolbox}% bundle name
 
 %% check intergrity

@@ -4,7 +4,7 @@
 
 %% file declaration
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesFile{bxbase.def}[2017/05/29 v1.1pre BX base library]
+\ProvidesFile{bxbase.def}[2017/05/29 v1.1 BX base library]
 \def\bx@pkgname{BXbase} % bundle name
 
 %% check intergrity
@@ -47,7 +47,7 @@
 %--------------------------------------- general
 
 %% packages
-\RequirePackage{bxtoolbox}[2017/05/28]
+\RequirePackage{bxtoolbox}[2017/05/29]
 
 %% variables
 \let\bxHex\relax      % result of \bxToHex...

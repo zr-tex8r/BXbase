@@ -4,7 +4,7 @@
 
 %% file declaration
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesFile{bxtoolbox-ext.def}[2017/05/29 v1.1pre]
+\ProvidesFile{bxtoolbox-ext.def}[2017/05/29 v1.1]
 
 %% check intergrity
 \edef\bxtb@tmpa{\@currname.\@currext}\def\bxtb@tmpb{bxtoolbox-ext.def}
