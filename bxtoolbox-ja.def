@@ -62,9 +62,14 @@
 
 %%<+> \bxAtBeginDviX
 % \AtBeginDvi that is safe to use in pTeX.
+\ifx\AddToHook\@undefined %----
 \newcommand\bxAtBeginDviX[1]{%
   \global\setbox\@begindvibox\vbox{%
     \bxToYokoDir\unvbox\@begindvibox#1}}
+\else %----
+\newcommand\bxAtBeginDviX[1]{%
+  \AtBeginDvi{#1}}
+\fi %----
 
 %--------------------------------------- Japanese something
 

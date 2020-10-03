@@ -599,15 +599,15 @@
 \bxPreamble\newcommand*\usejapanesepdfstring{}
 \if s\bxInternalJaEncoding
   \def\usejapanesepdfstring{%  why use CP932??
-    \bxDocumentSpecialUrgent{pdf:tounicode 90ms-RKSJ-UCS2}%
+    \bx@docspec@urgent{pdf:tounicode 90ms-RKSJ-UCS2}%
     \bxNullify\usejapanesepdfstring}
 \else\if e\bxInternalJaEncoding
   \def\usejapanesepdfstring{%
-    \bxDocumentSpecialUrgent{pdf:tounicode EUC-UCS2}%
+    \bx@docspec@urgent{pdf:tounicode EUC-UCS2}%
     \bxNullify\usejapanesepdfstring}
 \else\if u\bxInternalJaEncoding
   \def\usejapanesepdfstring{%
-    \bxDocumentSpecialUrgent{pdf:tounicode UTF8-UCS2}%
+    \bx@docspec@urgent{pdf:tounicode UTF8-UCS2}%
     \bxNullify\usejapanesepdfstring}
 \else
   \def\usejapanesepdfstring{%

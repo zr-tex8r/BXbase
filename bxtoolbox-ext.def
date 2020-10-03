@@ -402,10 +402,17 @@
 \bxPreamble\newcommand*\bxDocumentSpecial[1]{%
   \bxAtBeginDviX{\special{#1}}}
 
-%%%% \bxDocumentSpecialUrgent{<text>}
+%%<+D> \bxDocumentSpecialUrgent{<text>}
 % Similar to the above, but it demands that the given special be
 % placed as early as possible.
-\bxPreamble\newcommand*\bxDocumentSpecialUrgent[1]{%
+\bxPreamble\newcommand*\bxDocumentSpecialUrgent{%
+  \bx@docspec@urgent@warn
+  \bx@docspec@urgent}
+\bxPreamble\def\bx@docspec@urgent@warn{%
+  \bxbz@warn@depre\bxDocumentSpecialUrgent{}%
+  \bxNullify\bx@docspec@urgent@warn}
+\ifx\AddToHook\@undefined %----
+\bxPreamble\def\bx@docspec@urgent#1{%
   \bx@docspec@urgent@init
   \bx@prepend@box\bx@dsu@box{\special{#1}}}
 \def\bx@prepend@box#1#2{%
@@ -421,6 +428,10 @@
        \xdef\AtBegShi@HookFirst{\the\toks@\the\toks\tw@}}
     \fi}%
   \bxNullify\bx@docspec@urgent@init}
+\else %----
+\bxPreamble\def\bx@docspec@urgent#1{%
+  \AtBeginDvi{\special{#1}}}% fallback
+\fi %----
 
 %--------------------------------------- "shadow map" module
 
