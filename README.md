@@ -120,6 +120,8 @@ For the present this package contains no public features.
 Revision History
 ----------------
 
+  * Version 1.2  〈2020/10/04〉
+      - Support LaTeX kernel 2020/10/01.
   * Version 1.1  〈2017/05/29〉
   * Version 1.0  〈2013/04/29〉
   * Version 0.5  〈2010/06/15〉

@@ -166,8 +166,6 @@ bxbase パッケージ ― 基礎ライブラリ
 
   * `\bxDocumentSpecial{<テキスト>}`  
     `\AtBeginDvi` を普通に用いて DVI の先頭部に special を出力する。
-  * `\bxDocumentSpecialUrgent{<テキスト>}`  
-    DVI のなるべく先頭（他の special より前）の位置に special を出力。
 
 #### Safe caret 機能
 
@@ -508,6 +506,9 @@ zxbase パッケージ ― XeTeX 用基礎ライブラリ
 更新履歴
 --------
 
+  * Version 1.2  〈2020/10/04〉
+      - LaTeX カーネル 2020/10/01 版への対応。
+      - `\bxDocumentSpecialUrgent` を非推奨にした。
   * Version 1.1  〈2017/05/29〉
       - 内容の整理。
       - 一部の機能を非推奨にした。
