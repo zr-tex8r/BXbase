@@ -122,6 +122,11 @@
 \bxtb@do{upTeX}{\enablecjktoken}
 \bxtb@do{jTeX}{\jintercharskip}
 
+%%<+> \ifbxinnativeupTeX / bxIfinnativeupTeX
+% Checks if upTeX with kanji-internal=uptex is used.
+\bxtb@do{nativeupTeX}{\bxtb@uniq}
+\ifbxinupTeX \ifnum\ucs"3000="3000 \bxtb@do{nativeupTeX}{\ucs}\fi\fi
+
 %%<+> \bxPreamble\CSX[*]\CSY
 % Prefix used for preamble-only commands.
 % \CSX can be \def, \newcommand, \DeclareRobustCommand, etc.

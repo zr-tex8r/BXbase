@@ -194,7 +194,7 @@
 \ifbxinOmega \bxHasUcsChartrue \fi
 \ifbxinXeTeX \bxHasUcsChartrue \fi
 \ifbxinLuaTeX \bxHasUcsChartrue \fi
-\ifbxinupTeX \bxHasUcsChartrue \fi
+\ifbxinnativeupTeX \bxHasUcsChartrue \fi
 \csletcs{ifbx@hx@bigchar}{ifbxHasUcsChar}
 
 %%<+> \ifbxHasAlUcsChar
@@ -216,25 +216,31 @@
 % Makes \bxRes expand to a single CJK character token with
 % character code <num> (in internal CJK encoding).
 \ifbxinpTeX
+\catcode`\/=14 \catcode`\!=14
+\ifdef\forcecjktoken{\catcode`\/=9}{%else
+  \ifdef\enablecjktoken{\catcode`\!=9}{}}
   \newcommand*\bxToJaChar[1]{%
-    \bgroup \bxtb@forcecjktoken
+    \begingroup
+/     \forcecjktoken % retain right kcatcode
+!     \enablecjktoken \ifnum\kcatcode#1<16 \kcatcode#1=18 \fi
       \kansujichar\@ne=#1\relax
       \xdef\bx@tch@g@temp{\kansuji\@ne}%
-    \egroup \let\bxRes\bx@tch@g@temp}
-  \ifdef{\forcecjktoken}%
-   {\let\bxtb@forcecjktoken\forcecjktoken}%
-   {\let\bxtb@forcecjktoken\relax}%
+    \endgroup \let\bxRes\bx@tch@g@temp}
+\catcode`\/=12 \catcode`\!=12
 \fi
 
 %%<+> \bxToUcsChar{<num>}
 % Makes \bxRes expand to a single character token with
 % character code <num> (in Unicode); valid for Unicode-aware
 % engines plus upTeX.
-\ifbxinupTeX
-\let\bxToUcsChar\bxToJaChar
+\ifbxinnativeupTeX
+  \let\bxToUcsChar\bxToJaChar
+\else\ifbxinupTeX
+  \newcommand*\bxToUcsChar[1]{%
+    \bxToJaChar{\ifnum\ucs#1<\z@ \jis"222E\else\ucs#1\fi}}
 \else\ifbxHasAlUcsChar
 \let\bxToUcsChar\bxToChar
-\fi\fi
+\fi\fi\fi
 
 %%<+> \bxToUcsCharDual{<jis>}{<ucs>}
 % Makes \bxRes expand to a single character token with the following
