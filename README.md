@@ -62,7 +62,7 @@ bxtoolbox Package ― To emulate etoolbox on non-e-TeX
 The main goal of this package is to provide part of the functions of the
 [etoolbox] package for TeX engines without e-TeX extension. (Note that
 TeX users in Japan have long used the pTeX engine for writing Japanese,
-and e-TeX extention for the engine did not appeared until around 2010.)
+and e-TeX extention for that engine did not appear until around 2010.)
 
 [etoolbox]: https://www.ctan.org/pkg/etoolbox
 
@@ -120,6 +120,7 @@ For the present this package contains no public features.
 Revision History
 ----------------
 
+  * Version 1.2a 〈2023/02/23〉
   * Version 1.2  〈2020/10/04〉
       - Support LaTeX kernel 2020/10/01.
   * Version 1.1  〈2017/05/29〉

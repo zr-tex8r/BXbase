@@ -4,7 +4,7 @@
 
 %% file declaration
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesFile{bxbase.def}[2020/10/04 v1.2 BX base library]
+\ProvidesFile{bxbase.def}[2023/02/23 v1.2a BX base library]
 \def\bx@pkgname{BXbase} % bundle name
 
 %% check intergrity

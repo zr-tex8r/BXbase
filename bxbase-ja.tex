@@ -1,18 +1,27 @@
 % 文字コードは UTF-8
 % uplatex で組版する
-\documentclass[a4paper,uplatex]{jsarticle}
+\documentclass[uplatex,dvipdfmx,a4paper]{jsarticle}
+\renewcommand{\headfont}{\gtfamily\romanseries{sbc}\sffamily}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern,textcomp}
+\usepackage{color}
+\definecolor{myblue}{rgb}{0,0,0.75}
+\definecolor{mygreen}{rgb}{0,0.45,0}
+\usepackage[colorlinks,hyperfootnotes=false]{hyperref}
+\usepackage{pxjahyper}
+\hypersetup{linkcolor=myblue,urlcolor=mygreen,
+  pdftitle={bxbaseパッケージ（ユーザ命令の解説）},
+  pdfauthor={八登崇之}}
+\usepackage{bxtexlogo}
+\bxtexlogoimport{*}
 \usepackage{shortvrb}
 \MakeShortVerb{\|}
-\newcommand{\PkgVersion}{1.2}
-\newcommand{\PkgDate}{2020/10/04}
+\newcommand{\PkgVersion}{1.2a}
+\newcommand{\PkgDate}{2023/02/23}
 \newcommand{\Pkg}[1]{\textsf{#1}}
 \newcommand{\Meta}[1]{$\langle$\mbox{}#1\mbox{}$\rangle$}
 \newcommand{\Note}{\par\noindent ※}
 \newcommand{\Means}{~：\quad}
-\providecommand{\pTeX}{p\TeX}
-\providecommand{\upTeX}{u\pTeX}
-\providecommand{\pLaTeX}{p\LaTeX}
-\providecommand{\upLaTeX}{u\pLaTeX}
 %-----------------------------------------------------------
 \begin{document}
 \title{\Pkg{bxbase} パッケージ\\

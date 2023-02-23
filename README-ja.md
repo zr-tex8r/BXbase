@@ -378,6 +378,7 @@ etoolbox が読み込まれてその機能が使われる。
   * `\ifbxinXeTeX`  
   * `\ifbxinpTeX`  
   * `\ifbxinupTeX`  
+  * `\ifbxinnativeupTeX`（内部Unicode動作のupTeXか）  
     エンジンのチェック。これらは TeX の if-トークンである。
 
 (エンジンチェック―LaTeXテスト)
@@ -390,6 +391,7 @@ etoolbox が読み込まれてその機能が使われる。
   * `\bxIfinXeTeX{<真>}{<偽>}`  
   * `\bxIfinpTeX{<真>}{<偽>}`  
   * `\bxIfinupTeX{<真>}{<偽>}`  
+  * `\bxIfinnativeupTeX{<真>}{<偽>}`（内部Unicode動作のupTeXか）  
     エンジンのチェック。これらは LaTeX 形式のテストである。（完全展開
     可能である。）
 
@@ -506,6 +508,9 @@ zxbase パッケージ ― XeTeX 用基礎ライブラリ
 更新履歴
 --------
 
+  * Version 1.2a 〈2023/02/23〉
+      - `\ifbxinnativeupTeX`／`\bxIfinnativeupTeX` を追加。
+      - バグ修正。
   * Version 1.2  〈2020/10/04〉
       - LaTeX カーネル 2020/10/01 版への対応。
       - `\bxDocumentSpecialUrgent` を非推奨にした。

@@ -3,7 +3,7 @@
 %%
 %
 %% file declaration
-\ProvidesFile{bxutf8x.def}[2020/10/04 v1.2 BX extended utf8x input]
+\ProvidesFile{bxutf8x.def}[2023/02/23 v1.2a BX extended utf8x input]
 %
 % Note: All definitions in this file should be local.
 % This file should not spill any spaces or \par.
